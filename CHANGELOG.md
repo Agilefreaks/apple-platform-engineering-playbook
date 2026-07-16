@@ -2,6 +2,10 @@
 
 All notable changes to the complete playbook package are recorded here.
 
+## 0.1.1 — 2026-07-16
+
+- Fixed GitHub Actions dependency-cache discovery for `requirements-dev.txt`.
+
 ## 0.1.0 — 2026-07-16
 
 - Added Apple Team Architecture Handbook and agent-facing Standard v2.1.
