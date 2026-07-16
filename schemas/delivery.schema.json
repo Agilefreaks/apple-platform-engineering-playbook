@@ -1,0 +1,1310 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agile-freaks:apple-delivery:0.1",
+  "title": "Apple Team Delivery Packet",
+  "description": "Machine-readable lifecycle contract for an Apple-platform delivery item.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "revision",
+    "title",
+    "current_status",
+    "updated_at",
+    "outcome",
+    "scope",
+    "owners",
+    "requirements",
+    "design",
+    "platforms",
+    "dependencies",
+    "risk",
+    "technical_plan",
+    "verification",
+    "rollout",
+    "release",
+    "approvals",
+    "waivers",
+    "status_history",
+    "links"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "0.1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9]+-[0-9]+$"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "title": {
+      "type": "string",
+      "minLength": 3
+    },
+    "current_status": {
+      "$ref": "#/$defs/status"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "problem",
+        "desired_outcome",
+        "target_users",
+        "target_audience"
+      ],
+      "properties": {
+        "problem": {
+          "type": "string",
+          "minLength": 10
+        },
+        "desired_outcome": {
+          "type": "string",
+          "minLength": 10
+        },
+        "target_users": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 2
+          }
+        },
+        "target_audience": {
+          "$ref": "#/$defs/target_audience"
+        }
+      }
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "in_scope",
+        "non_goals"
+      ],
+      "properties": {
+        "in_scope": {
+          "$ref": "#/$defs/non_empty_string_array"
+        },
+        "non_goals": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 2
+          }
+        }
+      }
+    },
+    "owners": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "$ref": "#/$defs/owner"
+      }
+    },
+    "requirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sources",
+        "acceptance_criteria",
+        "edge_cases",
+        "constraints",
+        "success_metrics",
+        "guardrails",
+        "unknowns"
+      ],
+      "properties": {
+        "sources": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/source_link"
+          }
+        },
+        "acceptance_criteria": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/acceptance_criterion"
+          }
+        },
+        "edge_cases": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 2
+          }
+        },
+        "constraints": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 2
+          }
+        },
+        "success_metrics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/metric"
+          }
+        },
+        "guardrails": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/metric"
+          }
+        },
+        "unknowns": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/unknown"
+          }
+        }
+      }
+    },
+    "design": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ui_required",
+        "review_status",
+        "figma",
+        "state_coverage",
+        "accessibility_intent",
+        "change_policy",
+        "accepted_deviations"
+      ],
+      "properties": {
+        "ui_required": {
+          "type": "boolean"
+        },
+        "review_status": {
+          "$ref": "#/$defs/check_status"
+        },
+        "figma": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/figma_reference"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "state_coverage": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/design_state"
+          }
+        },
+        "accessibility_intent": {
+          "type": "string",
+          "minLength": 2
+        },
+        "change_policy": {
+          "type": "string",
+          "minLength": 2
+        },
+        "accepted_deviations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/deviation"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "ui_required": {
+                "const": true
+              }
+            },
+            "required": [
+              "ui_required"
+            ]
+          },
+          "then": {
+            "properties": {
+              "figma": {
+                "$ref": "#/$defs/figma_reference"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "platforms": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "products",
+        "minimum_os",
+        "device_classes",
+        "orientations",
+        "locales"
+      ],
+      "properties": {
+        "products": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "iOS",
+              "iPadOS",
+              "tvOS"
+            ]
+          }
+        },
+        "minimum_os": {
+          "type": "string",
+          "pattern": "^[0-9]+(\\.[0-9]+){0,2}$"
+        },
+        "device_classes": {
+          "$ref": "#/$defs/non_empty_string_array"
+        },
+        "orientations": {
+          "$ref": "#/$defs/non_empty_string_array"
+        },
+        "locales": {
+          "$ref": "#/$defs/non_empty_string_array"
+        }
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/dependency"
+      }
+    },
+    "risk": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "level",
+        "categories",
+        "privacy_review",
+        "security_review",
+        "legal_review",
+        "notes"
+      ],
+      "properties": {
+        "level": {
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "critical"
+          ]
+        },
+        "categories": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "accessibility",
+              "analytics",
+              "availability",
+              "data_migration",
+              "financial",
+              "legal",
+              "performance",
+              "privacy",
+              "reliability",
+              "security",
+              "signing",
+              "third_party",
+              "user_safety"
+            ]
+          }
+        },
+        "privacy_review": {
+          "$ref": "#/$defs/check_status"
+        },
+        "security_review": {
+          "$ref": "#/$defs/check_status"
+        },
+        "legal_review": {
+          "$ref": "#/$defs/check_status"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "technical_plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "architecture_standard",
+        "adrs",
+        "affected_areas",
+        "acceptance_mapping",
+        "open_spikes"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 2
+        },
+        "architecture_standard": {
+          "type": "string",
+          "minLength": 2
+        },
+        "adrs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 2
+          }
+        },
+        "affected_areas": {
+          "$ref": "#/$defs/non_empty_string_array"
+        },
+        "acceptance_mapping": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/acceptance_mapping"
+          }
+        },
+        "open_spikes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/spike"
+          }
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "test_plan_path",
+        "quality_areas",
+        "acceptance_results",
+        "runtime_evidence",
+        "distributed_build_evidence"
+      ],
+      "properties": {
+        "test_plan_path": {
+          "type": "string",
+          "minLength": 2
+        },
+        "quality_areas": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/quality_check"
+          }
+        },
+        "acceptance_results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/acceptance_result"
+          }
+        },
+        "runtime_evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence"
+          }
+        },
+        "distributed_build_evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence"
+          }
+        }
+      }
+    },
+    "rollout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "channel",
+        "environment",
+        "cohort",
+        "feature_flags",
+        "release_window",
+        "abort_conditions",
+        "rollback_plan",
+        "incident_owner"
+      ],
+      "properties": {
+        "channel": {
+          "$ref": "#/$defs/release_channel"
+        },
+        "environment": {
+          "type": "string",
+          "minLength": 2
+        },
+        "cohort": {
+          "type": "string",
+          "minLength": 2
+        },
+        "feature_flags": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/feature_flag"
+          }
+        },
+        "release_window": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "abort_conditions": {
+          "$ref": "#/$defs/non_empty_string_array"
+        },
+        "rollback_plan": {
+          "type": "string",
+          "minLength": 10
+        },
+        "incident_owner": {
+          "type": "string",
+          "minLength": 2
+        }
+      }
+    },
+    "release": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/release_facts"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "approvals": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/approval"
+      }
+    },
+    "waivers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/waiver"
+      }
+    },
+    "status_history": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/status_entry"
+      }
+    },
+    "links": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ticket",
+        "repository",
+        "pull_requests",
+        "ci_runs",
+        "release_console",
+        "telemetry"
+      ],
+      "properties": {
+        "ticket": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uri-reference"
+        },
+        "repository": {
+          "type": "string",
+          "format": "uri-reference"
+        },
+        "pull_requests": {
+          "$ref": "#/$defs/link_array"
+        },
+        "ci_runs": {
+          "$ref": "#/$defs/link_array"
+        },
+        "release_console": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uri-reference"
+        },
+        "telemetry": {
+          "$ref": "#/$defs/link_array"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "status": {
+      "enum": [
+        "DRAFT",
+        "READY",
+        "PLANNED",
+        "IMPLEMENTING",
+        "CODE_COMPLETE",
+        "MERGED",
+        "QA_ACCEPTED",
+        "RELEASE_CANDIDATE",
+        "RELEASED",
+        "PRODUCTION_VERIFIED",
+        "DELIVERED",
+        "BLOCKED",
+        "CANCELLED",
+        "REOPENED"
+      ]
+    },
+    "check_status": {
+      "enum": [
+        "pending",
+        "passed",
+        "failed",
+        "not_applicable"
+      ]
+    },
+    "release_channel": {
+      "enum": [
+        "local",
+        "internal",
+        "testflight_internal",
+        "testflight_external",
+        "app_store_phased",
+        "app_store_full",
+        "enterprise",
+        "other"
+      ]
+    },
+    "non_empty_string_array": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 2
+      }
+    },
+    "link_array": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri-reference"
+      }
+    },
+    "owner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "name"
+      ],
+      "properties": {
+        "role": {
+          "enum": [
+            "product",
+            "design",
+            "engineering",
+            "qa",
+            "release",
+            "security",
+            "privacy",
+            "legal",
+            "analytics",
+            "delivery"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "minLength": 2
+        }
+      }
+    },
+    "target_audience": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "channel",
+        "cohort",
+        "delivery_condition"
+      ],
+      "properties": {
+        "channel": {
+          "$ref": "#/$defs/release_channel"
+        },
+        "cohort": {
+          "type": "string",
+          "minLength": 2
+        },
+        "delivery_condition": {
+          "type": "string",
+          "minLength": 5
+        }
+      }
+    },
+    "source_link": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "uri",
+        "version"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "ticket",
+            "brief",
+            "research",
+            "legal",
+            "api_contract",
+            "other"
+          ]
+        },
+        "uri": {
+          "type": "string",
+          "format": "uri-reference"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "acceptance_criterion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "statement",
+        "verification_methods",
+        "priority"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^AC-[0-9]{2,}$"
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 10
+        },
+        "verification_methods": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "unit_test",
+              "integration_test",
+              "ui_test",
+              "runtime",
+              "design_review",
+              "accessibility_review",
+              "analytics",
+              "manual_qa"
+            ]
+          }
+        },
+        "priority": {
+          "enum": [
+            "must",
+            "should",
+            "could"
+          ]
+        }
+      }
+    },
+    "metric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "definition",
+        "target",
+        "source"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 2
+        },
+        "definition": {
+          "type": "string",
+          "minLength": 5
+        },
+        "target": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source": {
+          "type": "string",
+          "minLength": 2
+        }
+      }
+    },
+    "unknown": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "question",
+        "owner",
+        "due_at",
+        "blocking"
+      ],
+      "properties": {
+        "question": {
+          "type": "string",
+          "minLength": 5
+        },
+        "owner": {
+          "type": "string",
+          "minLength": 2
+        },
+        "due_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "blocking": {
+          "type": "boolean"
+        }
+      }
+    },
+    "figma_reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "file_url",
+        "file_key",
+        "page",
+        "node_ids",
+        "reviewed_version",
+        "reviewed_at",
+        "design_owner"
+      ],
+      "properties": {
+        "file_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "file_key": {
+          "type": "string",
+          "minLength": 2
+        },
+        "page": {
+          "type": "string",
+          "minLength": 1
+        },
+        "node_ids": {
+          "$ref": "#/$defs/non_empty_string_array"
+        },
+        "reviewed_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reviewed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "design_owner": {
+          "type": "string",
+          "minLength": 2
+        }
+      }
+    },
+    "design_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "screen",
+        "state",
+        "node_id",
+        "status"
+      ],
+      "properties": {
+        "screen": {
+          "type": "string",
+          "minLength": 2
+        },
+        "state": {
+          "type": "string",
+          "minLength": 2
+        },
+        "node_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "$ref": "#/$defs/check_status"
+        }
+      }
+    },
+    "deviation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "description",
+        "reason",
+        "approver"
+      ],
+      "properties": {
+        "description": {
+          "type": "string",
+          "minLength": 5
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 5
+        },
+        "approver": {
+          "type": "string",
+          "minLength": 2
+        }
+      }
+    },
+    "dependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "owner",
+        "status",
+        "compatibility_contract"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 2
+        },
+        "owner": {
+          "type": "string",
+          "minLength": 2
+        },
+        "status": {
+          "enum": [
+            "unknown",
+            "blocked",
+            "ready",
+            "verified"
+          ]
+        },
+        "compatibility_contract": {
+          "type": "string",
+          "minLength": 2
+        }
+      }
+    },
+    "acceptance_mapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "acceptance_id",
+        "implementation_areas",
+        "test_ids",
+        "design_nodes",
+        "expected_evidence"
+      ],
+      "properties": {
+        "acceptance_id": {
+          "type": "string",
+          "pattern": "^AC-[0-9]{2,}$"
+        },
+        "implementation_areas": {
+          "$ref": "#/$defs/non_empty_string_array"
+        },
+        "test_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 2
+          }
+        },
+        "design_nodes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "expected_evidence": {
+          "$ref": "#/$defs/non_empty_string_array"
+        }
+      }
+    },
+    "spike": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "question",
+        "owner",
+        "timebox",
+        "expected_output"
+      ],
+      "properties": {
+        "question": {
+          "type": "string",
+          "minLength": 5
+        },
+        "owner": {
+          "type": "string",
+          "minLength": 2
+        },
+        "timebox": {
+          "type": "string",
+          "minLength": 2
+        },
+        "expected_output": {
+          "type": "string",
+          "minLength": 5
+        }
+      }
+    },
+    "quality_check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "area",
+        "status",
+        "reason",
+        "evidence"
+      ],
+      "properties": {
+        "area": {
+          "enum": [
+            "build",
+            "behavior",
+            "runtime",
+            "design",
+            "accessibility",
+            "localization",
+            "performance",
+            "reliability",
+            "privacy",
+            "security",
+            "analytics",
+            "distribution"
+          ]
+        },
+        "status": {
+          "$ref": "#/$defs/check_status"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "evidence": {
+          "$ref": "#/$defs/link_array"
+        }
+      }
+    },
+    "acceptance_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "acceptance_id",
+        "status",
+        "build",
+        "evidence"
+      ],
+      "properties": {
+        "acceptance_id": {
+          "type": "string",
+          "pattern": "^AC-[0-9]{2,}$"
+        },
+        "status": {
+          "$ref": "#/$defs/check_status"
+        },
+        "build": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "evidence": {
+          "$ref": "#/$defs/link_array"
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "uri",
+        "observed_at",
+        "observer",
+        "build",
+        "environment",
+        "summary"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "test",
+            "screenshot",
+            "video",
+            "runtime_log",
+            "telemetry_query",
+            "analytics_event",
+            "approval",
+            "release_fact",
+            "other"
+          ]
+        },
+        "uri": {
+          "type": "string",
+          "format": "uri-reference"
+        },
+        "observed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "observer": {
+          "type": "string",
+          "minLength": 2
+        },
+        "build": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "environment": {
+          "type": "string",
+          "minLength": 2
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 5
+        }
+      }
+    },
+    "feature_flag": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "default",
+        "release_value",
+        "owner"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 2
+        },
+        "default": {},
+        "release_value": {},
+        "owner": {
+          "type": "string",
+          "minLength": 2
+        }
+      }
+    },
+    "release_facts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "bundle_id",
+        "marketing_version",
+        "build_number",
+        "commit",
+        "ci_run",
+        "released_at",
+        "operator",
+        "effective_flags"
+      ],
+      "properties": {
+        "bundle_id": {
+          "type": "string",
+          "minLength": 3
+        },
+        "marketing_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "build_number": {
+          "type": "string",
+          "minLength": 1
+        },
+        "commit": {
+          "type": "string",
+          "minLength": 7
+        },
+        "ci_run": {
+          "type": "string",
+          "format": "uri-reference"
+        },
+        "released_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "operator": {
+          "type": "string",
+          "minLength": 2
+        },
+        "effective_flags": {
+          "type": "object"
+        }
+      }
+    },
+    "approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "gate",
+        "role",
+        "actor",
+        "status",
+        "at",
+        "scope",
+        "evidence"
+      ],
+      "properties": {
+        "gate": {
+          "enum": [
+            "READY",
+            "PLANNED",
+            "QA_ACCEPTED",
+            "RELEASE_CANDIDATE",
+            "DELIVERED"
+          ]
+        },
+        "role": {
+          "type": "string",
+          "minLength": 2
+        },
+        "actor": {
+          "type": "string",
+          "minLength": 2
+        },
+        "status": {
+          "enum": [
+            "pending",
+            "approved",
+            "rejected",
+            "conditional"
+          ]
+        },
+        "at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "scope": {
+          "type": "string",
+          "minLength": 2
+        },
+        "evidence": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uri-reference"
+        }
+      }
+    },
+    "waiver": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "gate",
+        "check",
+        "risk",
+        "rationale",
+        "mitigation",
+        "approver",
+        "approved_at",
+        "expires_at",
+        "follow_up"
+      ],
+      "properties": {
+        "gate": {
+          "type": "string",
+          "minLength": 2
+        },
+        "check": {
+          "type": "string",
+          "minLength": 2
+        },
+        "risk": {
+          "type": "string",
+          "minLength": 5
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 5
+        },
+        "mitigation": {
+          "type": "string",
+          "minLength": 5
+        },
+        "approver": {
+          "type": "string",
+          "minLength": 2
+        },
+        "approved_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "follow_up": {
+          "type": "string",
+          "minLength": 5
+        }
+      }
+    },
+    "status_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "at",
+        "actor",
+        "reason",
+        "evidence"
+      ],
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/status"
+        },
+        "at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "actor": {
+          "type": "string",
+          "minLength": 2
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 5
+        },
+        "evidence": {
+          "$ref": "#/$defs/link_array"
+        }
+      }
+    }
+  }
+}

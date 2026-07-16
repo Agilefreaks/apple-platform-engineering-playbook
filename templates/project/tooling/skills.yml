@@ -1,0 +1,24 @@
+schema: 1
+source: company://apple-skills
+
+required:
+  apple/swift-concurrency: "1.x"
+  apple/swift-testing: "1.x"
+  apple/ios-runtime-debugging: "1.x"
+
+conditional:
+  apple/swiftui-patterns: "2.x"
+  apple/swiftui-refactoring: "1.x"
+  apple/swiftui-performance: "1.x"
+  apple/swiftdata: "1.x"
+  apple/apple-accessibility: "1.x"
+  apple/uikit-modernization: "1.x"
+  apple/tca: "1.x"
+  apple/app-intents: "1.x"
+
+# Proposed delivery capabilities are not resolvable requirements until they are
+# published and versioned in the company registry:
+# - delivery/requirements-normalization
+# - delivery/figma-handoff
+# - delivery/technical-planning
+# - delivery/release-verification

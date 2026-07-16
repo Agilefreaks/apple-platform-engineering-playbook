@@ -1,0 +1,246 @@
+# Replace every SAMPLE value before requesting READY.
+# Validate this file against delivery.schema.json.
+schema_version: "0.1"
+id: AF-000
+revision: 1
+title: Sample delivery item
+current_status: DRAFT
+updated_at: "2026-07-16T00:00:00Z"
+
+outcome:
+  problem: Users cannot yet complete the sample outcome in the Apple app.
+  desired_outcome: Eligible users can complete and verify the sample outcome.
+  target_users:
+    - Authenticated sample users
+  target_audience:
+    channel: internal
+    cohort: Internal delivery pilot
+    delivery_condition: The approved internal build is accessible and freshly verified.
+
+scope:
+  in_scope:
+    - Complete the sample outcome end to end.
+  non_goals:
+    - General redesign outside the mapped Figma nodes.
+
+owners:
+  - role: product
+    name: Product Owner
+  - role: design
+    name: Design Owner
+  - role: engineering
+    name: Engineering Owner
+  - role: qa
+    name: QA Owner
+  - role: release
+    name: Release Owner
+
+requirements:
+  sources:
+    - kind: brief
+      uri: requirements.md
+      version: draft-1
+  acceptance_criteria:
+    - id: AC-01
+      statement: An eligible user can complete the sample happy path and sees confirmation.
+      verification_methods:
+        - integration_test
+        - ui_test
+        - runtime
+      priority: must
+    - id: AC-02
+      statement: A recoverable dependency error produces a clear retry path without data loss.
+      verification_methods:
+        - unit_test
+        - runtime
+        - manual_qa
+      priority: must
+  edge_cases:
+    - Loading
+    - Empty result
+    - Recoverable error and retry
+    - Offline behavior
+    - Cancellation
+  constraints:
+    - Follow Apple Team Architecture Standard v2.1.
+    - Do not expose secrets or personal data in evidence.
+  success_metrics:
+    - name: sample_outcome_completion
+      definition: Eligible sessions that complete the sample outcome.
+      target: Baseline to be established during the pilot.
+      source: Product analytics
+  guardrails:
+    - name: sample_flow_error_rate
+      definition: Eligible sample flow attempts ending in an unexpected error.
+      target: No material regression against the pre-release baseline.
+      source: Operational telemetry
+  unknowns: []
+
+design:
+  ui_required: true
+  review_status: pending
+  figma:
+    file_url: https://www.figma.com/design/SAMPLE_FILE_KEY/Sample-App
+    file_key: SAMPLE_FILE_KEY
+    page: Ready for development
+    node_ids:
+      - "100:1"
+    reviewed_version: sample-named-version
+    reviewed_at: "2026-07-16T00:00:00Z"
+    design_owner: Design Owner
+  state_coverage:
+    - screen: Sample screen
+      state: loading
+      node_id: "100:1"
+      status: pending
+    - screen: Sample screen
+      state: loaded
+      node_id: "100:1"
+      status: pending
+    - screen: Sample screen
+      state: error
+      node_id: "100:1"
+      status: pending
+  accessibility_intent: Dynamic Type, VoiceOver order, contrast, focus, and Reduce Motion are defined or explicitly not applicable.
+  change_policy: Material changes after READY require impact review and a new packet revision.
+  accepted_deviations: []
+
+platforms:
+  products:
+    - iOS
+  minimum_os: "17.0"
+  device_classes:
+    - Supported iPhone sizes
+  orientations:
+    - portrait
+  locales:
+    - en
+
+dependencies: []
+
+risk:
+  level: medium
+  categories:
+    - accessibility
+    - analytics
+    - reliability
+  privacy_review: pending
+  security_review: pending
+  legal_review: not_applicable
+  notes: Reassess after API and data-flow mapping.
+
+technical_plan:
+  path: technical-plan.md
+  architecture_standard: Apple Team Architecture Standard v2.1
+  adrs: []
+  affected_areas:
+    - Features/Sample
+    - Core capability used by Sample
+  acceptance_mapping:
+    - acceptance_id: AC-01
+      implementation_areas:
+        - Features/Sample
+      test_ids:
+        - SampleHappyPathTests
+      design_nodes:
+        - "100:1"
+      expected_evidence:
+        - Green automated checks linked to the commit.
+        - Fresh runtime proof on the declared build.
+    - acceptance_id: AC-02
+      implementation_areas:
+        - Features/Sample
+      test_ids:
+        - SampleRetryTests
+      design_nodes:
+        - "100:1"
+      expected_evidence:
+        - Failure-state test and runtime evidence.
+  open_spikes: []
+
+verification:
+  test_plan_path: test-plan.md
+  quality_areas:
+    - area: build
+      status: pending
+      reason: Run from a clean checkout before CODE_COMPLETE.
+      evidence: []
+    - area: behavior
+      status: pending
+      reason: Verify all acceptance IDs.
+      evidence: []
+    - area: runtime
+      status: pending
+      reason: Exercise the app on the declared destination.
+      evidence: []
+    - area: design
+      status: pending
+      reason: Compare mapped states with the reviewed Figma version.
+      evidence: []
+    - area: accessibility
+      status: pending
+      reason: Run the applicable accessibility checks.
+      evidence: []
+    - area: localization
+      status: pending
+      reason: Verify supported locales and layout behavior.
+      evidence: []
+    - area: performance
+      status: pending
+      reason: Confirm proportional performance checks in the technical plan.
+      evidence: []
+    - area: reliability
+      status: pending
+      reason: Verify retry, offline, cancellation, and dependency failure as applicable.
+      evidence: []
+    - area: privacy
+      status: pending
+      reason: Confirm data classification, consent, storage, and logging impact.
+      evidence: []
+    - area: security
+      status: pending
+      reason: Confirm auth, permissions, secrets, transport, and dependency impact.
+      evidence: []
+    - area: analytics
+      status: pending
+      reason: Verify schema, consent behavior, and ingestion.
+      evidence: []
+    - area: distribution
+      status: pending
+      reason: Verify the exact distributed build before PRODUCTION_VERIFIED.
+      evidence: []
+  acceptance_results: []
+  runtime_evidence: []
+  distributed_build_evidence: []
+
+rollout:
+  channel: internal
+  environment: Internal production-like environment
+  cohort: Internal delivery pilot
+  feature_flags: []
+  release_window: null
+  abort_conditions:
+    - Any P0 or P1 regression in the critical path.
+    - Unexpected privacy, security, data-loss, or crash behavior.
+  rollback_plan: Disable the feature flag when present, preserve backward compatibility, and prepare a forward fix owned by Engineering.
+  incident_owner: Engineering Owner
+
+release: null
+approvals: []
+waivers: []
+
+status_history:
+  - status: DRAFT
+    at: "2026-07-16T00:00:00Z"
+    actor: Delivery Owner
+    reason: Delivery Packet created from the v0.1 template.
+    evidence:
+      - requirements.md
+
+links:
+  ticket: null
+  repository: .
+  pull_requests: []
+  ci_runs: []
+  release_console: null
+  telemetry: []
