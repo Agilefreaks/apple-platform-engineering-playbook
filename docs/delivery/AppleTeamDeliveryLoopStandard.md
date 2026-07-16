@@ -259,6 +259,8 @@ Required categories:
 
 A screenshot can prove appearance, not behavior. A unit test can prove logic, not
 distribution. A green CI run can prove declared checks, not product acceptance.
+A successful Tapia flow can prove an observed interaction on the identified local
+Simulator build; it cannot prove real-device, distributed-build, or production behavior.
 
 ## 10. Agent roles, skills, and autonomy [DLV-011]
 
@@ -321,6 +323,17 @@ team's ability to execute the documented workflow manually. Repository runtime n
 are mapped in `AGENTS.md`; required versions live in `tooling/skills.yml` and
 `skills.lock` when supported.
 
+Tool capabilities are declared separately in `tooling/tools.yml`. Xcode automation is
+recommended. Tapia MCP implements `apple/ios-simulator-automation` with
+`recommended_conditional` adoption for agent-heavy projects that need repeatable
+semantic UI flows, accessibility-tree inspection, and local Simulator evidence.
+
+When adopted, pin the reviewed revision, use stable accessibility identifiers, keep
+the session isolated from production data, and capture build/configuration/destination
+with the result. Tapia does not replace XCUITest regression coverage, CI, real-device
+testing, release checks, or protected approvals. Use the manifest fallbacks and report
+the reduced evidence level when the capability is unavailable.
+
 ## 11. Approvals and separation of duties [DLV-012]
 
 Minimum approvals:
@@ -359,7 +372,8 @@ forward fixes. "Upload another build" alone is not a complete rollback plan.
 ## 13. Production verification [DLV-014]
 
 Verification MUST use the declared distributed build and target environment. Local or
-debug proof is useful but cannot replace release proof.
+debug proof is useful but cannot replace release proof. This includes successful
+Xcode preview, Simulator, Tapia, `simctl`, or local XCUITest results.
 
 Minimum fresh evidence:
 

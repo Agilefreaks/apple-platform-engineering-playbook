@@ -2,6 +2,17 @@
 
 All notable changes to the complete playbook package are recorded here.
 
+## 0.2.0 — 2026-07-16
+
+- Added `tooling/tools.yml` and its JSON Schema for executable capability declarations.
+- Added Tapia MCP as `recommended_conditional` for agent-heavy iOS Simulator UI and
+  runtime automation, pinned to a reviewed revision.
+- Added inactive Tapia MCP/flow examples, an operational guide, safety guardrails,
+  evidence semantics, and explicit fallbacks.
+- Updated architecture, delivery, adoption, agent contract, validation, and bootstrap
+  guidance while keeping XCUITest, real-device, distributed-build, and production
+  verification responsibilities distinct.
+
 ## 0.1.1 — 2026-07-16
 
 - Fixed GitHub Actions dependency-cache discovery for `requirements-dev.txt`.

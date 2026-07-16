@@ -18,6 +18,9 @@ fi
 destinations=(
   "$target_dir/AGENTS.md"
   "$target_dir/tooling/skills.yml"
+  "$target_dir/tooling/tools.yml"
+  "$target_dir/tooling/examples/tapia/mcp.example.json"
+  "$target_dir/tooling/examples/tapia/tapia.flows.example.yaml"
   "$target_dir/docs/adr/0000-template.md"
   "$target_dir/delivery/schema/delivery.schema.json"
   "$target_dir/.apple-playbook-version"
@@ -38,6 +41,7 @@ fi
 
 mkdir -p \
   "$target_dir/tooling" \
+  "$target_dir/tooling/examples/tapia" \
   "$target_dir/docs/adr" \
   "$target_dir/delivery/schema" \
   "$target_dir/delivery/templates" \
@@ -45,10 +49,15 @@ mkdir -p \
 
 cp "$root_dir/templates/project/AGENTS.template.md" "$target_dir/AGENTS.md"
 cp "$root_dir/templates/project/tooling/skills.yml" "$target_dir/tooling/skills.yml"
+cp "$root_dir/templates/project/tooling/tools.yml" "$target_dir/tooling/tools.yml"
+cp "$root_dir/templates/project/tools/tapia/mcp.example.json" \
+  "$target_dir/tooling/examples/tapia/mcp.example.json"
+cp "$root_dir/templates/project/tools/tapia/tapia.flows.example.yaml" \
+  "$target_dir/tooling/examples/tapia/tapia.flows.example.yaml"
 cp "$root_dir/templates/project/docs/adr/0000-template.md" "$target_dir/docs/adr/0000-template.md"
 cp "$root_dir/schemas/delivery.schema.json" "$target_dir/delivery/schema/delivery.schema.json"
 cp "$root_dir"/templates/delivery/* "$target_dir/delivery/templates/"
-printf 'repository_package=0.1.1\nsource=agilefreaks/apple-platform-engineering-playbook\n' \
+printf 'repository_package=0.2.0\nsource=agilefreaks/apple-platform-engineering-playbook\n' \
   > "$target_dir/.apple-playbook-version"
 
 echo "Apple project contract installed in: $target_dir"

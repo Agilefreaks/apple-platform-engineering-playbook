@@ -22,12 +22,13 @@ consume later.
 | Requirements-to-delivery loop | [Delivery Loop Handbook](docs/delivery/AppleTeamDeliveryLoopHandbook.md) | [Delivery Loop Standard](docs/delivery/AppleTeamDeliveryLoopStandard.md) |
 | Start a new project | [Adoption Guide](docs/AdoptionGuide.md) | [Project starter kit](templates/project/README.md) |
 | Run one delivery item | [Delivery templates](templates/delivery/) | [Delivery schema](schemas/delivery.schema.json) |
+| Configure Simulator automation | [Tapia MCP Guide](docs/tooling/TapiaMCPGuide.md) | [Tool capability manifest](templates/project/tooling/tools.yml) |
 
 Current document versions:
 
 - Architecture: `2.1`
 - Delivery Loop: `0.1 — proposed for pilot`
-- Repository package: `0.1.1`
+- Repository package: `0.2.0`
 
 ## Validate the playbook
 
@@ -39,7 +40,7 @@ make validate
 The checks verify:
 
 - paired ARCH and DLV decision IDs;
-- the JSON Schema and sample `delivery.yml`;
+- the JSON Schemas and sample `delivery.yml`/`tools.yml` manifests;
 - local Markdown links and balanced fenced blocks.
 
 GitHub Actions runs the same validation on pull requests and `main`.

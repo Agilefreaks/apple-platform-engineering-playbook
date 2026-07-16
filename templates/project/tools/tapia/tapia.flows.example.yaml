@@ -1,0 +1,21 @@
+bundle_id: com.example.app
+
+screens:
+  home:
+    anchors:
+      - Home
+    targets:
+      primary_action:
+        identifier: home_primary_action
+
+  result:
+    anchors:
+      - Result
+
+flows:
+  home_to_result:
+    description: Exercise the primary happy path from Home to Result.
+    steps:
+      - tap_target: home.primary_action
+        wait_for: Result
+        require_change: true

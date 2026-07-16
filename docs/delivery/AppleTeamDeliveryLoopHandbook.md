@@ -286,6 +286,7 @@ identificatori stabili, versiunea revizuită, rezumatul necesar și legătura du
 - rezultat CI legat de commit;
 - output de test cu toolchain și destinație;
 - screenshot al stării și device/configuration;
+- flow Tapia cu build, configurație, Simulator, pași și timestamp declarate;
 - video scurt pentru o interacțiune sau focus;
 - build/version identificat fără ambiguitate;
 - query de telemetry cu interval și environment;
@@ -507,6 +508,24 @@ manual. Nu inventăm că un skill există doar fiindcă avem un ID propus. `AGEN
 mapează numele canonice la runtime-ul disponibil; `tooling/skills.yml` și `skills.lock`
 declară versiunile atunci când sistemul le suportă.
 
+### Tool capabilities și Tapia MCP
+
+Skills-urile descriu cum lucrăm. Tool-urile oferă acțiuni executabile și se declară
+separat în `tooling/tools.yml`.
+
+- `apple/xcode-automation` este recomandat pentru build, test, diagnostics și operații
+  Xcode suportate;
+- `apple/ios-simulator-automation`, implementat prin Tapia MCP, este
+  `recommended_conditional` când agenții trebuie să exercite repetabil flow-uri UI,
+  să inspecteze accessibility tree sau să captureze dovezi locale în Simulator.
+
+Tapia folosește selectori semantici și `accessibilityIdentifier` stabil pentru
+controalele critice. Îl rulăm într-un Simulator izolat, cu conturi/date non-production,
+commit revizuit fixat și aprobări restrânse. Păstrăm XCUITest pentru suitele de regresie
+și CI. Un flow Tapia reușit demonstrează numai interacțiunea observată pe build-ul și
+Simulatorul declarat; nu acordă approval și nu demonstrează distribuția sau producția.
+Ghidul operațional se află în `docs/tooling/TapiaMCPGuide.md`.
+
 ---
 
 ## 12. Aprobări și RACI [DLV-012]
@@ -574,7 +593,8 @@ Checklist-ul `ReleaseAndProductionVerificationChecklist.md` este forma executabi
 
 Verificarea folosește build-ul distribuit în environment-ul declarat. Un debug build
 local poate demonstra implementarea, dar nu poate demonstra signing, configuration,
-distribution, flags sau dependențele de producție.
+distribution, flags sau dependențele de producție. Același lucru este valabil pentru
+un flow reușit în Tapia, Simulator, preview sau XCUITest local.
 
 ### Dovezi minime proaspete
 
@@ -690,6 +710,7 @@ Un repo pregătit pentru acest loop oferă:
 AGENTS.md
 Makefile
 tooling/skills.yml
+tooling/tools.yml
 skills.lock
 delivery/
   schema/delivery.schema.json
@@ -706,6 +727,7 @@ scripts/
 - cum se accesează design context;
 - cum se validează Delivery Packet-ul;
 - ce skills/capabilități sunt instalate;
+- ce MCP/tool capabilities sunt active, condițiile și fallback-urile lor;
 - ce acțiuni sunt protejate;
 - unde se găsesc CI, release și telemetry;
 - deviațiile locale și ADR-urile lor.

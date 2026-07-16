@@ -127,6 +127,7 @@ docs/
 scripts/
 tooling/
   skills.yml
+  tools.yml
 skills.lock                   # when supported by the skill distribution system
 AGENTS.md
 Makefile
@@ -506,6 +507,31 @@ When an applicable required skill is unavailable:
 3. do not invent a conflicting local convention;
 4. record the gap in the handoff and fix the skill installation separately.
 
+### Tool capability map [ARCH-015]
+
+Skills encode reusable working guidance. Tools expose executable capabilities. Keep
+them separate: repositories declare tools in `tooling/tools.yml`, while `AGENTS.md`
+maps the declared capabilities to commands and runtime configuration.
+
+Baseline adoption:
+
+| Capability | Implementation | Adoption | Scope |
+|---|---|---|---|
+| `apple/xcode-automation` | Xcode MCP or the supported Xcode automation interface | Recommended | Build, tests, diagnostics, previews, Simulator/device operations supported by Xcode |
+| `apple/ios-simulator-automation` | Tapia MCP | Recommended/conditional | Agent-heavy semantic UI interaction, accessibility-tree inspection, screenshots, and repeatable local Simulator flows |
+
+Adopt Tapia when agents must repeatedly exercise runtime flows or capture evidence in
+iOS Simulator. Pin the reviewed commit in `tooling/tools.yml`, run its health check,
+prefer stable accessibility identifiers, and limit automation to an isolated Simulator
+session with non-production accounts and data. Do not grant broad unattended command
+approval.
+
+Tapia complements rather than replaces XCUITest, `xcodebuild`, Xcode MCP, real-device
+testing, CI, signing/distribution checks, or production verification. Its flow result
+proves only the declared local Simulator build, configuration, device, and interaction.
+If Tapia is unavailable or unsuitable, use XCUITest, `simctl`/`idb`, or documented
+manual verification and report the reduced evidence level.
+
 ## TCA alternative [ARCH-003]
 
 Choose TCA at project start or through an approved ADR/migration plan when the app has
@@ -566,6 +592,7 @@ Before declaring a change complete:
 - live dependencies are wired explicitly
 - build succeeds with the documented command
 - relevant unit/integration/UI tests pass
+- Simulator automation evidence identifies the build, configuration, destination, and flow when used
 - important previews compile
 - loading, failure, cancellation, and empty states were considered
 - accessibility and localization were considered

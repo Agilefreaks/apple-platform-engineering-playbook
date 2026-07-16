@@ -1,0 +1,55 @@
+schema_version: "0.1"
+
+capabilities:
+  apple/xcode-automation:
+    adoption: recommended
+    implementation:
+      name: xcode-mcp
+      kind: mcp
+      source: https://developer.apple.com/documentation/xcode/giving-external-agents-access-to-xcode
+      version: selected-Xcode
+      revision: null
+      command: xcrun mcpbridge
+    scope:
+      - local_development
+      - simulator
+      - real_device
+    recommended_when:
+      - External coding agents build, inspect, or modify the open Xcode project.
+    limitations:
+      - Requires the project to be open in Xcode and external-agent access enabled.
+    guardrails:
+      - Use the Xcode version and project declared in AGENTS.md.
+      - Signing, entitlement, certificate, and release actions remain protected.
+    fallbacks:
+      - Repository Makefile commands and xcodebuild.
+
+  apple/ios-simulator-automation:
+    adoption: recommended_conditional
+    implementation:
+      name: tapia-mcp
+      kind: mcp
+      source: github://Agilefreaks/tapia-mcp
+      version: "0.2.0"
+      revision: e1defb92367a5f55ef28e3d8b414dc8b7b64b04f
+      command: tapia-mcp
+    scope:
+      - local_development
+      - simulator
+    recommended_when:
+      - Coding agents implement or verify material application UI.
+      - Critical simulator flows are repeated during vertical-slice development.
+      - The delivery item requires inspectable local runtime evidence.
+    limitations:
+      - Simulator evidence does not verify a real device or distributed build.
+      - System overlays may not appear in the application accessibility tree.
+      - Recorded flows drift when screen anchors, identifiers, or behavior change.
+    guardrails:
+      - Use only non-production environments, test accounts, and synthetic data.
+      - Prefer accessibilityIdentifier selectors over labels or coordinates.
+      - Auto-accept is allowed only for a bounded simulator-only session.
+      - Do not treat screenshots or flow success as PRODUCTION_VERIFIED or DELIVERED.
+    fallbacks:
+      - XCUITest for durable regression checks.
+      - xcrun simctl and idb for diagnostics and recovery.
+      - Manual simulator verification when the MCP capability is unavailable.

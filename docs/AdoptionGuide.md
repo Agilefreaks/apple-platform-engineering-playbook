@@ -49,6 +49,8 @@ manually. Replace all placeholders:
 ~~~text
 AGENTS.md
 tooling/skills.yml
+tooling/tools.yml
+tooling/examples/tapia/
 docs/adr/0000-template.md
 ~~~
 
@@ -104,6 +106,27 @@ distribution system supports locking.
 A missing skill is a tooling gap, not permission to ignore the corresponding ARCH or
 DLV rule. Use the documented standard/checklist as the manual fallback.
 
+## 5.1 Adopt executable tool capabilities
+
+Start from `templates/project/tooling/tools.yml`. Keep this manifest separate from
+skills: it records executable interfaces, reviewed revisions, scope, guardrails, and
+fallbacks.
+
+- Adopt Xcode automation as the recommended baseline where the selected Xcode/runtime
+  exposes it.
+- Adopt Tapia MCP conditionally for agent-heavy local Simulator flows, semantic UI
+  interaction, accessibility inspection, and evidence capture.
+- Do not activate Tapia merely because its example is present. Review the pinned
+  revision, install prerequisites, run `./scripts/tapia-doctor` from its source
+  checkout, and copy
+  `tooling/examples/tapia/mcp.example.json` into the agent runtime configuration only
+  after project approval.
+- Keep XCUITest for stable regression coverage and CI; use real-device and distributed
+  verification for the gates that require them.
+
+The bootstrap copies inactive Tapia examples, not an active `.mcp.json`. See
+`docs/tooling/TapiaMCPGuide.md` for the adoption conditions and safety model.
+
 ## 6. Adopt delivery artifacts
 
 Place the schema and selected templates in the new repository:
@@ -130,7 +153,7 @@ For each item:
 Recommended baseline:
 
 - link this repository as the canonical policy source;
-- vendor the schema, templates, and project-specific AGENTS/skill configuration;
+- vendor the schemas, templates, and project-specific AGENTS/skill/tool configuration;
 - record the upstream tag/commit in the project;
 - upgrade through a deliberate pull request with validation and migration notes.
 
@@ -144,6 +167,7 @@ A project is ready for its first feature when all are true:
 - project facts and owners are recorded;
 - the app builds and launches from a clean checkout;
 - test, lint, format, runtime, and delivery validation commands exist;
+- required and conditional skills/tools are declared, with Tapia enabled only when its adoption conditions apply;
 - environments and signing responsibilities are explicit;
 - privacy, security, analytics, observability, release, and rollback owners exist;
 - the project has adopted a specific playbook revision;

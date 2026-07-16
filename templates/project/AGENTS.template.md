@@ -75,6 +75,22 @@ Canonical requirements are in `tooling/skills.yml`. Map them to the installed ru
 Add conditional mappings only when that work is in scope. A missing skill uses the
 standard/checklist as manual fallback and is reported as a tooling gap.
 
+## Tool capabilities
+
+Canonical declarations are in `tooling/tools.yml`. Record the runtime mapping and
+enable only capabilities whose adoption conditions apply:
+
+| Capability | Runtime implementation | Adoption | Health/setup command |
+|---|---|---|---|
+| `apple/xcode-automation` | `<XCODE_MCP_OR_SUPPORTED_INTERFACE>` | Recommended | `<COMMAND>` |
+| `apple/ios-simulator-automation` | Tapia MCP | Recommended/conditional | `<TAPIA_SOURCE_CLONE>/scripts/tapia-doctor` |
+
+When Tapia is enabled, pin the reviewed revision, use stable
+`accessibilityIdentifier` values, isolate the Simulator from production accounts/data,
+and keep command approval narrow. A Tapia flow is local Simulator evidence only; it
+does not replace XCUITest, CI, real-device/distributed-build checks, or human approval.
+If unavailable, use a declared fallback and report the reduced evidence level.
+
 ## Protected actions
 
 Agents require explicit human authority before:

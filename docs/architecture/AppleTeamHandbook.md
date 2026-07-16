@@ -371,7 +371,8 @@ MyApp/
 │   └── adr/
 ├── scripts/
 ├── tooling/
-│   └── skills.yml
+│   ├── skills.yml
+│   └── tools.yml
 ├── skills.lock                   # dacă distribuția suportă lock
 ├── AGENTS.md
 └── Makefile
@@ -1314,7 +1315,39 @@ apple/swift-concurrency         <tool-specific name>       <resolved>
 apple/swift-testing             <tool-specific name>       <resolved>
 ~~~
 
-### 14.4 Precedență și lipsa unui skill
+### 14.4 MCP și Tool Capability Map
+
+Un skill explică metoda de lucru; un MCP sau alt tool oferă acțiuni executabile. Nu
+punem numele unui MCP în `tooling/skills.yml` și nu presupunem că instalarea unui tool
+înlocuiește standardul, testele sau aprobările.
+
+Repo-ul declară capabilitățile în `tooling/tools.yml`:
+
+| Capability | Implementare implicită | Adoptare | Când o folosim |
+|---|---|---|---|
+| `apple/xcode-automation` | Xcode MCP / interfața Xcode suportată | Recommended | Build, tests, diagnostics și operații de runtime suportate de Xcode |
+| `apple/ios-simulator-automation` | Tapia MCP | Recommended/conditional | Agenții exercită frecvent flow-uri UI în Simulator, inspectează accessibility tree sau capturează dovezi locale repetabile |
+
+Tapia este condițional fiindcă aduce valoare mare într-un workflow agent-heavy, dar
+nu este necesar într-un proiect unde XCUITest și verificarea manuală acoperă suficient
+runtime-ul. Proiectul care îl adoptă:
+
+- fixează versiunea și commit-ul revizuit în `tooling/tools.yml`;
+- rulează doctor/health check înainte să se bazeze pe el;
+- adaugă `accessibilityIdentifier` stabil pentru controalele critice;
+- folosește conturi și date non-production într-un Simulator izolat;
+- limitează auto-approval la comenzile necesare sesiunii;
+- păstrează XCUITest pentru regresiile stabile și CI;
+- notează build-ul, configurația, device-ul, flow-ul și timestamp-ul dovezii.
+
+Un flow Tapia trecut demonstrează comportamentul observat în Simulatorul declarat. Nu
+demonstrează comportamentul pe device real, signing, distribuție, configurație de
+release sau producție. Dacă Tapia lipsește, fallback-ul este XCUITest, `simctl`/`idb`
+sau verificare manuală documentată, cu nivelul de dovadă raportat explicit.
+
+Ghidul de instalare și operare se află în `docs/tooling/TapiaMCPGuide.md`.
+
+### 14.5 Precedență și lipsa unui skill
 
 Dacă un skill și standardul se contrazic:
 
@@ -1334,7 +1367,7 @@ Dacă skill-ul obligatoriu nu este disponibil:
 Lipsa unui skill nu blochează automat un fix urgent, dar reduce nivelul de verificare
 pe care îl putem pretinde.
 
-### 14.5 Reguli operaționale pentru agenți
+### 14.6 Reguli operaționale pentru agenți
 
 Un agent:
 
@@ -1349,12 +1382,13 @@ Un agent:
 - nu declară runtime/producție verificată doar pentru că build-ul local trece;
 - documentează deviația arhitecturală prin ADR.
 
-### 14.6 Definition of done pentru o schimbare
+### 14.7 Definition of done pentru o schimbare
 
 - feature-ul respectă graful de dependențe;
 - AppContainer face wiring-ul live explicit;
 - build-ul trece cu comanda repo-ului;
 - testele relevante trec;
+- dovezile de Simulator declară build-ul, configurația, device-ul și flow-ul;
 - previews importante compilează;
 - success, empty, failure, retry și cancellation au fost evaluate;
 - accesibilitatea și localizarea au fost evaluate;
@@ -1631,6 +1665,9 @@ ADR/RFC scurt care include:
 
 ### Changelog v2.1
 
+- a separat skills-urile de tool capabilities prin `tooling/tools.yml`;
+- a introdus Tapia MCP ca `recommended/conditional` pentru automatizarea Simulatorului;
+- a definit limitele dovezilor Tapia și fallback-urile XCUITest, simctl/idb și manual;
 - a introdus Skill Map-ul canonic task-to-skill;
 - a separat ID-urile canonice de numele specifice Codex/Claude/Kiro;
 - a adăugat tooling/skills.yml și skills.lock;

@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "tapia": {
+      "command": "tapia-mcp"
+    }
+  }
+}
