@@ -2,7 +2,7 @@
 
 ## Test identity
 
-| Câmp | Valoare |
+| Field | Value |
 |---|---|
 | Delivery revision | |
 | Build/commit under test | |
@@ -23,9 +23,9 @@
 |---|---|---|---|---|---|
 | T-01 | | | | Unit / Integration / UI / Runtime | |
 
-## State și failure matrix
+## State and failure matrix
 
-| Categorie | Scenariu | Injection/setup | Expected recovery | Acceptance/risk | Status |
+| Category | Scenario | Injection/setup | Expected recovery | Acceptance/risk | Status |
 |---|---|---|---|---|---|
 | Loading | | | | | |
 | Empty/partial | | | | | |
@@ -37,7 +37,7 @@
 | Background/resume | | | | | |
 | Migration/upgrade | | | | | |
 
-## UI și design verification
+## UI and design verification
 
 | Screen/state | Device/layout | Appearance | Dynamic Type | Figma node/version | Evidence/status |
 |---|---|---|---|---|---|
@@ -46,23 +46,23 @@
 ## Accessibility
 
 - [ ] VoiceOver semantics/order/actions.
-- [ ] Dynamic Type și text expansion.
-- [ ] Contrast și non-color cues.
+- [ ] Dynamic Type and text expansion.
+- [ ] Contrast and non-color cues.
 - [ ] Focus/keyboard/tvOS behavior.
 - [ ] Reduce Motion.
-- [ ] Touch targets și alternative pentru gestures.
+- [ ] Touch targets and alternatives for gestures.
 
 ## Localization
 
-- [ ] String Catalog și translator context.
+- [ ] String Catalog and translator context.
 - [ ] Locale-sensitive values.
 - [ ] Long text/truncation/wrapping.
-- [ ] RTL, dacă este suportat.
-- [ ] VoiceOver pronunciation relevantă.
+- [ ] RTL, if supported.
+- [ ] Relevant VoiceOver pronunciation.
 
 ## Non-functional
 
-| Zonă | Budget/guardrail | Metodă | Baseline | Result/evidence |
+| Area | Budget/guardrail | Method | Baseline | Result/evidence |
 |---|---|---|---|---|
 | Launch/responsiveness | | | | |
 | Memory/scrolling | | | | |
@@ -71,7 +71,7 @@
 | Privacy/security | | | | |
 | Analytics ingestion | | | | |
 
-## Commands și reproducibility
+## Commands and reproducibility
 
 | Check | Command/workflow | Toolchain/destination | Result link |
 |---|---|---|---|
@@ -81,7 +81,7 @@
 | UI | | | |
 | Runtime | | | |
 
-## Defects și disposition
+## Defects and disposition
 
 | Defect | Severity | Acceptance/risk | Owner | Disposition | Release blocker |
 |---|---|---|---|---|---:|
@@ -89,9 +89,9 @@
 
 ## Exit criteria
 
-- [ ] Toate must acceptance criteria sunt passed.
-- [ ] Nu există P0/P1 sau release blocker.
-- [ ] Quality areas sunt passed ori au `not applicable`/waiver valid.
-- [ ] Dovezile identifică build-ul, environment-ul, actorul și timpul.
-- [ ] Known limitations și follow-up sunt explicite.
-- [ ] QA/acceptance owner a înregistrat decizia.
+- [ ] All must acceptance criteria are passed.
+- [ ] There is no P0/P1 or release blocker.
+- [ ] Quality areas are passed or have a valid `not applicable`/waiver.
+- [ ] Evidence identifies the build, environment, actor, and time.
+- [ ] Known limitations and follow-up are explicit.
+- [ ] The QA/acceptance owner has recorded the decision.

@@ -1,11 +1,11 @@
 # Evidence Index — <DELIVERY-ID> <Title>
 
-Acest index nu copiază logs sau date sensibile. Leagă dovezi durabile și explică exact
-ce demonstrează fiecare.
+This index does not copy logs or sensitive data. It links durable evidence and explains
+exactly what each item demonstrates.
 
 ## Build identity
 
-| Câmp | Valoare |
+| Field | Value |
 |---|---|
 | Delivery revision | |
 | Bundle ID | |
@@ -17,7 +17,7 @@ ce demonstrează fiecare.
 
 ## Evidence register
 
-| ID | Kind | Acceptance/gate | Build/environment | Observed at | Observer | Link | Ce demonstrează | Limitări |
+| ID | Kind | Acceptance/gate | Build/environment | Observed at | Observer | Link | What it demonstrates | Limitations |
 |---|---|---|---|---|---|---|---|---|
 | EV-001 | Test / Screenshot / Video / Runtime / Telemetry / Analytics / Approval / Release | | | | | | | |
 
@@ -53,15 +53,15 @@ ce demonstrează fiecare.
 
 ## Missing observability
 
-| Gap | Impact asupra afirmației | Minimum safe change | Owner | Follow-up |
+| Gap | Impact on the claim | Minimum safe change | Owner | Follow-up |
 |---|---|---|---|---|
 | | | | | |
 
-## Integritate și privacy
+## Integrity and privacy
 
-- [ ] Fiecare dovadă identifică build/environment/timestamp unde este relevant.
-- [ ] Dovada este proaspătă pentru gate-ul pe care îl susține.
-- [ ] Nu există secrete, tokens, credentials sau PII neautorizat.
-- [ ] Screenshot-urile și video-urile folosesc cont/test data sigură.
-- [ ] Lipsa traficului este `not exercised`, nu `healthy`.
-- [ ] Linkurile sunt accesibile reviewerilor autorizați.
+- [ ] Every piece of evidence identifies build/environment/timestamp where relevant.
+- [ ] The evidence is fresh for the gate it supports.
+- [ ] There are no secrets, tokens, credentials, or unauthorized PII.
+- [ ] Screenshots and videos use safe account/test data.
+- [ ] Absence of traffic is `not exercised`, not `healthy`.
+- [ ] Links are accessible to authorized reviewers.

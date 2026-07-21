@@ -1,11 +1,11 @@
 # Requirements — <DELIVERY-ID> <Title>
 
-`delivery.yml` rămâne sursa statusului și a câmpurilor machine-readable. Acest fișier
-adaugă context numai când este necesar.
+`delivery.yml` remains the source of status and machine-readable fields. This file
+adds context only where necessary.
 
 ## Metadata
 
-| Câmp | Valoare |
+| Field | Value |
 |---|---|
 | Delivery ID / revision | |
 | Product owner | |
@@ -14,13 +14,13 @@ adaugă context numai când este necesar.
 | Source links + versions | |
 | Last approved at | |
 
-## Problemă
+## Problem
 
-Ce nu poate face utilizatorul/operațiunea astăzi? Ce dovadă avem?
+What can the user/operation not do today? What evidence do we have?
 
 ## Outcome
 
-Ce devine observabil adevărat după livrare?
+What becomes observably true after delivery?
 
 ## Scope
 
@@ -34,13 +34,13 @@ Ce devine observabil adevărat după livrare?
 
 ## Acceptance criteria
 
-| ID | Given / When / Then sau behavior observabil | Priority | Verification | Owner |
+| ID | Given / When / Then or observable behavior | Priority | Verification | Owner |
 |---|---|---|---|---|
 | AC-01 | | Must | | |
 
-## State și edge-case matrix
+## State and edge-case matrix
 
-| Situație | Comportament așteptat | Acceptance ID | UI/Figma state | Observability |
+| Situation | Expected behavior | Acceptance ID | UI/Figma state | Observability |
 |---|---|---|---|---|
 | Loading | | | | |
 | Empty | | | | |
@@ -52,43 +52,43 @@ Ce devine observabil adevărat după livrare?
 | Duplicate action | | | | |
 | Background/resume | | | | |
 
-Șterge rândurile neaplicabile numai după ce motivul este înregistrat în
-`delivery.yml` sau test plan.
+Delete non-applicable rows only after the reason is recorded in
+`delivery.yml` or the test plan.
 
-## Platform și distribuție
+## Platform and distribution
 
-- Platforme și minimum OS:
-- Device classes și orientations:
-- Locale:
+- Platforms and minimum OS:
+- Device classes and orientations:
+- Locales:
 - Account/permission/entitlement state:
 - Upgrade/backward-compatibility constraints:
-- Target audience și condiția exactă pentru Delivered:
+- Target audience and the exact condition for Delivered:
 
-## Date, privacy și security
+## Data, privacy, and security
 
-- Date citite/colectate/stocate/transmise:
-- Clasificare și retenție:
-- Consent și permissions:
+- Data read/collected/stored/transmitted:
+- Classification and retention:
+- Consent and permissions:
 - Auth/session/secrets:
 - Third-party SDK/API:
 - Privacy/Security/Legal review triggers:
 
-## Analytics și metrici
+## Analytics and metrics
 
-| Tip | Nume | Definiție | Target/guardrail | Sursă | Consent |
+| Type | Name | Definition | Target/guardrail | Source | Consent |
 |---|---|---|---|---|---|
 | Success | | | | | |
 | Guardrail | | | | | |
 
-## Dependențe și unknowns
+## Dependencies and unknowns
 
-| Tip | Întrebare/dependență | Owner | Due | Blocking | Status/decizie |
+| Type | Question/dependency | Owner | Due | Blocking | Status/decision |
 |---|---|---|---|---:|---|
 | | | | | | |
 
 ## Approval history
 
-| Revision | Rol | Actor | Decizie | Dată | Evidence/link |
+| Revision | Role | Actor | Decision | Date | Evidence/link |
 |---|---|---|---|---|---|
 | | Product | | | | |
 | | Design | | | | |

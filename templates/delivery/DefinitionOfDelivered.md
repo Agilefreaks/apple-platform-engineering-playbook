@@ -1,11 +1,11 @@
 # Definition of Delivered
 
-Acest checklist se completează după release și production verification. `MERGED`,
-`QA_ACCEPTED`, `RELEASE_CANDIDATE` sau `RELEASED` nu sunt sinonime cu `DELIVERED`.
+This checklist is completed after release and production verification. `MERGED`,
+`QA_ACCEPTED`, `RELEASE_CANDIDATE`, or `RELEASED` are not synonyms for `DELIVERED`.
 
-## Identitatea livrării
+## Delivery identity
 
-| Câmp | Valoare |
+| Field | Value |
 |---|---|
 | Delivery ID / revision | |
 | Target audience | |
@@ -17,85 +17,85 @@ Acest checklist se completează după release și production verification. `MERG
 | Released at | |
 | Production verification window | |
 
-## 1. Disponibilitate pentru audiență
+## 1. Availability to the audience
 
-- [ ] Build-ul/configurația este accesibilă target audience declarate.
-- [ ] Cohorta și procentul efectiv corespund planului aprobat.
-- [ ] Feature flags și prerequisites au valorile așteptate.
-- [ ] Signing, entitlements și environment configuration au fost confirmate.
-- [ ] Versiunea/build-ul observat este cel declarat, nu un build local sau anterior.
+- [ ] The build/configuration is accessible to the declared target audience.
+- [ ] The effective cohort and percentage match the approved plan.
+- [ ] Feature flags and prerequisites have the expected values.
+- [ ] Signing, entitlements, and environment configuration have been confirmed.
+- [ ] The observed version/build is the declared one, not a local or earlier build.
 
 ## 2. Acceptance
 
-- [ ] Fiecare `must` acceptance ID are rezultat `passed` și evidence.
-- [ ] Fiecare `should/could` incomplet are dispoziție aprobată și item legat.
-- [ ] Happy path a fost exercitat pe build-ul distribuit.
-- [ ] Failure/edge paths critice au fost verificate la nivelul potrivit.
-- [ ] Nu există diferențe nedeclarate între requirements, Figma și behavior.
-- [ ] Product a confirmat outcome-ul pentru audiența declarată.
+- [ ] Every `must` acceptance ID has a `passed` result and evidence.
+- [ ] Every incomplete `should/could` has an approved disposition and a linked item.
+- [ ] The happy path has been exercised on the distributed build.
+- [ ] Critical failure/edge paths have been verified at the appropriate level.
+- [ ] There are no undeclared differences between requirements, Figma, and behavior.
+- [ ] Product has confirmed the outcome for the declared audience.
 
 ## 3. Quality gates
 
 - [ ] Build/CI.
-- [ ] Unit/integration/UI tests aplicabile.
+- [ ] Applicable unit/integration/UI tests.
 - [ ] Runtime behavior.
-- [ ] Design parity și deviații aprobate.
+- [ ] Design parity and approved deviations.
 - [ ] Accessibility.
 - [ ] Localization.
-- [ ] Performance/energy/memory/network aplicabil.
-- [ ] Reliability/offline/retry/cancellation/migration aplicabil.
-- [ ] Privacy și data handling.
+- [ ] Performance/energy/memory/network, as applicable.
+- [ ] Reliability/offline/retry/cancellation/migration, as applicable.
+- [ ] Privacy and data handling.
 - [ ] Security/auth/permissions/secrets.
-- [ ] Analytics și consent.
+- [ ] Analytics and consent.
 - [ ] Distribution/install/upgrade.
 
-Pentru orice `not applicable` există motiv. Pentru orice waiver există approver,
-mitigation, expiry și follow-up.
+Every `not applicable` has a reason. Every waiver has an approver, mitigation,
+expiry, and follow-up.
 
 ## 4. Production verification
 
-- [ ] Install sau upgrade și launch au fost verificate pe device reprezentativ.
-- [ ] Critical path a fost exercitat proaspăt.
-- [ ] Backend/dependency requests relevante au outcome-ul așteptat.
-- [ ] Crash/error/performance signals au fost interogate pentru fereastra corectă.
-- [ ] Evenimentul analytics așteptat a fost generat și ingestia verificată, dacă există
-  consimțământ și este aplicabil.
-- [ ] Evidence include build, environment, actor și timestamp.
-- [ ] Datele nu provin exclusiv de la alt build sau înainte de release.
-- [ ] Fereastra are trafic/exercițiu valid; altfel itemul este marcat `not exercised`.
+- [ ] Install or upgrade and launch have been verified on a representative device.
+- [ ] The critical path has been freshly exercised.
+- [ ] Relevant backend/dependency requests have the expected outcome.
+- [ ] Crash/error/performance signals have been queried for the correct window.
+- [ ] The expected analytics event was generated and its ingestion verified, where
+  consent exists and it is applicable.
+- [ ] Evidence includes build, environment, actor, and timestamp.
+- [ ] The data does not come exclusively from another build or from before the release.
+- [ ] The window has valid traffic/exercise; otherwise the item is marked `not exercised`.
 
-## 5. Risk și operare
+## 5. Risk and operations
 
-- [ ] Nu există P0/P1 deschis.
-- [ ] Nu există release blocker deschis.
-- [ ] Nu există waiver expirat.
-- [ ] Known limitations sunt vizibile Product, QA, Support și Release.
-- [ ] Rollback/mitigation rămâne executabil și are owner.
-- [ ] Dashboards/queries și incident path sunt legate.
-- [ ] Support/release notes sunt actualizate când sunt necesare.
+- [ ] There is no open P0/P1.
+- [ ] There is no open release blocker.
+- [ ] There is no expired waiver.
+- [ ] Known limitations are visible to Product, QA, Support, and Release.
+- [ ] Rollback/mitigation remains executable and has an owner.
+- [ ] Dashboards/queries and the incident path are linked.
+- [ ] Support/release notes are updated where needed.
 
-## 6. Integritatea Delivery Packet-ului
+## 6. Delivery Packet integrity
 
-- [ ] `delivery.yml` validează contra schemei curente.
-- [ ] `current_status` nu a fost avansat automat fără approvals.
-- [ ] Status history conține actor, timp, reason și evidence.
-- [ ] PR, CI, release console și telemetry links sunt actuale.
-- [ ] Nicio dovadă nu conține secret sau PII neautorizat.
-- [ ] Follow-up-urile și defectele au itemuri legate.
+- [ ] `delivery.yml` validates against the current schema.
+- [ ] `current_status` was not advanced automatically without approvals.
+- [ ] Status history contains actor, time, reason, and evidence.
+- [ ] PR, CI, release console, and telemetry links are current.
+- [ ] No piece of evidence contains a secret or unauthorized PII.
+- [ ] Follow-ups and defects have linked items.
 
-## Aprobări finale
+## Final approvals
 
-| Rol | Decizie | Actor | Dată | Evidence/link |
+| Role | Decision | Actor | Date | Evidence/link |
 |---|---|---|---|---|
 | Runtime verifier | Verified / Not verified | | | |
 | QA / Acceptance owner | Approved / Rejected / Conditional | | | |
 | Release owner | Approved / Rejected / Conditional | | | |
 | Product / Delivery owner | Approved / Rejected / Conditional | | | |
 
-**Decizie finală:** `DELIVERED / REMAINS PRODUCTION_VERIFIED / REMAINS RELEASED / REOPENED`
+**Final decision:** `DELIVERED / REMAINS PRODUCTION_VERIFIED / REMAINS RELEASED / REOPENED`
 
-**Scope-ul exact al afirmației Delivered:**
+**Exact scope of the Delivered claim:**
 
-**Limitări și follow-up:**
+**Limitations and follow-up:**
 
 ---
