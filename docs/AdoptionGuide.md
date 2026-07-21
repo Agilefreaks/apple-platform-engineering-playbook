@@ -48,11 +48,16 @@ manually. Replace all placeholders:
 
 ~~~text
 AGENTS.md
+CLAUDE.md
 tooling/skills.yml
 tooling/tools.yml
 tooling/examples/tapia/
 docs/adr/0000-template.md
 ~~~
+
+`CLAUDE.md` exists because Claude Code loads only `CLAUDE.md` and ignores `AGENTS.md`;
+its first line, `@AGENTS.md`, imports the contract at session start so `AGENTS.md`
+stays the single source of truth. Keep only Claude-specific workflow notes in it.
 
 Then create the project structure required by ARCH v2.1:
 

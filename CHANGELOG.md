@@ -2,6 +2,14 @@
 
 All notable changes to the complete playbook package are recorded here.
 
+## 0.2.2 — 2026-07-21
+
+- Added `templates/project/CLAUDE.template.md` and taught the bootstrap to install it
+  as `CLAUDE.md`: Claude Code loads only `CLAUDE.md`, so the template's `@AGENTS.md`
+  first line imports the contract while `AGENTS.md` stays the single source of truth.
+- Bootstrap now stamps `.apple-playbook-version` with the released package version
+  (was stale at `0.2.0`).
+
 ## 0.2.1 — 2026-07-21
 
 - Translated all delivery templates, the Architecture Handbook, and the Delivery Loop
