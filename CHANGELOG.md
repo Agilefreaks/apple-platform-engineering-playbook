@@ -2,6 +2,14 @@
 
 All notable changes to the complete playbook package are recorded here.
 
+## 0.2.1 — 2026-07-21
+
+- Translated all delivery templates, the Architecture Handbook, and the Delivery Loop
+  Handbook to English; ARCH/DLV decision IDs, tables, and fences unchanged.
+- Recorded the English-only repository policy in CONTRIBUTING (Language section).
+- Added the New Project Intake Checklist template mapping 1:1 to the Adoption Guide
+  project facts, AGENTS.md, and the Definition of Ready.
+
 ## 0.2.0 — 2026-07-16
 
 - Added `tooling/tools.yml` and its JSON Schema for executable capability declarations.
