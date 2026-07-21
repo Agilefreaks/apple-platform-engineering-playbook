@@ -1,207 +1,207 @@
-# Cum construim aplicații Apple — v2
+# How We Build Apple Apps — v2
 
-Standardul echipei pentru iOS, iPadOS și tvOS
+The team standard for iOS, iPadOS, and tvOS
 
-| Metadata | Valoare |
+| Metadata | Value |
 |---|---|
-| Status | Propunere v2.1 — pregătită pentru review de echipă |
-| Versiune | 2.1 |
+| Status | Proposed v2.1 — ready for team review |
+| Version | 2.1 |
 | Owner | Apple Platform Team |
-| Audiență | Developeri, tech leads, QA și agenți AI |
-| Review | Minimum de două ori pe an și după schimbări majore Swift/Xcode |
+| Audience | Developers, tech leads, QA, and AI agents |
+| Review | At least twice per year and after a major Swift/Xcode change |
 | Companion | AppleTeamArchitectureStandard.md |
 
-## Cum folosim documentele
+## How we use the documents
 
-Acest handbook este **sursa canonică pentru oameni**: explică deciziile, motivele,
-excepțiile și exemplele. AppleTeamArchitectureStandard.md este forma operațională,
-compactă, pentru agenți și code review.
+This handbook is **the canonical source for humans**: it explains the decisions, the
+reasoning, the exceptions, and the examples. AppleTeamArchitectureStandard.md is the
+compact operational form for agents and code review.
 
-Fiecare decizie are un ID ARCH. Aceleași ID-uri trebuie să existe în ambele documente.
-Până când varianta compactă este generată automat, orice modificare de decizie:
+Every decision has an ARCH ID. The same IDs must exist in both documents.
+Until the compact variant is generated automatically, any decision change:
 
-1. actualizează handbook-ul;
-2. actualizează standardul pentru agenți în același pull request;
-3. păstrează același ID ARCH;
-4. actualizează changelog-ul;
-5. trece verificarea CI a setului de ID-uri.
+1. updates the handbook;
+2. updates the agent-facing standard in the same pull request;
+3. keeps the same ARCH ID;
+4. updates the changelog;
+5. passes the CI check on the ID set.
 
-Un repo nu copiază skills sau reguli dintr-un proiect ales la întâmplare. Tooling-ul și
-skills-urile vin dintr-o sursă versionată la nivel de companie, iar repo-ul înregistrează
-versiunea instalată.
+A repo does not copy skills or rules from some randomly chosen project. Tooling and
+skills come from a company-level versioned source, and the repo records the installed
+version.
 
-## Ordinea autorității [ARCH-001]
+## Order of authority [ARCH-001]
 
-Când două reguli par să se contrazică, ordinea este:
+When two rules appear to conflict, the order is:
 
-1. cerința curentă și constrângerile produsului;
-2. un ADR aprobat explicit în repo;
-3. sumarul deviațiilor din AGENTS.md;
-4. acest standard;
-5. convenția legacy aflată în vecinătatea codului.
+1. the current requirement and the product constraints;
+2. an ADR explicitly approved in the repo;
+3. the deviation summary in AGENTS.md;
+4. this standard;
+5. the legacy convention in the code's immediate vicinity.
 
-AGENTS.md rămâne scurt. El spune **ce diferă** și trimite la un ADR din docs/adr/ care
-explică de ce, cine deține decizia și când poate fi reevaluată.
+AGENTS.md stays short. It states **what differs** and points to an ADR in docs/adr/ that
+explains why, who owns the decision, and when it can be re-evaluated.
 
-O deviație nedocumentată este un bug de proces. În același timp, standardul nu este o
-scuză pentru a transforma un task mic într-un refactor amplu. Adoptăm regulile la
-cusături curate — feature, flow, serviciu sau target întreg — nu într-o jumătate de
-ecran.
+An undocumented deviation is a process bug. At the same time, the standard is not an
+excuse to turn a small task into a sweeping refactor. We adopt the rules at clean
+seams — a feature, a flow, a service, or a whole target — not in one half of a
+screen.
 
 ---
 
-## 0. Deciziile pe scurt
+## 0. The decisions at a glance
 
-| ID | Zonă | Default |
+| ID | Area | Default |
 |---|---|---|
-| ARCH-001 | Aplicabilitate | Greenfield aplică v2. Legacy adoptă la cusături explicite; deviațiile au ADR. |
-| ARCH-002 | Limbaj și UI | Swift 6 + SwiftUI pentru cod nou. UIKit rămâne la margini și în legacy. |
-| ARCH-003 | Arhitectură | Feature-first modular MVVM/R. TCA este alternativă aprobată per proiect. |
-| ARCH-004 | Stare | Ownership local-first, Observation pe OS 17+, ViewModel opțional, stări explicite. |
-| ARCH-005 | Navigație | Rute tipizate și Router semantic; array tipizat implicit, NavigationPath doar eterogen. |
-| ARCH-006 | DI | Injecție explicită prin init; AppContainer este composition root; fără default live ascuns. |
-| ARCH-007 | Date | Core oferă transport; fiecare feature își deține clientul mic și maparea. |
-| ARCH-008 | Persistență | UserDefaults pentru preferințe, Keychain pentru credențiale, SwiftData pentru date interogabile. |
-| ARCH-009 | Configurare | Mediul este valoare injectată din xcconfig; config-ul din aplicație nu este secret. |
-| ARCH-010 | Structură | Modular monolith și buildable folders; SPM doar cu motiv măsurabil. |
-| ARCH-011 | Localizare | String Catalogs, literale engleze în views, LocalizedStringResource în afara lor. |
-| ARCH-012 | Analytics și logging | Evenimente tipizate, providerii în spatele facade-ului, os.Logger pentru diagnostic. |
-| ARCH-013 | Testare și CI | Piramidă de teste, Swift Testing, XCTest UI, snapshots selective, comenzi deterministe. |
-| ARCH-014 | Design și accesibilitate | Tokens în assets, DesignSystem reutilizabil, Dynamic Type, VoiceOver și input per platformă. |
-| ARCH-015 | Tooling pentru agenți | Interfață stabilă build/test/format/lint; fără editare manuală project.pbxproj. |
-| ARCH-016 | Third-party | Apple-native first; owner, licență, securitate, versiune și ADR când schimbă arhitectura. |
-| ARCH-017 | Legacy | Migrare în vertical slices, în ordine de dependențe, fără rescrieri speculative. |
+| ARCH-001 | Applicability | Greenfield applies v2. Legacy adopts at explicit seams; deviations have ADRs. |
+| ARCH-002 | Language and UI | Swift 6 + SwiftUI for new code. UIKit stays at the edges and in legacy. |
+| ARCH-003 | Architecture | Feature-first modular MVVM/R. TCA is an approved per-project alternative. |
+| ARCH-004 | State | Local-first ownership, Observation on OS 17+, optional ViewModel, explicit states. |
+| ARCH-005 | Navigation | Typed routes and a semantic Router; typed array by default, NavigationPath only for heterogeneous stacks. |
+| ARCH-006 | DI | Explicit init injection; AppContainer is the composition root; no hidden live default. |
+| ARCH-007 | Data | Core provides transport; each feature owns its small client and its mapping. |
+| ARCH-008 | Persistence | UserDefaults for preferences, Keychain for credentials, SwiftData for queryable data. |
+| ARCH-009 | Configuration | The environment is a value injected from xcconfig; in-app config is not secret. |
+| ARCH-010 | Structure | Modular monolith and buildable folders; SPM only with a measurable reason. |
+| ARCH-011 | Localization | String Catalogs, English literals in views, LocalizedStringResource outside them. |
+| ARCH-012 | Analytics and logging | Typed events, providers behind the facade, os.Logger for diagnostics. |
+| ARCH-013 | Testing and CI | Test pyramid, Swift Testing, XCTest UI, selective snapshots, deterministic commands. |
+| ARCH-014 | Design and accessibility | Tokens in assets, reusable DesignSystem, Dynamic Type, VoiceOver, and per-platform input. |
+| ARCH-015 | Agent tooling | Stable build/test/format/lint interface; no manual project.pbxproj edits. |
+| ARCH-016 | Third-party | Apple-native first; owner, license, security, version, and an ADR when it changes the architecture. |
+| ARCH-017 | Legacy | Migrate in vertical slices, in dependency order, with no speculative rewrites. |
 
 ---
 
-## 1. Aplicabilitate și baseline tehnic [ARCH-001] [ARCH-002]
+## 1. Applicability and technical baseline [ARCH-001] [ARCH-002]
 
-### 1.1 Proiecte greenfield
+### 1.1 Greenfield projects
 
-Un proiect nou pornește cu:
+A new project starts with:
 
 - Swift 6;
 - complete concurrency checking;
-- SwiftUI pentru UI;
-- Observation pentru starea de tip referință;
-- async/await pentru operații asincrone;
-- Swift Testing pentru unit și integration tests;
-- XCTest pentru UI tests;
-- un deployment target de minimum iOS/iPadOS/tvOS 17, pentru a putea folosi
-  Observation nativ.
+- SwiftUI for the UI;
+- Observation for reference-type state;
+- async/await for asynchronous operations;
+- Swift Testing for unit and integration tests;
+- XCTest for UI tests;
+- a deployment target of at least iOS/iPadOS/tvOS 17, so that native Observation
+  is available.
 
-Produsul poate alege un deployment target mai mare. Aceasta este o decizie de produs
-și distribuție, nu una pe care arhitectura o ghicește.
+The product may choose a higher deployment target. That is a product and distribution
+decision, not one the architecture guesses.
 
-### 1.2 Proiecte legacy sub OS 17
+### 1.2 Legacy projects below OS 17
 
-Dacă targetul minim nu suportă Observation, ObservableObject, Published, StateObject
-și ObservedObject rămân permise **în flow-urile legacy complete**. Nu introducem un
-backport improvizat și nu amestecăm mecanismele în același ecran.
+If the minimum target does not support Observation, then ObservableObject, Published,
+StateObject, and ObservedObject remain allowed **inside complete legacy flows**. We do
+not introduce an improvised backport, and we do not mix the mechanisms in the same screen.
 
-Când targetul crește:
+When the target rises:
 
-1. migrăm un flow complet;
-2. actualizăm testele;
-3. eliminăm vechiul mecanism din acel flow;
-4. abia apoi trecem la următorul.
+1. migrate one complete flow;
+2. update the tests;
+3. remove the old mechanism from that flow;
+4. only then move on to the next one.
 
 ### 1.3 UIKit
 
-SwiftUI este default pentru tot ce este nou, nu o interdicție dogmatică asupra UIKit.
-UIKit rămâne valid:
+SwiftUI is the default for everything new, not a dogmatic ban on UIKit.
+UIKit remains valid:
 
-- în ecrane legacy funcționale;
-- la integrarea cu framework-uri fără echivalent SwiftUI matur;
-- pentru wrappers locale prin UIViewRepresentable/UIViewControllerRepresentable;
-- când un ADR și măsurători arată că SwiftUI nu satisface cerința.
+- in working legacy screens;
+- when integrating with frameworks that have no mature SwiftUI equivalent;
+- for local wrappers via UIViewRepresentable/UIViewControllerRepresentable;
+- when an ADR and measurements show that SwiftUI does not meet the requirement.
 
-Wrapper-ul izolează UIKit la margine. Business logic nu migrează în coordinator,
-delegate sau view controller doar pentru că UI-ul este UIKit.
+The wrapper isolates UIKit at the edge. Business logic does not migrate into a
+coordinator, delegate, or view controller just because the UI is UIKit.
 
 ---
 
-## 2. Arhitectura default: Feature-first MVVM/R [ARCH-003]
+## 2. The default architecture: Feature-first MVVM/R [ARCH-003]
 
-MVVM/R înseamnă Model, View, ViewModel și Router, dar nu înseamnă câte patru fișiere
-pentru fiecare componentă. Rolurile există numai când rezolvă o problemă reală.
+MVVM/R stands for Model, View, ViewModel, and Router, but it does not mean four files
+for every component. The roles exist only when they solve a real problem.
 
-### 2.1 Rolurile
+### 2.1 The roles
 
 **Model**
 
-- value type, de regulă Identifiable și Equatable când identitatea sau comparația
-  chiar sunt necesare;
-- numit după concept: HomeItem, EpisodeCard, AccountSummary;
-- nu folosim fișiere generice HomeModel.swift doar ca sertar pentru tipuri fără legătură;
-- un DTO, un model SwiftData și un model afișat nu devin automat trei tipuri diferite;
-  separarea apare doar la o graniță reală.
+- a value type, usually Identifiable and Equatable when identity or comparison
+  are actually needed;
+- named after the concept: HomeItem, EpisodeCard, AccountSummary;
+- no generic HomeModel.swift files used merely as a drawer for unrelated types;
+- a DTO, a SwiftData model, and a displayed model do not automatically become three
+  different types; the separation appears only at a real boundary.
 
 **View**
 
-- descrie UI-ul;
-- citește stare;
-- trimite intenția utilizatorului prin metode, closures sau bindings;
-- deține layout-ul adaptiv și starea vizuală locală;
-- nu face networking, persistență sau parsing de deep link.
+- describes the UI;
+- reads state;
+- sends the user's intent through methods, closures, or bindings;
+- owns the adaptive layout and local visual state;
+- does no networking, persistence, or deep-link parsing.
 
 **ViewModel**
 
-- clasă Observable, izolată pe MainActor;
-- opțional;
-- deține orchestration de ecran, nu fiecare detaliu vizual;
-- nu navighează și nu primește AppContainer întreg.
+- an Observable class, isolated to the MainActor;
+- optional;
+- owns screen orchestration, not every visual detail;
+- does not navigate and does not receive the whole AppContainer.
 
 **Router**
 
-- deține numai stare și tranziții de navigație;
-- expune metode semantice;
-- nu conține business logic, networking sau analytics de produs.
+- owns only navigation state and transitions;
+- exposes semantic methods;
+- contains no business logic, networking, or product analytics.
 
 **Client**
 
-- capabilitate îngustă necesară feature-ului;
-- reprezintă cusătura cu rețea, storage sau un SDK;
-- are o implementare live și fake-uri mici pentru test/preview.
+- the narrow capability the feature needs;
+- represents the seam with the network, storage, or an SDK;
+- has one live implementation and small fakes for tests/previews.
 
-### 2.2 Când creăm ViewModel [ARCH-004]
+### 2.2 When we create a ViewModel [ARCH-004]
 
-Creăm XxxViewModel când ecranul face cel puțin una dintre următoarele:
+We create XxxViewModel when the screen does at least one of the following:
 
-- coordonează operații async;
-- transformă date în mod non-trivial;
-- gestionează loading, refresh, pagination, eroare sau retry;
-- ține un formular cu validări și pași;
-- orchestrează timer, playback, upload sau alt side effect;
-- deține stare care trebuie să supraviețuiască schimbării identității view-ului.
+- coordinates async operations;
+- transforms data in a non-trivial way;
+- manages loading, refresh, pagination, error, or retry;
+- holds a form with validations and steps;
+- orchestrates a timer, playback, an upload, or another side effect;
+- owns state that must survive a change of view identity.
 
-Nu creăm ViewModel când view-ul:
+We do not create a ViewModel when the view:
 
-- doar afișează valori primite;
-- are numai stare locală de UI;
-- este un leaf component din DesignSystem;
-- transmite un tap prin closure;
-- ar avea un ViewModel care doar forwardează alte metode.
+- only displays received values;
+- has only local UI state;
+- is a leaf component from DesignSystem;
+- forwards a tap through a closure;
+- would have a ViewModel that merely forwards other methods.
 
-Un ViewModel subțire poate fi corect. Un ViewModel fără nicio decizie proprie este
+A thin ViewModel can be correct. A ViewModel with no decision of its own is
 boilerplate.
 
-### 2.3 Stare local-first [ARCH-004]
+### 2.3 Local-first state [ARCH-004]
 
-| Cine deține starea | Mecanism |
+| Who owns the state | Mechanism |
 |---|---|
-| View, tranzitoriu | State |
-| Părinte, copilul scrie | Binding |
-| Ecran, referință observabilă | State care deține un tip Observable |
-| Aplicație/cross-feature | Store Observable în Environment |
-| Serviciu local feature-ului | Parametru explicit de initializer |
+| View, transient | State |
+| Parent, the child writes | Binding |
+| Screen, observable reference | State holding an Observable type |
+| App/cross-feature | Observable store in Environment |
+| Feature-local service | Explicit initializer parameter |
 
-Environment este pentru dependențe și stare partajată pe o arie largă. Nu îl folosim
-doar ca să evităm doi parametri.
+Environment is for dependencies and state shared across a wide area. We do not use it
+just to avoid two parameters.
 
-### 2.4 LoadState fără dogmă
+### 2.4 LoadState without dogma
 
-Pentru o singură resursă încărcată simplu:
+For a single, simply loaded resource:
 
 ~~~swift
 enum LoadState<Value> {
@@ -212,18 +212,19 @@ enum LoadState<Value> {
 }
 ~~~
 
-Avantajul este că loading și failed nu pot fi simultan active accidental.
+The advantage is that loading and failed can never be accidentally active at the same
+time.
 
-Nu forțăm LoadState când ecranul are:
+We do not force LoadState when the screen has:
 
-- conținut existent în timpul refresh-ului;
+- existing content during a refresh;
 - pagination;
-- mai multe resurse independente;
+- several independent resources;
 - stale/offline content;
-- erori parțiale;
+- partial errors;
 - optimistic updates.
 
-În aceste cazuri feature-ul definește propriul State:
+In those cases the feature defines its own State:
 
 ~~~swift
 struct FeedState {
@@ -234,76 +235,77 @@ struct FeedState {
 }
 ~~~
 
-Regula nu este „un singur enum cu orice preț”, ci „fără combinații imposibile și fără
-stare duplicată”.
+The rule is not "a single enum at any cost" but "no impossible combinations and no
+duplicated state".
 
-CancellationError este o încheiere normală pentru un task legat de lifecycle. Nu îl
-afișăm ca eroare de produs.
+CancellationError is a normal completion for a task tied to a lifecycle. We do not
+surface it as a product error.
 
-### 2.5 Flux unidirecțional
+### 2.5 Unidirectional flow
 
-Starea curge în jos, intenția în sus:
+State flows down, intent flows up:
 
 ~~~text
-View -> metodă pe ViewModel/Router/closure
-     -> actualizare de stare
-     -> View se redesenează
+View -> method on ViewModel/Router/closure
+     -> state update
+     -> View re-renders
 ~~~
 
-MVVM/R nu adaugă Action/Reducer/Store peste acest flux. Dacă proiectul are nevoie de
-acest nivel de formalizare, alege TCA coerent, nu construi un TCA incomplet.
+MVVM/R does not add Action/Reducer/Store on top of this flow. If the project needs
+that level of formalization, choose TCA coherently instead of building an incomplete TCA.
 
-### 2.6 TCA ca alternativă
+### 2.6 TCA as an alternative
 
-TCA este aprobat când există una sau mai multe dintre următoarele:
+TCA is approved when one or more of the following exist:
 
-- state machines complexe;
-- multe efecte concurente și anulări;
+- complex state machines;
+- many concurrent effects and cancellations;
 - offline/realtime/synchronization;
-- compoziție adâncă între feature-uri;
-- shared state dificil;
-- nevoie ridicată de teste deterministe sau exhaustive;
-- o echipă care cunoaște și acceptă costul TCA.
+- deep composition across features;
+- difficult shared state;
+- a strong need for deterministic or exhaustive tests;
+- a team that knows TCA and accepts its cost.
 
-Decizia se ia la început sau prin ADR și spike reprezentativ. ADR-ul răspunde:
+The decision is made at the start or through an ADR and a representative spike. The
+ADR answers:
 
-1. ce problemă rezolvă TCA;
-2. de ce MVVM/R nu este suficient;
-3. cine deține expertiza;
-4. ce versiune/politică de upgrade folosim;
-5. cum testăm și cum migrăm.
+1. what problem TCA solves;
+2. why MVVM/R is not enough;
+3. who owns the expertise;
+4. which version/upgrade policy we use;
+5. how we test and how we migrate.
 
-Un proiect TCA urmează convențiile Point-Free curente pentru reducers, dependencies,
-navigation, Observation și TestStore. Rețetele MVVM/R de ViewModel, Router și DI nu se
-aplică feature-urilor TCA.
+A TCA project follows the current Point-Free conventions for reducers, dependencies,
+navigation, Observation, and TestStore. The MVVM/R recipes for ViewModel, Router, and
+DI do not apply to TCA features.
 
-Nu amestecăm TCA și MVVM/R în același feature. O graniță temporară este acceptabilă
-numai într-o migrare documentată, cu owner și condiție de eliminare.
+We do not mix TCA and MVVM/R in the same feature. A temporary boundary is acceptable
+only during a documented migration, with an owner and a removal condition.
 
 ---
 
-## 3. Graful de dependențe [ARCH-007] [ARCH-010]
+## 3. The dependency graph [ARCH-007] [ARCH-010]
 
-Graful este mai important decât numele folderelor:
+The graph matters more than the folder names:
 
 ~~~text
 App                  -> Features, Core, DesignSystem
 Features             -> Core, DesignSystem
-DesignSystem         -> niciun modul intern aplicației
-Core                 -> nu importă App, Features sau DesignSystem
-AppExtensions        -> Core și opțional DesignSystem; niciodată Features
+DesignSystem         -> no app-internal module
+Core                 -> does not import App, Features, or DesignSystem
+AppExtensions        -> Core and optionally DesignSystem; never Features
 ~~~
 
-Consecințe obligatorii:
+Mandatory consequences:
 
-- Core/Networking nu citește AppEnvironment;
-- Core nu întoarce tipuri definite în Features;
-- un serviciu de push din Core nu cheamă AppRouter;
-- networking-ul nu modifică direct SessionStore;
-- DesignSystem nu pornește request-uri și nu citește sesiunea;
-- App este singurul loc care cunoaște toate implementările concrete.
+- Core/Networking does not read AppEnvironment;
+- Core does not return types defined in Features;
+- a push service in Core does not call AppRouter;
+- networking does not mutate SessionStore directly;
+- DesignSystem does not start requests and does not read the session;
+- App is the only place that knows all the concrete implementations.
 
-### 3.1 Forma composition root-ului
+### 3.1 The shape of the composition root
 
 ~~~text
 Bundle + xcconfig
@@ -319,18 +321,18 @@ HTTP    stores   feature clients
       feature views
 ~~~
 
-Un payload extern urmează direcția inversată:
+An external payload follows the inverted direction:
 
 ~~~text
 push URL/payload -> Core parser -> NavigationIntent -> AppRouter
-HTTP 401         -> AuthFailure -> Session orchestration din App
+HTTP 401         -> AuthFailure -> Session orchestration in App
 ~~~
 
-Core produce valori tipizate; App decide ce efect au în aplicație.
+Core produces typed values; App decides what effect they have in the application.
 
 ---
 
-## 4. Structura de foldere [ARCH-010]
+## 4. Folder structure [ARCH-010]
 
 ### 4.1 Single-platform
 
@@ -344,11 +346,11 @@ MyApp/
 ├── Features/
 │   ├── Home/
 │   │   ├── HomeView.swift
-│   │   ├── HomeViewModel.swift       # opțional
-│   │   ├── HomeRoute.swift           # opțional
-│   │   ├── HomeClient.swift          # dacă există I/O
+│   │   ├── HomeViewModel.swift       # optional
+│   │   ├── HomeRoute.swift           # optional
+│   │   ├── HomeClient.swift          # when I/O exists
 │   │   ├── HomeItem.swift
-│   │   ├── Data/                     # DTO + mapping când e necesar
+│   │   ├── Data/                     # DTO + mapping when needed
 │   │   └── Components/
 │   └── Profile/
 ├── Core/
@@ -373,26 +375,26 @@ MyApp/
 ├── tooling/
 │   ├── skills.yml
 │   └── tools.yml
-├── skills.lock                   # dacă distribuția suportă lock
+├── skills.lock                   # when the distribution supports locking
 ├── AGENTS.md
 └── Makefile
 ~~~
 
-Înlocuim folderul vag Managers cu Stores sau Services și un subfolder semantic.
-Utils rămâne mic. Dacă un helper crește, primește numele conceptului pe care îl
-implementează.
+We replace the vague Managers folder with Stores or Services plus a semantic subfolder.
+Utils stays small. When a helper grows, it takes the name of the concept it
+implements.
 
-### 4.2 Regula de promovare
+### 4.2 The promotion rule
 
-Totul pornește cât mai aproape de feature-ul care îl deține. Mutăm în Core sau
-DesignSystem când:
+Everything starts as close as possible to the feature that owns it. We move code into
+Core or DesignSystem when:
 
-- apare al doilea consumator real;
-- un app extension are nevoie de aceeași capabilitate;
-- există o limită de platformă;
-- o decizie de produs definește un token/component global.
+- a second real consumer appears;
+- an app extension needs the same capability;
+- a platform boundary exists;
+- a product decision defines a global token/component.
 
-Nu construim shared code pentru consumatori ipotetici.
+We do not build shared code for hypothetical consumers.
 
 ### 4.3 Multi-platform iOS/tvOS
 
@@ -420,28 +422,28 @@ Tests/
 UITests/
 ~~~
 
-Shared este stratul headless cross-platform. Poate conține ViewModels și Observation,
-dar nu view-uri specifice platformei. Divergența mare de interacțiune produce view-uri
-separate peste aceeași logică.
+Shared is the headless cross-platform layer. It may contain ViewModels and Observation,
+but no platform-specific views. Large interaction divergence produces separate views
+over the same logic.
 
-Tipurile exclusiv tvOS au prefix TV. Tipurile shared și iOS nu primesc prefix de
-platformă.
+tvOS-only types carry the TV prefix. Shared and iOS types get no platform
+prefix.
 
 ### 4.4 App extensions
 
-Widgets, Live Activities și notification services:
+Widgets, Live Activities, and notification services:
 
-- au entry point și resurse proprii;
-- pot depinde de Core/Shared și DesignSystem;
-- nu importă Features;
-- citesc date comune printr-un App Group container în spatele unui protocol;
-- nu importă direct store-urile runtime ale aplicației.
+- have their own entry point and resources;
+- may depend on Core/Shared and DesignSystem;
+- do not import Features;
+- read shared data through an App Group container behind a protocol;
+- do not import the app's runtime stores directly.
 
 ---
 
-## 5. Dependency injection și configurare [ARCH-006] [ARCH-009]
+## 5. Dependency injection and configuration [ARCH-006] [ARCH-009]
 
-### 5.1 Dependențe explicite
+### 5.1 Explicit dependencies
 
 ~~~swift
 protocol HomeClient: Sendable {
@@ -460,24 +462,24 @@ final class HomeViewModel {
 }
 ~~~
 
-Nu folosim:
+We do not use:
 
 ~~~swift
 init(client: any HomeClient = .live)
 ~~~
 
-Un default live ascunde dependența, ocolește AppContainer și poate porni rețeaua în
-teste sau previews. Producția trebuie să construiască explicit sistemul live.
+A live default hides the dependency, bypasses AppContainer, and can hit the network in
+tests or previews. Production must construct the live system explicitly.
 
 ### 5.2 AppContainer
 
 AppContainer:
 
-- primește AppEnvironment ca valoare;
-- construiește HTTPClient, stores, services și feature clients;
-- este composition root, nu service locator;
-- nu este injectat ca obiect gigantic în fiecare feature;
-- oferă dependențe înguste la punctul de creare a feature-ului.
+- receives AppEnvironment as a value;
+- builds HTTPClient, stores, services, and feature clients;
+- is a composition root, not a service locator;
+- is not injected as a giant object into every feature;
+- provides narrow dependencies at the feature's creation point.
 
 ~~~swift
 struct AppContainer {
@@ -507,15 +509,15 @@ struct AppEnvironment: Sendable {
     let analyticsEnabled: Bool
 
     static func fromBundle(_ bundle: Bundle = .main) throws -> AppEnvironment {
-        // parsează și validează o singură dată la startup
+        // parse and validate once at startup
     }
 }
 ~~~
 
-AppEnvironment nu are current global. App îl creează la root și îl pasează către
-AppContainer. Core primește numai valorile concrete de care are nevoie.
+AppEnvironment has no global current. App creates it at the root and passes it to
+AppContainer. Core receives only the concrete values it needs.
 
-### 5.4 xcconfig, target-uri și secrete
+### 5.4 xcconfig, targets, and secrets
 
 ~~~text
 Config/
@@ -530,42 +532,42 @@ Config/
     └── ...
 ~~~
 
-Mediile sunt diferențe de configurație, nu de cod:
+Environments are configuration differences, not code differences:
 
 ~~~text
-xcconfig -> $(VARIABLE) în Info.plist -> AppEnvironment -> AppContainer
+xcconfig -> $(VARIABLE) in Info.plist -> AppEnvironment -> AppContainer
 ~~~
 
-Reguli:
+Rules:
 
-- #if QA / #if STAGING este interzis;
-- #if os(...) este permis pentru diferențe reale de API/platformă;
-- #if DEBUG este permis doar pentru tooling local și preview support;
-- QA poate avea un debug menu injectat ca implementare, fără ramură compilată;
-- feature flags sunt tipizate și injectate.
+- #if QA / #if STAGING is forbidden;
+- #if os(...) is allowed for real API/platform differences;
+- #if DEBUG is allowed only for local tooling and preview support;
+- QA may have a debug menu injected as an implementation, without a compiled branch;
+- feature flags are typed and injected.
 
-Info.plist și xcconfig sunt vizibile în binar. Ele pot conține bundle ID, base URL și
-config public, dar **niciodată un secret**. Un secret necesar pentru autorizare rămâne
-pe server. Tokenurile utilizatorului stau în Keychain.
+Info.plist and xcconfig are visible in the binary. They may contain the bundle ID, the
+base URL, and public config, but **never a secret**. A secret needed for authorization
+stays on the server. The user's tokens live in the Keychain.
 
 ---
 
-## 6. Layerul de date și persistența [ARCH-007] [ARCH-008]
+## 6. The data layer and persistence [ARCH-007] [ARCH-008]
 
-### 6.1 Core oferă transport, feature-ul oferă capabilitatea
+### 6.1 Core provides transport, the feature provides the capability
 
-Core/Networking se ocupă de:
+Core/Networking takes care of:
 
 - URLSession;
 - request building;
-- validarea răspunsului;
-- auth headers printr-un credential provider injectat;
-- retry și cancellation policy;
-- erori de transport tipizate;
-- telemetry operațională;
+- response validation;
+- auth headers through an injected credential provider;
+- retry and cancellation policy;
+- typed transport errors;
+- operational telemetry;
 - decoding primitives.
 
-Feature-ul deține endpoint contract și maparea:
+The feature owns the endpoint contract and the mapping:
 
 ~~~swift
 protocol ProfileClient: Sendable {
@@ -583,97 +585,97 @@ struct LiveProfileClient: ProfileClient {
 }
 ~~~
 
-Nu există un ApiServiceProtocol global cu toate endpoint-urile aplicației. Protocoalele
-se împart după capabilitate sau feature, astfel încât un test să nu implementeze metode
-fără legătură cu subiectul lui.
+There is no global ApiServiceProtocol with all of the app's endpoints. Protocols are
+split by capability or feature, so that a test never implements methods unrelated
+to its subject.
 
-Transportul nu se scurge:
+Transport does not leak:
 
-- fără import Apollo/Alamofire în View sau ViewModel;
-- fără tipuri GraphQL generate în prezentare;
-- fără raw JSON sau HTTP status interpretat în feature;
-- fără modele SwiftData folosite ca DTO-uri.
+- no import Apollo/Alamofire in a View or ViewModel;
+- no generated GraphQL types in presentation;
+- no raw JSON or HTTP status interpreted inside a feature;
+- no SwiftData models used as DTOs.
 
 ### 6.2 Domain layer
 
-Domain nu este un folder obligatoriu. Îl introducem prin ADR când există:
+Domain is not a mandatory folder. We introduce it through an ADR when there are:
 
-- invariants de business partajate;
-- calcule critice care trebuie testate independent;
-- use cases cross-feature;
-- workflow-uri offline;
-- aceeași logică pe mai multe platforme/produse;
-- nevoia de a proteja business rules de UI, transport și storage.
+- shared business invariants;
+- critical calculations that must be tested independently;
+- cross-feature use cases;
+- offline workflows;
+- the same logic across several platforms/products;
+- a need to protect business rules from UI, transport, and storage.
 
-Lipsa folderului Domain nu înseamnă lipsa business logic. Pentru o regulă locală,
-ViewModel-ul sau un feature service poate fi locul potrivit. Când regulile se repetă
-sau devin critice, promovăm conceptul.
+The absence of a Domain folder does not mean the absence of business logic. For a
+local rule, the ViewModel or a feature service can be the right place. When the rules
+repeat or become critical, we promote the concept.
 
 ### 6.3 Repository
 
-Repository nu este obligatoriu și nici interzis. Își câștigă locul când deține o
-politică, nu doar când redenumește un apel:
+Repository is neither mandatory nor forbidden. It earns its place when it owns a
+policy, not merely when it renames a call:
 
-- combină network și local storage;
-- decide cache freshness;
-- implementează offline-first;
-- sincronizează și rezolvă conflicte;
-- oferă query contract stabil business-facing;
-- coordonează mai multe surse sau versiuni.
+- it combines network and local storage;
+- it decides cache freshness;
+- it implements offline-first;
+- it synchronizes and resolves conflicts;
+- it provides a stable business-facing query contract;
+- it coordinates several sources or versions.
 
-Un wrapper care doar cheamă HomeClient.loadHome nu este Repository util.
+A wrapper that just calls HomeClient.loadHome is not a useful Repository.
 
-### 6.4 Persistență
+### 6.4 Persistence
 
-| Tip de date | Mecanism |
+| Data type | Mechanism |
 |---|---|
-| Preferințe/flags mici | UserDefaults sau AppStorage prin store-ul owner |
-| Tokenuri/credențiale | Keychain prin protocol |
-| Modele locale interogabile | SwiftData default |
-| Cache temporar HTTP/media | client/cache dedicat |
-| Secret de server | nu se livrează în aplicație |
+| Small preferences/flags | UserDefaults or AppStorage through the owning store |
+| Tokens/credentials | Keychain behind a protocol |
+| Queryable local models | SwiftData by default |
+| Temporary HTTP/media cache | dedicated client/cache |
+| Server secret | never ships in the app |
 
-ModelContainer se construiește în App. Ecranele SwiftData simple pot folosi Query
-direct. Când apar business rules, sincronizare sau testare complexă, feature-ul
-folosește un client/store de persistență injectat.
+ModelContainer is built in App. Simple SwiftData screens may use Query directly.
+When business rules, synchronization, or complex testing appear, the feature
+uses an injected persistence client/store.
 
 ### 6.5 Auth failures
 
-Networking-ul nu modifică direct SessionStore. Fluxul este:
+Networking does not mutate SessionStore directly. The flow is:
 
 ~~~text
-HTTPClient detectează 401 nerecuperabil
-    -> aruncă AuthFailure.sessionExpired
-    -> orchestration layer din App actualizează SessionStore
-    -> RootView observă sesiunea
-    -> AppRouter schimbă flow-ul
+HTTPClient detects an unrecoverable 401
+    -> throws AuthFailure.sessionExpired
+    -> the orchestration layer in App updates SessionStore
+    -> RootView observes the session
+    -> AppRouter switches the flow
 ~~~
 
-Alternativ, HTTPClient primește un AuthFailureHandler protocol definit la o graniță
-headless, iar implementarea care cunoaște SessionStore este construită în App. În
-ambele variante, Core nu importă Router sau UI.
+Alternatively, HTTPClient receives an AuthFailureHandler protocol defined at a
+headless boundary, and the implementation that knows SessionStore is built in App. In
+both variants, Core does not import the Router or the UI.
 
 ---
 
-## 7. Stare, comunicare și Swift Concurrency [ARCH-002] [ARCH-004]
+## 7. State, communication, and Swift Concurrency [ARCH-002] [ARCH-004]
 
-### 7.1 Ownership înainte de wrapper
+### 7.1 Ownership before the wrapper
 
-Înainte să alegem State, Binding sau Environment, răspundem:
+Before choosing State, Binding, or Environment, we answer:
 
-1. cine este owner-ul unic;
-2. cât timp trebuie să trăiască starea;
-3. cine o citește;
-4. cine o poate modifica;
-5. este stare curentă sau eveniment one-shot?
+1. who is the single owner;
+2. how long the state must live;
+3. who reads it;
+4. who can modify it;
+5. is it current state or a one-shot event?
 
-Majoritatea bug-urilor de data flow vin din ownership ambiguu, nu din alegerea
-property wrapper-ului greșit.
+Most data-flow bugs come from ambiguous ownership, not from picking the wrong
+property wrapper.
 
-### 7.2 Store-uri globale
+### 7.2 Global stores
 
-Starea cross-feature, precum sesiunea, favoritele sau progresul download-urilor,
-trăiește într-un store Observable izolat pe MainActor.
+Cross-feature state, such as the session, favorites, or download progress,
+lives in an Observable store isolated to the MainActor.
 
 ~~~swift
 @MainActor
@@ -692,45 +694,46 @@ final class SessionStore {
 }
 ~~~
 
-Store-ul:
+The store:
 
-- este creat o singură dată în App;
-- este injectat în Environment;
-- primește dependențele prin init;
-- nu are static shared;
-- expune stare curentă, nu notificări cu stringuri;
-- rămâne concentrat pe un singur domeniu de stare.
+- is created exactly once in App;
+- is injected into the Environment;
+- receives its dependencies through init;
+- has no static shared;
+- exposes current state, not string-based notifications;
+- stays focused on a single state domain.
 
-Nu injectăm un AppStore universal care conține toată aplicația într-un proiect MVVM/R.
-Dacă apare nevoia unui store reducer global, reevaluăm dacă proiectul ar trebui să fie
-TCA.
+We do not inject a universal AppStore holding the whole application into an MVVM/R
+project. If the need for a global reducer store appears, we re-evaluate whether the
+project should be TCA.
 
-### 7.3 Stare versus eveniment
+### 7.3 State versus event
 
-**Stare:** un view care apare acum are nevoie de valoarea curentă.
+**State:** a view appearing right now needs the current value.
 
-Exemple: sesiune, favorite, progres, conectivitate, feature flags.
+Examples: session, favorites, progress, connectivity, feature flags.
 
-**Eveniment:** un fapt one-shot fără valoare curentă semnificativă.
+**Event:** a one-shot fact with no meaningful current value.
 
-Exemple: URL extern primit, cerere de scroll-to-top, rezultat de sistem consumat o
-singură dată.
+Examples: an external URL received, a scroll-to-top request, a system result consumed
+exactly once.
 
-Starea devine proprietate observabilă. Evenimentul extern devine intent tipizat sau
-AsyncSequence la margine. Nu simulăm event bus cu NotificationCenter custom.
+State becomes an observable property. An external event becomes a typed intent or an
+AsyncSequence at the boundary. We do not simulate an event bus with a custom
+NotificationCenter.
 
-### 7.4 Cum comunică view-urile
+### 7.4 How views communicate
 
 ~~~text
-părinte -> copil       valoare; Binding doar pentru write-back
-copil -> părinte       closure sau Binding
-frați                  ridică starea la owner-ul comun
-cross-feature          store Observable cu ownership explicit
-sistem extern          adapter Core -> valoare/event tipizat
+parent -> child        value; Binding only for write-back
+child -> parent        closure or Binding
+siblings               lift the state to the common owner
+cross-feature          Observable store with explicit ownership
+external system        Core adapter -> typed value/event
 ~~~
 
-Un ViewModel nu se abonează implicit la tot store-ul global. Primește capabilitatea sau
-valoarea necesară. Pentru un reload legat de lifecycle, view-ul poate coordona:
+A ViewModel does not implicitly subscribe to the whole global store. It receives the
+capability or the value it needs. For a lifecycle-bound reload, the view can coordinate:
 
 ~~~swift
 .task(id: sessionStore.state.userID) {
@@ -738,60 +741,61 @@ valoarea necesară. Pentru un reload legat de lifecycle, view-ul poate coordona:
 }
 ~~~
 
-Task-ul este anulat automat la schimbarea identității sau dispariția view-ului.
+The task is cancelled automatically when the identity changes or the view disappears.
 
-### 7.5 Izolarea actorilor
+### 7.5 Actor isolation
 
-Pentru proiecte greenfield:
+For greenfield projects:
 
-- targeturile App/UI folosesc default MainActor isolation atunci când toolchain-ul îl
-  suportă;
-- ViewModels, Routers și UI stores sunt MainActor;
-- value types care traversează granițe sunt Sendable;
-- serviciile cu stare mutabilă partajată folosesc actor sau altă izolare explicită;
-- pachetele locale declară explicit setările de concurență, nu presupun că le moștenesc.
+- App/UI targets use default MainActor isolation whenever the toolchain
+  supports it;
+- ViewModels, Routers, and UI stores are MainActor;
+- value types crossing boundaries are Sendable;
+- services with shared mutable state use an actor or another explicit isolation;
+- local packages declare their concurrency settings explicitly instead of assuming
+  they inherit them.
 
-Un func async nu înseamnă „rulează în background”. Operația poate suspenda fără să
-blocheze actorul, dar codul sincron dintre await-uri rulează în contextul de izolare
-stabilit de toolchain și declarații.
+An async func does not mean "runs in the background". The operation may suspend
+without blocking the actor, but the synchronous code between awaits runs in the
+isolation context established by the toolchain and the declarations.
 
-Nu marcăm toate serviciile nonisolated mecanic. Folosim nonisolated pentru API-uri
-stateless/pure care chiar trebuie chemate din mai multe domenii. Pentru muncă CPU
-intensivă folosim execuție concurentă explicită doar după ce volumul o justifică.
+We do not mechanically mark every service nonisolated. We use nonisolated for
+stateless/pure APIs that genuinely must be called from several domains. For
+CPU-intensive work we use explicit concurrent execution only once the volume justifies it.
 
-Evităm Task.detached. Este permis numai când:
+We avoid Task.detached. It is allowed only when:
 
-- task-ul trebuie intenționat desprins de lifecycle;
-- valorile capturate sunt Sendable;
-- ownership-ul rezultatului și anularea sunt documentate;
-- există test sau motiv măsurabil.
+- the task must intentionally be detached from the lifecycle;
+- the captured values are Sendable;
+- ownership of the result and cancellation are documented;
+- a test or a measurable reason exists.
 
-### 7.6 Erori și cancellation
+### 7.6 Errors and cancellation
 
-Separăm:
+We separate:
 
-- eroarea de transport;
-- eroarea de business;
-- mesajul localizat pentru utilizator;
-- diagnosticul pentru Logger/crash reporting.
+- the transport error;
+- the business error;
+- the localized message for the user;
+- the diagnostic for Logger/crash reporting.
 
-Un ViewModel mapează eroarea într-un AppError sau feature error testabil. Nu afișăm
-error.localizedDescription direct ca text de produs.
+A ViewModel maps the error into a testable AppError or feature error. We do not show
+error.localizedDescription directly as product copy.
 
 CancellationError:
 
-- nu este raportată ca incident;
-- nu produce toast;
-- nu schimbă o stare validă într-o eroare;
-- curăță resursele și încheie operația.
+- is not reported as an incident;
+- produces no toast;
+- does not turn a valid state into an error;
+- cleans up resources and ends the operation.
 
 ---
 
-## 8. Navigație, deep links și push [ARCH-005]
+## 8. Navigation, deep links, and push [ARCH-005]
 
 ### 8.1 Typed routes
 
-Pentru un flow omogen:
+For a homogeneous flow:
 
 ~~~swift
 enum HomeRoute: Hashable {
@@ -815,27 +819,27 @@ final class HomeRouter {
 }
 ~~~
 
-Folosim un array tipizat deoarece route enum-ul este omogen. NavigationPath este
-rezervat stack-urilor care trebuie intenționat să conțină tipuri diferite.
+We use a typed array because the route enum is homogeneous. NavigationPath is
+reserved for stacks that must intentionally contain different types.
 
-Rutele transportă identificatori stabili și mici. Nu transportă view-uri, ViewModels
-sau grafuri mari de modele.
+Routes carry small, stable identifiers. They do not carry views, ViewModels,
+or large model graphs.
 
 ### 8.2 Flow ownership
 
-- fiecare tab are NavigationStack și history propriu dacă produsul așteaptă istorii
-  independente;
-- feature router-ul deține flow-ul local;
-- AppRouter deține root switching, tab selection și delegarea deep link-urilor;
-- Router-ul nu decide permisiuni, eligibilitate sau reguli de business;
-- schimbarea contului/resursei poate reseta explicit path-ul relevant.
+- each tab has its own NavigationStack and history if the product expects
+  independent histories;
+- the feature router owns the local flow;
+- AppRouter owns root switching, tab selection, and deep-link delegation;
+- the Router does not decide permissions, eligibility, or business rules;
+- an account/resource change may explicitly reset the relevant path.
 
-View-urile folosesc metode semantice precum showDetails(id:), nu path.append răspândit
-în zeci de fișiere.
+Views use semantic methods such as showDetails(id:), not path.append scattered
+across dozens of files.
 
 ### 8.3 Sheets
 
-Folosim item/enum state pentru prezentări mutual exclusive:
+We use item/enum state for mutually exclusive presentations:
 
 ~~~swift
 enum HomeSheet: Identifiable {
@@ -844,140 +848,140 @@ enum HomeSheet: Identifiable {
 }
 ~~~
 
-Un sheet pur local rămâne în view. Îl mutăm în Router numai când:
+A purely local sheet stays in the view. We move it into the Router only when:
 
-- face parte din flow;
-- trebuie controlat de deep link;
-- trebuie restaurat;
-- un părinte trebuie să îl coordoneze.
+- it is part of the flow;
+- it must be controlled by a deep link;
+- it must be restored;
+- a parent must coordinate it.
 
-Nu transformăm Router-ul într-un inventar al fiecărui popover local.
+We do not turn the Router into an inventory of every local popover.
 
 ### 8.4 Deep links
 
 ~~~text
-URL brut
+raw URL
  -> DeepLinkParser
  -> Result<NavigationIntent, DeepLinkError>
  -> AppRouter.handle(intent:)
 ~~~
 
-Parser-ul este pur și testabil. AppRouter nu parsează stringuri în onOpenURL.
+The parser is pure and testable. AppRouter does not parse strings in onOpenURL.
 
-Pentru link necunoscut sau malformat:
+For an unknown or malformed link:
 
-- logăm fără date sensibile;
-- ignorăm sigur sau afișăm o stare explicită de link nesuportat;
-- nu navigăm silențios către un ecran fără legătură.
+- log without sensitive data;
+- ignore it safely or show an explicit unsupported-link state;
+- do not navigate silently to an unrelated screen.
 
 ### 8.5 Push notifications
 
-Serviciul din Core decodează payload-ul într-un NotificationIntent. El nu importă și
-nu cheamă AppRouter.
+The Core service decodes the payload into a NotificationIntent. It does not import
+or call AppRouter.
 
 ~~~text
 UNUserNotification payload
- -> NotificationIntentParser din Core
+ -> NotificationIntentParser in Core
  -> NotificationIntent
  -> App-level handler
  -> AppRouter
 ~~~
 
-Delegate-ul de sistem rămâne subțire și nu conține business logic.
+The system delegate stays thin and contains no business logic.
 
 ---
 
-## 9. Design system, layout și accesibilitate [ARCH-014]
+## 9. Design system, layout, and accessibility [ARCH-014]
 
 ### 9.1 DesignSystem
 
-În asset catalog/tokens stau:
+The asset catalog/tokens hold:
 
-- culori semantice;
-- fonturi și text styles;
-- imagini și symbols custom;
-- spacing/radius/elevation când produsul le standardizează.
+- semantic colors;
+- fonts and text styles;
+- custom images and symbols;
+- spacing/radius/elevation when the product standardizes them.
 
-În DesignSystem stau componentele cu minimum doi consumatori reali sau definite
-explicit ca primitive de produs.
+DesignSystem holds the components with at least two real consumers, or those defined
+explicitly as product primitives.
 
-O componentă DesignSystem:
+A DesignSystem component:
 
-- nu importă networking, session sau feature models;
-- primește valori și closures;
-- are preview pentru stările și dimensiunile importante;
-- are API mic și semantic;
-- nu ghicește layout-ul întregului ecran.
+- does not import networking, the session, or feature models;
+- receives values and closures;
+- has previews for the important states and sizes;
+- has a small, semantic API;
+- does not guess the layout of the whole screen.
 
-### 9.2 Layout adaptiv
+### 9.2 Adaptive layout
 
-Size classes, container size și platform input stau în Views. ViewModel-ul nu știe
-orientare, screen width sau focus engine.
+Size classes, container size, and platform input live in Views. The ViewModel knows
+nothing about orientation, screen width, or the focus engine.
 
-Diferențe:
+Differences:
 
-1. o diferență punctuală de API: #if os(...) local;
-2. mai multe diferențe în același view: metode/extensii per platformă;
-3. model de interacțiune diferit: view-uri separate peste logică partajată.
+1. one isolated API difference: local #if os(...);
+2. several differences in the same view: per-platform methods/extensions;
+3. a different interaction model: separate views over shared logic.
 
-### 9.3 Baseline de accesibilitate
+### 9.3 Accessibility baseline
 
-Orice feature nou verifică:
+Every new feature checks:
 
-- Dynamic Type, inclusiv dimensiuni mari;
-- VoiceOver label/value/hint pentru controale non-textuale;
-- ordinea logică a focusului;
-- contrast și diferențiere care nu depinde doar de culoare;
-- Reduce Motion și Reduce Transparency unde animația/materialul contează;
-- target-uri de interacțiune confortabile;
-- focus și remote pe tvOS;
-- keyboard/pointer pe iPadOS când flow-ul beneficiază.
+- Dynamic Type, including the large sizes;
+- VoiceOver label/value/hint for non-text controls;
+- a logical focus order;
+- contrast and differentiation that does not rely on color alone;
+- Reduce Motion and Reduce Transparency where animation/material matters;
+- comfortable interaction targets;
+- focus and the remote on tvOS;
+- keyboard/pointer on iPadOS when the flow benefits.
 
-Accessibility identifiers sunt pentru teste stabile. Ele nu înlocuiesc labels
-semantice pentru utilizator.
+Accessibility identifiers are for stable tests. They do not replace semantic labels
+for the user.
 
 ---
 
-## 10. Localizare și copy [ARCH-011]
+## 10. Localization and copy [ARCH-011]
 
-Folosim String Catalogs ca sursă de adevăr.
+We use String Catalogs as the source of truth.
 
-În Views:
+In Views:
 
 ~~~swift
 Text("Continue Watching")
 Button("Try Again") { ... }
 ~~~
 
-Literalul englez este cheia și textul sursă. Nu folosim un AppStrings.swift gigantic
-și nici chei punctate fără valoare semantică vizibilă.
+The English literal is both the key and the source text. We do not use a giant
+AppStrings.swift, nor dotted keys with no visible semantic value.
 
-În afara Views:
+Outside Views:
 
 ~~~swift
 let message: LocalizedStringResource
 ~~~
 
-Reguli importante:
+Important rules:
 
-- adăugăm comentariu pentru traducător când sensul este ambiguu;
-- folosim pluralizare și interpolare suportate de catalog;
-- formatăm date, măsuri, monede și numere cu FormatStyle;
-- verificăm RTL pentru layout-urile relevante;
-- o schimbare de copy în engleză poate crea o cheie nouă, deci PR-ul verifică impactul
-  asupra traducerilor;
-- nu construim propoziții localizate concatenând fragmente.
+- add a translator comment when the meaning is ambiguous;
+- use the pluralization and interpolation the catalog supports;
+- format dates, measurements, currencies, and numbers with FormatStyle;
+- check RTL for the relevant layouts;
+- an English copy change can create a new key, so the PR checks the impact on
+  translations;
+- do not build localized sentences by concatenating fragments.
 
-Un catalog per app este default. Pachetele reutilizabile pot avea catalog propriu când
-au resurse și ownership independent.
+One catalog per app is the default. Reusable packages may have their own catalog when
+they have independent resources and ownership.
 
 ---
 
-## 11. Analytics, logging și crash reporting [ARCH-012]
+## 11. Analytics, logging, and crash reporting [ARCH-012]
 
 ### 11.1 Analytics
 
-Un facade tipizat ascunde Firebase, Datadog sau alt provider:
+A typed facade hides Firebase, Datadog, or any other provider:
 
 ~~~swift
 protocol AnalyticsClient: Sendable {
@@ -985,79 +989,79 @@ protocol AnalyticsClient: Sendable {
 }
 ~~~
 
-Evenimentele:
+Events:
 
-- sunt enum-uri/structuri tipizate;
-- trăiesc lângă feature-ul owner;
-- nu folosesc raw [String: Any] în feature;
-- au naming și parametri stabili;
-- nu conțin PII fără aprobare și documentare.
+- are typed enums/structs;
+- live next to the owning feature;
+- do not use raw [String: Any] in the feature;
+- have stable naming and parameters;
+- contain no PII without approval and documentation.
 
-Business events sunt emise unde rezultatul devine adevărat. Networking-ul nu emite
-purchaseCompleted doar pentru că un request a întors 200.
+Business events are emitted where the result becomes true. Networking does not emit
+purchaseCompleted just because a request returned 200.
 
-Screen tracking folosește un modifier/helper comun care definește dacă reapariția
-aceluiași view se numără din nou. Un onAppear brut poate dubla evenimente în SwiftUI.
+Screen tracking uses a shared modifier/helper that defines whether a reappearance of
+the same view counts again. A raw onAppear can double events in SwiftUI.
 
 ### 11.2 Logging
 
-Folosim os.Logger cu:
+We use os.Logger with:
 
-- subsystem-ul aplicației;
-- categorii semantice: networking, auth, persistence, playback, navigation;
-- niveluri potrivite;
+- the app's subsystem;
+- semantic categories: networking, auth, persistence, playback, navigation;
+- appropriate levels;
 - privacy annotations.
 
-Nu folosim print în production paths. Nu logăm:
+We do not use print in production paths. We do not log:
 
-- tokenuri;
-- parole;
-- payload-uri complete cu date personale;
-- informații de plată;
-- imagini/documente ale utilizatorului;
-- URL-uri semnate complete.
+- tokens;
+- passwords;
+- full payloads containing personal data;
+- payment information;
+- the user's images/documents;
+- complete signed URLs.
 
-### 11.3 Trei canale diferite
+### 11.3 Three different channels
 
-Nu confundăm:
+Do not confuse:
 
-- mesajul către utilizator;
-- log-ul tehnic;
-- evenimentul analytics.
+- the message to the user;
+- the technical log;
+- the analytics event.
 
-Crash/error monitoring are facade separat. Un catch poate:
+Crash/error monitoring has its own facade. A catch may:
 
-1. raporta diagnosticul sanitizat;
-2. mapa într-o eroare de feature;
-3. actualiza UI-ul;
+1. report the sanitized diagnostic;
+2. map into a feature error;
+3. update the UI;
 
-dar fiecare pas are un scop distinct și poate fi testat.
+but each step has a distinct purpose and can be tested.
 
 ---
 
-## 12. Testare, previews și CI [ARCH-013]
+## 12. Testing, previews, and CI [ARCH-013]
 
-### 12.1 Piramida de teste
+### 12.1 The test pyramid
 
-1. **Unit tests multe și rapide**
+1. **Many fast unit tests**
    ViewModels, state transitions, mappers, parsers, business rules.
 
-2. **Integration tests mai puține**
-   HTTP adapters cu URLProtocol/fake transport, persistence in-memory, feature-uri
-   compuse și contracte între straturi.
+2. **Fewer integration tests**
+   HTTP adapters with URLProtocol/fake transport, in-memory persistence, composed
+   features, and contracts between layers.
 
-3. **UI tests puține și valoroase**
-   Login, checkout, playback, creare/editare, deep link sau alte journey-uri critice.
+3. **Few, valuable UI tests**
+   Login, checkout, playback, create/edit, deep link, or other critical journeys.
 
 4. **Performance tests**
-   Numai pentru hot paths măsurate: launch, scrolling, parsing mare, media pipeline.
+   Only for measured hot paths: launch, scrolling, large parsing, media pipeline.
 
-Swift Testing este default pentru unit/integration tests noi. XCTest rămâne pentru
-XCUITest și pentru testele legacy care nu merită migrate mecanic.
+Swift Testing is the default for new unit/integration tests. XCTest remains for
+XCUITest and for legacy tests not worth migrating mechanically.
 
-### 12.2 Ce testăm într-un feature
+### 12.2 What we test in a feature
 
-Pentru un feature async tipic:
+For a typical async feature:
 
 - success;
 - empty;
@@ -1065,53 +1069,53 @@ Pentru un feature async tipic:
 - transport failure;
 - retry;
 - cancellation;
-- răspuns întârziat după schimbarea inputului;
-- stare inițială și identitate stabilă;
-- analytics/business event când este relevant.
+- a delayed response after the input changed;
+- initial state and stable identity;
+- the analytics/business event when relevant.
 
-Fake-urile sunt înguste și deterministe. Nu folosesc sleep real și nu fac request-uri
-live.
+Fakes are narrow and deterministic. They do not use real sleeps and do not make live
+requests.
 
 ### 12.3 Previews
 
-Preview obligatoriu pentru:
+A preview is mandatory for:
 
-- fiecare screen;
-- fiecare componentă reutilizabilă din DesignSystem;
-- loading, loaded, empty și error când există;
-- stări accessibility relevante.
+- every screen;
+- every reusable DesignSystem component;
+- loading, loaded, empty, and error when they exist;
+- relevant accessibility states.
 
-Un leaf view privat trivial nu are nevoie de preview separat.
+A trivial private leaf view does not need its own preview.
 
-Preview-urile folosesc date sintetice. Niciodată copii de payload-uri sau date de
-client/producție.
+Previews use synthetic data. Never copies of payloads or customer/production
+data.
 
-Preview-only code nu ajunge în Release. Folosim:
+Preview-only code does not reach Release. We use:
 
-- un support target/module exclus din shipping; sau
-- o graniță DEBUG revizuită pentru tooling local.
+- a support target/module excluded from shipping; or
+- a reviewed DEBUG boundary for local tooling.
 
-Test doubles care nu sunt necesare preview-urilor rămân în Tests/Support.
+Test doubles that previews do not need stay in Tests/Support.
 
 ### 12.4 Snapshot testing
 
-Snapshots sunt selective:
+Snapshots are selective:
 
-- tokens și componente DesignSystem stabile;
-- ecrane cu risc vizual mare;
-- bug-uri vizuale care au recidivat;
-- layout-uri platformă/locale/dynamic type unde imaginea aduce valoare.
+- stable DesignSystem tokens and components;
+- screens with high visual risk;
+- visual bugs that have recurred;
+- platform/locale/dynamic-type layouts where the image adds value.
 
-Nu snapshot-uim fiecare View. Harness-ul fixează device, OS policy, locale, calendar,
-time zone, color scheme și content size. Alegerea librăriei este companie/repo policy,
-nu dependență adăugată unilateral de un feature PR.
+We do not snapshot every View. The harness pins device, OS policy, locale, calendar,
+time zone, color scheme, and content size. The library choice is company/repo policy,
+not a dependency added unilaterally by a feature PR.
 
-### 12.5 Interfața de comenzi
+### 12.5 The command interface
 
-Fiecare repo nou oferă:
+Every new repo provides:
 
 ~~~text
-make bootstrap   # numai dacă există setup
+make bootstrap   # only when setup exists
 make build
 make test
 make test-ui
@@ -1119,154 +1123,154 @@ make format
 make lint
 ~~~
 
-Implementarea poate chema xcodebuild, Xcode MCP sau scripts, dar interfața rămâne
-stabilă pentru oameni și agenți.
+The implementation may call xcodebuild, Xcode MCP, or scripts, but the interface stays
+stable for humans and agents.
 
-AGENTS.md documentează:
+AGENTS.md documents:
 
-- scheme;
+- schemes;
 - simulator/destination;
 - Xcode/Swift version;
-- variabile necesare;
-- durata aproximativă;
-- comenzile rapide per feature;
-- cum se citesc xcresult/logurile.
+- required variables;
+- the approximate duration;
+- the quick per-feature commands;
+- how to read xcresult/logs.
 
-### 12.6 Baseline CI
+### 12.6 CI baseline
 
-Orice pull request verifică:
+Every pull request verifies:
 
-- dependency resolution curat;
-- build pentru toate app/extension targets livrate;
-- unit și integration tests;
-- format și lint;
-- lipsa warning-urilor noi;
-- validarea fișierelor generate;
-- setul de UI tests stabilit de repo.
+- clean dependency resolution;
+- a build of all shipped app/extension targets;
+- unit and integration tests;
+- format and lint;
+- no new warnings;
+- validation of generated files;
+- the UI test set established by the repo.
 
-Testele UI scumpe pot fi împărțite între PR și nightly, dar journey-urile cele mai
-critice trebuie să aibă un semnal înainte de merge.
+Expensive UI tests may be split between PR and nightly, but the most critical
+journeys must have a signal before merge.
 
-CI trebuie să ruleze din clean checkout, nu din DerivedData local.
+CI must run from a clean checkout, not from local DerivedData.
 
 ---
 
-## 13. Xcode, module și dependențe externe [ARCH-010] [ARCH-015] [ARCH-016]
+## 13. Xcode, modules, and external dependencies [ARCH-010] [ARCH-015] [ARCH-016]
 
-### 13.1 Modular monolith ca default
+### 13.1 Modular monolith as the default
 
-Folderele feature-first și graful de dependențe sunt suficiente la început pentru
-majoritatea aplicațiilor. Nu creăm un package pentru fiecare ecran.
+Feature-first folders and the dependency graph are enough at the start for most
+applications. We do not create a package for every screen.
 
-Extragem într-un modul SPM local când există cel puțin un motiv măsurabil:
+We extract into a local SPM module when at least one measurable reason exists:
 
-- build time sau test isolation se îmbunătățesc;
-- feature-ul are ownership/release boundary independent;
-- același cod este folosit de app și extension;
-- același cod este folosit în mai multe produse;
-- review-ul nu mai poate impune fiabil direcția dependențelor;
-- există un boundary tehnic real, nu doar dorința de foldere mai multe.
+- build time or test isolation improves;
+- the feature has an independent ownership/release boundary;
+- the same code is used by the app and an extension;
+- the same code is used in several products;
+- review can no longer reliably enforce the dependency direction;
+- a real technical boundary exists, not just the desire for more folders.
 
-În ADR notăm motivul, graful targeturilor și impactul asupra buildului.
+The ADR records the reason, the target graph, and the impact on the build.
 
-### 13.2 Buildable folders și project.pbxproj
+### 13.2 Buildable folders and project.pbxproj
 
-Proiectele noi folosesc buildable folder references unde este potrivit, astfel încât
-adăugarea unui fișier să nu producă permanent conflicte în project.pbxproj.
+New projects use buildable folder references where appropriate, so that adding a
+file does not permanently produce conflicts in project.pbxproj.
 
-Reguli pentru agenți și developeri:
+Rules for agents and developers:
 
-- nu edita manual project.pbxproj;
-- folosește buildable folders, Xcode sau generatorul oficial al repo-ului;
-- project generation trebuie să fie determinist;
-- schimbările generate se inspectează înainte de commit;
-- nu rezolva un conflict pbxproj prin ștergerea intrărilor necunoscute;
-- nu modifica signing/entitlements/capabilities în afara scope-ului.
+- do not edit project.pbxproj by hand;
+- use buildable folders, Xcode, or the repo's official generator;
+- project generation must be deterministic;
+- generated changes are inspected before commit;
+- do not resolve a pbxproj conflict by deleting unknown entries;
+- do not change signing/entitlements/capabilities outside the task's scope.
 
 ### 13.3 Third-party dependencies
 
-Preferăm API-uri Apple când satisfac cerința rezonabil. O dependență externă nouă
-necesită:
+We prefer Apple APIs when they reasonably satisfy the requirement. A new external
+dependency requires:
 
-1. nevoie clară și alternative evaluate;
-2. owner intern;
-3. licență compatibilă;
-4. activitate și mentenanță acceptabile;
-5. evaluare security/privacy proporțională cu datele accesate;
-6. politică de versiune și upgrade;
-7. Package.resolved committed pentru aplicații;
-8. ADR dacă schimbă arhitectura, state management-ul, networking-ul, navigația sau
-   persistența;
-9. o notă de exit/migrare pentru dependențele structurale.
+1. a clear need and evaluated alternatives;
+2. an internal owner;
+3. a compatible license;
+4. acceptable activity and maintenance;
+5. a security/privacy review proportional to the data accessed;
+6. a version and upgrade policy;
+7. Package.resolved committed for applications;
+8. an ADR if it changes the architecture, state management, networking, navigation, or
+   persistence;
+9. an exit/migration note for structural dependencies.
 
-Nu adăugăm DI framework, router framework, networking wrapper sau state framework doar
-pentru reducerea câtorva linii.
+We do not add a DI framework, router framework, networking wrapper, or state framework
+just to save a few lines.
 
-TCA este o dependență structurală aprobată numai prin decizia din ARCH-003.
+TCA is a structural dependency approved only through the decision in ARCH-003.
 
-### 13.4 Dependențe binare și SDK-uri
+### 13.4 Binary dependencies and SDKs
 
-Pentru SDK-uri analytics, ads, payments sau media:
+For analytics, ads, payments, or media SDKs:
 
-- adapter în Core/Services sau Core/Analytics;
-- feature-urile nu importă SDK-ul;
-- inițializarea se face în App;
-- privacy manifest și required reason APIs sunt verificate;
-- tracking-ul este controlat de consimțământ și config;
-- comportamentul fără SDK/consimțământ are implementare no-op testabilă.
+- an adapter in Core/Services or Core/Analytics;
+- features do not import the SDK;
+- initialization happens in App;
+- the privacy manifest and required reason APIs are verified;
+- tracking is controlled by consent and config;
+- the behavior without the SDK/consent has a testable no-op implementation.
 
 ---
 
-## 14. Tooling și lucru cu agenți AI [ARCH-015]
+## 14. Tooling and working with AI agents [ARCH-015]
 
-### 14.1 Ce trebuie să găsească un agent în primele minute
+### 14.1 What an agent must find in the first minutes
 
-AGENTS.md trebuie să răspundă rapid:
+AGENTS.md must answer quickly:
 
-- ce produs și target modific;
-- care este arhitectura;
-- care sunt deviațiile locale;
-- unde se află feature-ul;
-- ce comandă construiește;
-- ce comandă testează;
-- ce simulator folosesc;
-- ce fișiere nu modific;
-- care este definiția de done.
+- which product and target I am changing;
+- what the architecture is;
+- what the local deviations are;
+- where the feature lives;
+- which command builds;
+- which command tests;
+- which simulator I use;
+- which files I do not touch;
+- what the definition of done is.
 
-AGENTS.md nu duplică întregul handbook. El rezumă repo-ul și trimite la standard,
-skills și ADR-uri.
+AGENTS.md does not duplicate the whole handbook. It summarizes the repo and points to
+the standard, the skills, and the ADRs.
 
-### 14.2 Skill Map canonic
+### 14.2 The canonical Skill Map
 
-Standardul ARCH spune **ce arhitectură și ce limite folosim**. Un skill spune **cum
-executăm corect o activitate specializată**. Skill-ul nu poate schimba implicit o
-decizie ARCH.
+The ARCH standard says **which architecture and which boundaries we use**. A skill
+says **how to execute a specialized activity correctly**. A skill cannot implicitly
+change an ARCH decision.
 
-| Activitate | Skill canonic | Când este obligatoriu |
+| Activity | Canonical skill | When it is mandatory |
 |---|---|---|
-| Ecran, state sau navigație SwiftUI | apple/swiftui-patterns | Orice task relevant |
-| Restructurarea unui View SwiftUI | apple/swiftui-refactoring | Refactorizare de View |
-| Diagnostic rendering/performance | apple/swiftui-performance | Audit sau problemă de performanță |
-| Izolare Swift 6, actori, Sendable | apple/swift-concurrency | Orice schimbare de concurență |
-| Teste unit/integration sau migrare | apple/swift-testing | Orice task de testare |
-| Build, Simulator, logs, runtime debugging | apple/ios-runtime-debugging | Orice verificare runtime |
-| SwiftData schema/query/migration | apple/swiftdata | Orice schimbare de persistență SwiftData |
-| Implementare/review de UI | apple/apple-accessibility | Pas obligatoriu pentru UI |
-| Modernizare UIKit | apple/uikit-modernization | Migrare de UI legacy |
-| Feature TCA | apple/tca | Numai în proiecte TCA |
-| App Intents, Shortcuts, Siri, Spotlight | apple/app-intents | Integrare cu system intents |
+| SwiftUI screen, state, or navigation | apple/swiftui-patterns | Any relevant task |
+| Restructuring a SwiftUI View | apple/swiftui-refactoring | View refactoring |
+| Rendering/performance diagnosis | apple/swiftui-performance | Performance audit or issue |
+| Swift 6 isolation, actors, Sendable | apple/swift-concurrency | Any concurrency change |
+| Unit/integration tests or migration | apple/swift-testing | Any testing task |
+| Build, Simulator, logs, runtime debugging | apple/ios-runtime-debugging | Any runtime verification |
+| SwiftData schema/query/migration | apple/swiftdata | Any SwiftData persistence change |
+| UI implementation/review | apple/apple-accessibility | Mandatory step for UI |
+| UIKit modernization | apple/uikit-modernization | Legacy UI migration |
+| TCA feature | apple/tca | Only in TCA projects |
+| App Intents, Shortcuts, Siri, Spotlight | apple/app-intents | System-intent integration |
 
-Folosim cel mai mic set care acoperă task-ul. Un ecran SwiftUI care adaugă SwiftData
-și App Intents poate necesita trei skills; un rename de tip nu necesită toate
-skills-urile Apple.
+We use the smallest set that covers the task. A SwiftUI screen that adds SwiftData
+and App Intents may need three skills; a type rename does not need every Apple
+skill.
 
-ID-urile din tabel sunt independente de tool. Codex, Claude, Kiro sau alt runtime pot
-expune nume diferite. Maparea concretă se află în AGENTS.md, fără căi absolute către
-cache-uri sau home directory.
+The IDs in the table are tool-independent. Codex, Claude, Kiro, or another runtime may
+expose different names. The concrete mapping lives in AGENTS.md, with no absolute
+paths to caches or the home directory.
 
-### 14.3 Manifest și versiuni
+### 14.3 Manifest and versions
 
-Fiecare repo declară skills-urile într-un fișier machine-readable:
+Every repo declares its skills in a machine-readable file:
 
 ~~~yaml
 # tooling/skills.yml
@@ -1287,26 +1291,26 @@ conditional:
   apple/app-intents: "1.x"
 ~~~
 
-Unde sistemul de distribuție permite, skills.lock fixează versiunile rezolvate.
+Where the distribution system allows it, skills.lock pins the resolved versions.
 
-Un skill canonic:
+A canonical skill:
 
-- vine din registry/repo de companie;
-- are owner, versiune și changelog;
-- declară compatibilitatea Swift/Xcode/deployment target;
-- are comandă documentată de instalare/update;
-- nu este copiat manual din „un proiect asemănător”;
-- nu poate schimba o decizie ARCH fără actualizarea standardului.
+- comes from the company registry/repo;
+- has an owner, a version, and a changelog;
+- declares its Swift/Xcode/deployment-target compatibility;
+- has a documented install/update command;
+- is not copied by hand from "a similar project";
+- cannot change an ARCH decision without updating the standard.
 
-CI verifică:
+CI verifies:
 
-- manifest valid;
-- skills baseline prezente;
-- versiuni în politica acceptată;
-- lock sincronizat cu manifestul;
-- lipsa ID-urilor necunoscute sau a căilor locale.
+- a valid manifest;
+- the baseline skills are present;
+- versions within the accepted policy;
+- the lock in sync with the manifest;
+- no unknown IDs or local paths.
 
-AGENTS.md conține maparea runtime:
+AGENTS.md contains the runtime mapping:
 
 ~~~text
 Canonical skill                 Installed capability       Version
@@ -1315,385 +1319,388 @@ apple/swift-concurrency         <tool-specific name>       <resolved>
 apple/swift-testing             <tool-specific name>       <resolved>
 ~~~
 
-### 14.4 MCP și Tool Capability Map
+### 14.4 MCP and the Tool Capability Map
 
-Un skill explică metoda de lucru; un MCP sau alt tool oferă acțiuni executabile. Nu
-punem numele unui MCP în `tooling/skills.yml` și nu presupunem că instalarea unui tool
-înlocuiește standardul, testele sau aprobările.
+A skill explains the working method; an MCP or another tool provides executable
+actions. We do not put an MCP's name in `tooling/skills.yml`, and we do not assume
+that installing a tool replaces the standard, the tests, or the approvals.
 
-Repo-ul declară capabilitățile în `tooling/tools.yml`:
+The repo declares its capabilities in `tooling/tools.yml`:
 
-| Capability | Implementare implicită | Adoptare | Când o folosim |
+| Capability | Default implementation | Adoption | When we use it |
 |---|---|---|---|
-| `apple/xcode-automation` | Xcode MCP / interfața Xcode suportată | Recommended | Build, tests, diagnostics și operații de runtime suportate de Xcode |
-| `apple/ios-simulator-automation` | Tapia MCP | Recommended/conditional | Agenții exercită frecvent flow-uri UI în Simulator, inspectează accessibility tree sau capturează dovezi locale repetabile |
+| `apple/xcode-automation` | Xcode MCP / the supported Xcode interface | Recommended | Build, tests, diagnostics, and runtime operations supported by Xcode |
+| `apple/ios-simulator-automation` | Tapia MCP | Recommended/conditional | Agents frequently exercise UI flows in the Simulator, inspect the accessibility tree, or capture repeatable local evidence |
 
-Tapia este condițional fiindcă aduce valoare mare într-un workflow agent-heavy, dar
-nu este necesar într-un proiect unde XCUITest și verificarea manuală acoperă suficient
-runtime-ul. Proiectul care îl adoptă:
+Tapia is conditional because it brings great value in an agent-heavy workflow but is
+not necessary in a project where XCUITest and manual verification cover the runtime
+well enough. A project that adopts it:
 
-- fixează versiunea și commit-ul revizuit în `tooling/tools.yml`;
-- rulează doctor/health check înainte să se bazeze pe el;
-- adaugă `accessibilityIdentifier` stabil pentru controalele critice;
-- folosește conturi și date non-production într-un Simulator izolat;
-- limitează auto-approval la comenzile necesare sesiunii;
-- păstrează XCUITest pentru regresiile stabile și CI;
-- notează build-ul, configurația, device-ul, flow-ul și timestamp-ul dovezii.
+- pins the reviewed version and commit in `tooling/tools.yml`;
+- runs the doctor/health check before relying on it;
+- adds a stable `accessibilityIdentifier` for the critical controls;
+- uses non-production accounts and data in an isolated Simulator;
+- limits auto-approval to the commands the session needs;
+- keeps XCUITest for stable regressions and CI;
+- records the build, configuration, device, flow, and timestamp of the evidence.
 
-Un flow Tapia trecut demonstrează comportamentul observat în Simulatorul declarat. Nu
-demonstrează comportamentul pe device real, signing, distribuție, configurație de
-release sau producție. Dacă Tapia lipsește, fallback-ul este XCUITest, `simctl`/`idb`
-sau verificare manuală documentată, cu nivelul de dovadă raportat explicit.
+A passing Tapia flow demonstrates the behavior observed in the declared Simulator. It
+does not demonstrate behavior on a real device, signing, distribution, the release
+configuration, or production. If Tapia is missing, the fallback is XCUITest,
+`simctl`/`idb`, or documented manual verification, with the evidence level reported
+explicitly.
 
-Ghidul de instalare și operare se află în `docs/tooling/TapiaMCPGuide.md`.
+The installation and operations guide lives in `docs/tooling/TapiaMCPGuide.md`.
 
-### 14.5 Precedență și lipsa unui skill
+### 14.5 Precedence and missing skills
 
-Dacă un skill și standardul se contrazic:
+If a skill and the standard contradict each other:
 
-1. decizia ARCH câștigă;
-2. conflictul se raportează owner-ului skill-ului;
-3. skill-ul se corectează upstream;
-4. nu creăm un fork local tăcut.
+1. the ARCH decision wins;
+2. the conflict is reported to the skill's owner;
+3. the skill is corrected upstream;
+4. we do not create a silent local fork.
 
-Dacă skill-ul obligatoriu nu este disponibil:
+If the mandatory skill is not available:
 
-1. agentul/developerul raportează tooling gap-ul;
-2. urmează standardul și documentația Apple/Swift primară curentă;
-3. nu inventează o convenție incompatibilă;
-4. notează lipsa în handoff;
-5. instalarea skill-ului se repară separat de feature, dacă ar extinde scope-ul.
+1. the agent/developer reports the tooling gap;
+2. follows the standard and the current primary Apple/Swift documentation;
+3. does not invent an incompatible convention;
+4. notes the gap in the handoff;
+5. fixing the skill installation happens separately from the feature if it would
+   expand the scope.
 
-Lipsa unui skill nu blochează automat un fix urgent, dar reduce nivelul de verificare
-pe care îl putem pretinde.
+A missing skill does not automatically block an urgent fix, but it lowers the level of
+verification we can claim.
 
-### 14.6 Reguli operaționale pentru agenți
+### 14.6 Operational rules for agents
 
-Un agent:
+An agent:
 
-- inspectează codul și convențiile din feature înainte de editare;
-- păstrează modificările utilizatorului din worktree;
-- lucrează în scope;
-- nu extinde refactorul fără autorizare;
-- nu modifică manual project.pbxproj;
-- folosește dependențe explicite și fake-uri deterministe;
-- construiește și testează proporțional cu riscul;
-- raportează separat ce a fost verificat local și ce nu;
-- nu declară runtime/producție verificată doar pentru că build-ul local trece;
-- documentează deviația arhitecturală prin ADR.
+- inspects the feature's code and conventions before editing;
+- preserves the user's changes in the worktree;
+- works within scope;
+- does not expand the refactor without authorization;
+- does not modify project.pbxproj by hand;
+- uses explicit dependencies and deterministic fakes;
+- builds and tests proportionally to the risk;
+- reports separately what was verified locally and what was not;
+- does not declare runtime/production verified just because the local build passes;
+- documents any architectural deviation through an ADR.
 
-### 14.7 Definition of done pentru o schimbare
+### 14.7 Definition of done for a change
 
-- feature-ul respectă graful de dependențe;
-- AppContainer face wiring-ul live explicit;
-- build-ul trece cu comanda repo-ului;
-- testele relevante trec;
-- dovezile de Simulator declară build-ul, configurația, device-ul și flow-ul;
-- previews importante compilează;
-- success, empty, failure, retry și cancellation au fost evaluate;
-- accesibilitatea și localizarea au fost evaluate;
-- format/lint au rulat;
-- nu au intrat secrete sau date reale în fixtures;
-- nu au fost adăugate side effects live în tests/previews;
-- orice deviație are ADR și sumar în AGENTS.md.
+- the feature respects the dependency graph;
+- AppContainer wires the live system explicitly;
+- the build passes with the repo's command;
+- the relevant tests pass;
+- the Simulator evidence declares the build, configuration, device, and flow;
+- the important previews compile;
+- success, empty, failure, retry, and cancellation were evaluated;
+- accessibility and localization were evaluated;
+- format/lint ran;
+- no secrets or real data entered the fixtures;
+- no live side effects were added to tests/previews;
+- any deviation has an ADR and a summary in AGENTS.md.
 
 ---
 
-## 15. Legacy și migrare [ARCH-017]
+## 15. Legacy and migration [ARCH-017]
 
-### 15.1 Principiul vertical slice
+### 15.1 The vertical-slice principle
 
-Migrăm:
+We migrate:
 
-- un ecran complet;
-- un flow complet;
-- un serviciu cu toți consumatorii lui;
-- un target sau boundary clar.
+- a complete screen;
+- a complete flow;
+- a service together with all its consumers;
+- a clear target or boundary.
 
-Nu migrăm:
+We do not migrate:
 
-- jumătate de ViewModel;
-- o proprietate Observation într-un obiect încă dominat de Combine;
-- Router peste un flow în care coordinatorul continuă să ia deciziile;
-- Swift 6 fără să rezolvăm izolarea shared state.
+- half of a ViewModel;
+- one Observation property inside an object still dominated by Combine;
+- a Router over a flow where the coordinator keeps making the decisions;
+- Swift 6 without solving shared-state isolation.
 
-### 15.2 Ordinea recomandată
+### 15.2 The recommended order
 
-1. **Igienă mecanică**
-   Naming, fișiere gigant, assets, buildable folders, proiect determinist.
+1. **Mechanical hygiene**
+   Naming, giant files, assets, buildable folders, a deterministic project.
 
-2. **Caracterizare și seam**
-   Testează comportamentul existent și definește boundary-ul schimbării.
+2. **Characterization and seams**
+   Test the existing behavior and define the boundary of the change.
 
-3. **Completion handlers spre async/await**
-   În servicii, cu cancellation și erori tipizate.
+3. **Completion handlers to async/await**
+   In services, with cancellation and typed errors.
 
-4. **ObservableObject spre Observation**
-   Numai pentru flow-uri complete și target OS compatibil.
+4. **ObservableObject to Observation**
+   Only for complete flows and a compatible target OS.
 
-5. **Singletoni mutabili spre ownership explicit**
-   Stores/services create în App și injectate.
+5. **Mutable singletons to explicit ownership**
+   Stores/services created in App and injected.
 
 6. **Strict concurrency**
-   Targeted, reparare warnings, apoi complete.
+   Targeted, fix the warnings, then complete.
 
 7. **Swift language mode 6**
 
-8. **Coordinator spre Router/NavigationStack**
-   Numai când flow-ul este SwiftUI complet.
+8. **Coordinator to Router/NavigationStack**
+   Only when the flow is entirely SwiftUI.
 
-### 15.3 Când păstrăm temporar pattern-ul local
+### 15.3 When we temporarily keep the local pattern
 
-Îl păstrăm dacă:
+We keep it if:
 
-- schimbarea ar extinde material scope-ul;
-- nu există un seam sigur;
-- testele lipsesc și comportamentul este critic;
-- deployment targetul nu permite standardul;
-- migrarea ar fragmenta flow-ul.
+- the change would materially expand the scope;
+- no safe seam exists;
+- tests are missing and the behavior is critical;
+- the deployment target does not allow the standard;
+- the migration would fragment the flow.
 
-ADR-ul notează:
+The ADR records:
 
-- motivul;
-- riscul;
-- boundary-ul viitor;
-- owner-ul;
-- condiția de reevaluare.
+- the reason;
+- the risk;
+- the future boundary;
+- the owner;
+- the re-evaluation condition.
 
-Boy-scout improvements mici și sigure sunt binevenite, dar nu ascundem refactoruri
-mari într-un feature PR.
-
----
-
-## 16. Guardrails — ce nu facem deliberat
-
-### Arhitectură și ownership
-
-- nu creăm ViewModels goale;
-- nu introducem un AppStore universal într-un proiect MVVM/R;
-- nu punem business logic în Router, AppDelegate sau View;
-- nu creăm singletoni mutabili noi;
-- nu injectăm AppContainer întreg în features;
-- nu introducem Domain/Repository ca ritual;
-- nu interzicem Domain/Repository când există politică reală.
-
-### Date și configurare
-
-- nu creăm un ApiServiceProtocol cu toate endpoint-urile;
-- nu expunem DTO-uri/GraphQL/Alamofire/Apollo către UI;
-- Core nu citește AppEnvironment;
-- Core nu cheamă AppRouter;
-- networking-ul nu modifică SessionStore;
-- nu folosim #if QA;
-- nu punem secrete în source, plist sau xcconfig;
-- nu stocăm tokenuri în UserDefaults/SwiftData.
-
-### SwiftUI și navigație
-
-- nu folosim NavigationPath pentru un route enum omogen fără motiv;
-- nu stocăm view-uri sau modele mari în path;
-- nu mutăm fiecare sheet local în Router;
-- nu pornim request-uri din body;
-- nu duplicăm aceeași stare în mai multe proprietăți;
-- nu folosim AnyView ca soluție implicită la design slab.
-
-### Teste și tooling
-
-- nu facem request-uri live în unit tests/previews;
-- nu folosim date reale de client în fixtures;
-- nu snapshot-uim fiecare view;
-- nu adăugăm unilateral o librărie de snapshots;
-- nu edităm manual project.pbxproj;
-- nu copiem skills neverificate din alt repo;
-- nu declarăm done fără build/test proporțional cu riscul.
+Small, safe boy-scout improvements are welcome, but we do not hide large refactors
+inside a feature PR.
 
 ---
 
-## 17. Cookbook: răspunsuri fără ambiguitate
+## 16. Guardrails — what we deliberately do not do
 
-### 17.1 Unde pun tipul?
+### Architecture and ownership
 
-| Scriu | Loc |
+- we do not create empty ViewModels;
+- we do not introduce a universal AppStore into an MVVM/R project;
+- we do not put business logic in a Router, AppDelegate, or View;
+- we do not create new mutable singletons;
+- we do not inject the whole AppContainer into features;
+- we do not introduce Domain/Repository as a ritual;
+- we do not forbid Domain/Repository when a real policy exists.
+
+### Data and configuration
+
+- we do not create an ApiServiceProtocol with every endpoint;
+- we do not expose DTOs/GraphQL/Alamofire/Apollo to the UI;
+- Core does not read AppEnvironment;
+- Core does not call AppRouter;
+- networking does not mutate SessionStore;
+- we do not use #if QA;
+- we do not put secrets in source, plist, or xcconfig;
+- we do not store tokens in UserDefaults/SwiftData.
+
+### SwiftUI and navigation
+
+- we do not use NavigationPath for a homogeneous route enum without a reason;
+- we do not store views or large models in the path;
+- we do not move every local sheet into the Router;
+- we do not start requests from body;
+- we do not duplicate the same state across several properties;
+- we do not use AnyView as the default answer to weak design.
+
+### Tests and tooling
+
+- we do not make live requests in unit tests/previews;
+- we do not use real customer data in fixtures;
+- we do not snapshot every view;
+- we do not add a snapshot library unilaterally;
+- we do not edit project.pbxproj by hand;
+- we do not copy unverified skills from another repo;
+- we do not declare done without build/test proportional to the risk.
+
+---
+
+## 17. Cookbook: unambiguous answers
+
+### 17.1 Where do I put the type?
+
+| I am writing | Location |
 |---|---|
-| Ecran SwiftUI | Features/Feature/NameView.swift |
-| Orchestration de ecran | Features/Feature/NameViewModel.swift |
-| Tip afișat | Features/Feature/ConceptName.swift |
-| Rută locală | Features/Feature/NameRoute.swift |
-| Router local | Features/Feature/NameRouter.swift |
-| Client de capabilitate | Features/Feature/NameClient.swift |
-| Adapter live al clientului | Features/Feature/LiveNameClient.swift sau Data/ |
-| DTO/mapare endpoint | Features/Feature/Data/ |
-| HTTP generic | Core/Networking/ |
-| Sesiune/favorite/download state | Core/Stores/ConceptStore.swift |
-| Integrare sistem/SDK | Core/Services/Capability/ |
+| SwiftUI screen | Features/Feature/NameView.swift |
+| Screen orchestration | Features/Feature/NameViewModel.swift |
+| Displayed type | Features/Feature/ConceptName.swift |
+| Local route | Features/Feature/NameRoute.swift |
+| Local router | Features/Feature/NameRouter.swift |
+| Capability client | Features/Feature/NameClient.swift |
+| The client's live adapter | Features/Feature/LiveNameClient.swift or Data/ |
+| Endpoint DTO/mapping | Features/Feature/Data/ |
+| Generic HTTP | Core/Networking/ |
+| Session/favorites/download state | Core/Stores/ConceptStore.swift |
+| System/SDK integration | Core/Services/Capability/ |
 | Analytics facade | Core/Analytics/ |
 | Logging helpers | Core/Logging/ |
 | SwiftData models/store | Core/Persistence/ |
-| Componentă UI cu 2+ consumatori | DesignSystem/ |
-| Componentă UI cu un consumator | Features/Feature/Components/ |
-| Fixture preview | PreviewSupport/ |
-| Fake numai pentru teste | Tests/Support/ |
-| Startup și wiring | App/ |
-| Parser deep link | App/Navigation/ sau parser headless consumat de App |
-| Config public per mediu | Config/*.xcconfig -> AppEnvironment |
-| Excepție arhitecturală | docs/adr/ + sumar AGENTS.md |
+| UI component with 2+ consumers | DesignSystem/ |
+| UI component with one consumer | Features/Feature/Components/ |
+| Preview fixture | PreviewSupport/ |
+| Test-only fake | Tests/Support/ |
+| Startup and wiring | App/ |
+| Deep link parser | App/Navigation/ or a headless parser consumed by App |
+| Public per-environment config | Config/*.xcconfig -> AppEnvironment |
+| Architectural exception | docs/adr/ + AGENTS.md summary |
 
-### 17.2 Cum construiesc un feature API-backed?
+### 17.2 How do I build an API-backed feature?
 
-1. Definește HomeItem și HomeClient în feature.
-2. Folosește HTTPClient din Core pentru transport.
-3. Definește DTO numai dacă payload-ul diferă de model.
-4. Implementează LiveHomeClient.
-5. Injectează clientul explicit în HomeViewModel.
-6. AppContainer construiește varianta live.
-7. Tests/Support oferă fake-ul unit testului.
-8. PreviewSupport oferă date sintetice pentru preview.
-9. Testează success, empty, failure, retry și cancellation.
+1. Define HomeItem and HomeClient in the feature.
+2. Use the Core HTTPClient for transport.
+3. Define a DTO only if the payload differs from the model.
+4. Implement LiveHomeClient.
+5. Inject the client explicitly into HomeViewModel.
+6. AppContainer builds the live variant.
+7. Tests/Support provides the fake for the unit test.
+8. PreviewSupport provides synthetic data for the preview.
+9. Test success, empty, failure, retry, and cancellation.
 
-### 17.3 Cum adaug stare globală?
+### 17.3 How do I add global state?
 
-Întreabă mai întâi dacă este cu adevărat globală. Dacă da:
+First ask whether it is truly global. If it is:
 
-1. definește un store semantic, nu GlobalManager;
-2. fă-l Observable și MainActor;
-3. injectează dependențele;
-4. creează-l în App;
-5. injectează-l prin Environment;
-6. view-urile citesc numai proprietățile necesare;
-7. sparge store-ul când domeniile de stare nu au același lifecycle.
+1. define a semantic store, not a GlobalManager;
+2. make it Observable and MainActor;
+3. inject its dependencies;
+4. create it in App;
+5. inject it through the Environment;
+6. views read only the properties they need;
+7. split the store when the state domains do not share the same lifecycle.
 
-### 17.4 Cum reacționez la 401?
+### 17.4 How do I react to a 401?
 
-Nu chema Router-ul din networking:
+Do not call the Router from networking:
 
-1. încearcă refresh în auth layer dacă politica permite;
-2. la eșec definitiv produce AuthFailure.sessionExpired;
-3. app/session orchestration actualizează SessionStore;
-4. RootView/AppRouter schimbă flow-ul;
-5. loghează tehnic fără token/payload;
-6. testul verifică tranziția.
+1. attempt a refresh in the auth layer if the policy allows it;
+2. on definitive failure produce AuthFailure.sessionExpired;
+3. app/session orchestration updates SessionStore;
+4. RootView/AppRouter switches the flow;
+5. log technically, without token/payload;
+6. a test verifies the transition.
 
-### 17.5 Cum adaug un deep link?
+### 17.5 How do I add a deep link?
 
-1. extinde NavigationIntent;
-2. extinde parser-ul pur;
-3. adaugă teste pentru valid, invalid și lipsă de parametri;
-4. AppRouter consumă intentul;
-5. rutele păstrează numai ID-uri;
-6. definește comportamentul când resursa nu există sau userul nu este autentificat.
+1. extend NavigationIntent;
+2. extend the pure parser;
+3. add tests for valid, invalid, and missing parameters;
+4. AppRouter consumes the intent;
+5. routes keep only IDs;
+6. define the behavior when the resource does not exist or the user is not signed in.
 
-### 17.6 Cum decid MVVM/R versus TCA?
+### 17.6 How do I decide between MVVM/R and TCA?
 
-Alege MVVM/R dacă aplicația este predominant API/CRUD, cu flow-uri standard și state
-locală. Alege TCA dacă state machine-ul, efectele concurente, offline/realtime și
-compoziția sunt probleme centrale. Nu alege TCA doar pentru uniformitate și nu îl
-respinge doar pentru că are mai multe concepte.
+Choose MVVM/R if the app is predominantly API/CRUD, with standard flows and local
+state. Choose TCA if state machines, concurrent effects, offline/realtime, and
+composition are central problems. Do not choose TCA merely for uniformity, and do not
+reject it merely because it has more concepts.
 
-Rulează un spike pe cel mai reprezentativ flow, nu pe un counter demo.
+Run a spike on the most representative flow, not on a counter demo.
 
-### 17.7 Cum decid dacă extrag un package?
+### 17.7 How do I decide whether to extract a package?
 
-Măsoară:
+Measure:
 
-- clean build și incremental build;
-- timpul testelor;
-- ownership-ul echipei;
-- reutilizarea app/extension/product;
-- numărul de încălcări ale grafului.
+- clean build and incremental build;
+- test duration;
+- team ownership;
+- app/extension/product reuse;
+- the number of graph violations.
 
-Dacă motivul este numai „arată mai curat”, păstrează folderul.
+If the only reason is "it looks cleaner", keep the folder.
 
 ---
 
-## 18. Checklist de review arhitectural
+## 18. Architectural review checklist
 
 ### Feature
 
-- ownership-ul stării este clar;
-- ViewModel-ul există numai dacă are logică;
-- clientul este îngust;
-- nu există dependență către alt feature;
-- transportul nu se scurge;
-- Router-ul nu are business logic.
+- state ownership is clear;
+- the ViewModel exists only if it has logic;
+- the client is narrow;
+- there is no dependency on another feature;
+- transport does not leak;
+- the Router has no business logic.
 
 ### Concurrency
 
-- izolarea MainActor este corectă;
-- tipurile de boundary sunt Sendable;
-- cancellation este tratată;
-- nu există Task.detached fără motiv;
-- munca CPU grea nu este pusă accidental în UI path.
+- MainActor isolation is correct;
+- boundary types are Sendable;
+- cancellation is handled;
+- there is no Task.detached without a reason;
+- heavy CPU work is not accidentally placed on the UI path.
 
-### Prod și securitate
+### Prod and security
 
-- config-ul injectat nu este tratat ca secret;
-- tokens merg în Keychain;
-- logs nu conțin date sensibile;
-- analytics respectă consimțământul;
-- mocks/preview data nu ajung necontrolat în Release.
+- injected config is not treated as a secret;
+- tokens go into the Keychain;
+- logs contain no sensitive data;
+- analytics respects consent;
+- mocks/preview data do not reach Release uncontrolled.
 
-### Calitate
+### Quality
 
-- build/test/format/lint trec;
-- previews importante funcționează;
-- accesibilitatea este verificată;
-- copy-ul este localizabil;
-- orice dependență sau deviație are aprobarea necesară.
+- build/test/format/lint pass;
+- the important previews work;
+- accessibility is verified;
+- the copy is localizable;
+- every dependency or deviation has the required approval.
 
 ---
 
-## 19. Guvernanța standardului
+## 19. Governance of the standard
 
-### Owner și review
+### Owner and review
 
-Apple Platform Team deține documentul. Orice developer poate propune o schimbare prin
-ADR/RFC scurt care include:
+The Apple Platform Team owns this document. Any developer can propose a change through
+a short ADR/RFC that includes:
 
-- problema observată;
-- exemple din minimum un repo;
-- schimbarea propusă;
-- costul de migrare;
-- impactul asupra agenților/tooling-ului;
-- planul de rollout.
+- the observed problem;
+- examples from at least one repo;
+- the proposed change;
+- the migration cost;
+- the impact on agents/tooling;
+- the rollout plan.
 
-### Statusuri
+### Statuses
 
-- Proposed: în review, nu este obligatoriu;
-- Accepted: default pentru proiecte noi;
-- Deprecated: nu se mai introduce;
-- Superseded: înlocuit de alt ID/versiune.
+- Proposed: under review, not mandatory;
+- Accepted: the default for new projects;
+- Deprecated: no longer introduced;
+- Superseded: replaced by another ID/version.
 
 ### Changelog v2.1
 
-- a separat skills-urile de tool capabilities prin `tooling/tools.yml`;
-- a introdus Tapia MCP ca `recommended/conditional` pentru automatizarea Simulatorului;
-- a definit limitele dovezilor Tapia și fallback-urile XCUITest, simctl/idb și manual;
-- a introdus Skill Map-ul canonic task-to-skill;
-- a separat ID-urile canonice de numele specifice Codex/Claude/Kiro;
-- a adăugat tooling/skills.yml și skills.lock;
-- a definit verificarea CI pentru skills și versiuni;
-- a definit precedența ARCH versus skill;
-- a documentat fallback-ul când un skill obligatoriu lipsește.
+- separated skills from tool capabilities via `tooling/tools.yml`;
+- introduced Tapia MCP as `recommended/conditional` for Simulator automation;
+- defined the limits of Tapia evidence and the XCUITest, simctl/idb, and manual fallbacks;
+- introduced the canonical task-to-skill Skill Map;
+- separated the canonical IDs from the Codex/Claude/Kiro-specific names;
+- added tooling/skills.yml and skills.lock;
+- defined the CI verification for skills and versions;
+- defined the ARCH versus skill precedence;
+- documented the fallback when a mandatory skill is missing.
 
 ### Changelog v2.0
 
-- a separat HTTP transportul Core de clienții feature-specific;
-- a eliminat ApiServiceProtocol global;
-- a făcut DI-ul live explicit, fără default ascuns;
-- a eliminat AppEnvironment.current din Core;
-- a inversat integrarea push/auth prin intents și erori tipizate;
-- a introdus excepția explicită pentru legacy sub OS 17;
-- a făcut LoadState un default pentru încărcări simple, nu o obligație universală;
-- a preferat array tipizat pentru route enum omogen;
-- a definit test pyramid, previews și snapshots selective;
-- a stabilit baseline CI și comenzile pentru agenți;
-- a adăugat logging, accessibility și third-party policy;
-- a introdus buildable folders și interdicția editării manuale project.pbxproj;
-- a definit criterii pentru Domain, Repository, SPM și TCA;
-- a separat AGENTS.md de ADR și a introdus sync prin ID-uri ARCH.
+- separated the Core HTTP transport from feature-specific clients;
+- removed the global ApiServiceProtocol;
+- made live DI explicit, with no hidden default;
+- removed AppEnvironment.current from Core;
+- inverted the push/auth integration through intents and typed errors;
+- introduced the explicit exception for legacy below OS 17;
+- made LoadState a default for simple loads, not a universal obligation;
+- preferred a typed array for a homogeneous route enum;
+- defined the test pyramid, previews, and selective snapshots;
+- established the CI baseline and the agent commands;
+- added the logging, accessibility, and third-party policy;
+- introduced buildable folders and the ban on manual project.pbxproj edits;
+- defined the criteria for Domain, Repository, SPM, and TCA;
+- separated AGENTS.md from ADRs and introduced sync through ARCH IDs.
 
 ---
 
-Standardul este un default care reduce deciziile repetitive. Când realitatea produsului
-îl contrazice, nu ascundem excepția și nu aplicăm regula mecanic: măsurăm, documentăm
-și schimbăm standardul dacă excepția devine noul caz comun.
+The standard is a default that removes repetitive decisions. When product reality
+contradicts it, we do not hide the exception and we do not apply the rule mechanically:
+we measure, document, and change the standard if the exception becomes the new common
+case.
