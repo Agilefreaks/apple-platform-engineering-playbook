@@ -1,6 +1,6 @@
 # Technical Plan — <DELIVERY-ID> <Title>
 
-## Context și outcome
+## Context and outcome
 
 - Delivery revision:
 - Acceptance IDs:
@@ -8,9 +8,10 @@
 - Current architecture seam:
 - Engineering owner/reviewers:
 
-## Rezumatul soluției
+## Solution summary
 
-Descrie vertical slice-ul, granițele și de ce soluția produce outcome-ul cerut.
+Describe the vertical slice, its boundaries, and why the solution produces the required
+outcome.
 
 ## Acceptance traceability
 
@@ -18,20 +19,20 @@ Descrie vertical slice-ul, granițele și de ce soluția produce outcome-ul ceru
 |---|---|---|---|---|---|
 | AC-01 | | | | | |
 
-## Arhitectură și ownership
+## Architecture and ownership
 
-- Feature owner și folder/module:
+- Feature owner and folder/module:
 - View / optional ViewModel / Router / Client boundaries:
-- Shared state și source of truth:
-- Dependency injection și composition root changes:
+- Shared state and source of truth:
+- Dependency injection and composition root changes:
 - Navigation/deep link/push impact:
-- DesignSystem/Core promotion, dacă există al doilea consumer:
-- ADR-uri necesare:
-- TCA impact, numai dacă proiectul este aprobat TCA:
+- DesignSystem/Core promotion, if there is a second consumer:
+- Required ADRs:
+- TCA impact, only if the project is approved for TCA:
 
-## Data și integrare
+## Data and integration
 
-| Zonă | Contract/decizie | Failure behavior | Compatibility |
+| Area | Contract/decision | Failure behavior | Compatibility |
 |---|---|---|---|
 | API/SDK | | | |
 | DTO/mapping | | | |
@@ -40,11 +41,11 @@ Descrie vertical slice-ul, granițele și de ce soluția produce outcome-ul ceru
 | Offline/stale data | | | |
 | Auth/session | | | |
 
-## State și concurrency
+## State and concurrency
 
-- State machine și valid concurrent states:
+- State machine and valid concurrent states:
 - MainActor/nonisolated boundaries:
-- Structured tasks și ownership:
+- Structured tasks and ownership:
 - Cancellation:
 - Retry/idempotency/duplicate action:
 - Background/resume:
@@ -52,14 +53,14 @@ Descrie vertical slice-ul, granițele și de ce soluția produce outcome-ul ceru
 
 ## UI quality
 
-- Figma reviewed version și mapped nodes:
+- Figma reviewed version and mapped nodes:
 - Adaptive layout/device matrix:
 - Accessibility plan:
 - Localization plan:
 - Motion/Reduce Motion:
 - Performance/memory/energy budgets:
 
-## Analytics și observability
+## Analytics and observability
 
 | Signal | Type | Trigger/schema | Consent/privacy | Verification query/evidence |
 |---|---|---|---|---|
@@ -79,23 +80,23 @@ Descrie vertical slice-ul, granițele și de ce soluția produce outcome-ul ceru
 
 ## Delivery slices
 
-| Slice | Outcome demonstrabil | Files/modules | Gate/evidence | Dependency |
+| Slice | Demonstrable outcome | Files/modules | Gate/evidence | Dependency |
 |---|---|---|---|---|
 | 1 | | | | |
 
-Fiecare slice păstrează aplicația buildable și evită stări/configurații neverificate.
+Every slice keeps the app buildable and avoids unverified states/configurations.
 
-## Rollout, abort și rollback
+## Rollout, abort, and rollback
 
 - Channel/environment/cohort:
 - Feature flags/defaults/prerequisites:
 - Backend compatibility window:
-- Abort thresholds și owner:
+- Abort thresholds and owner:
 - Flag-off/server fallback/data safety:
 - Hotfix path:
 - Production verification plan:
 
-## Risks, spikes și decisions
+## Risks, spikes, and decisions
 
 | ID | Risk/unknown | Impact | Mitigation/spike | Owner | Due | Status |
 |---|---|---|---|---|---|---|
@@ -103,6 +104,6 @@ Fiecare slice păstrează aplicația buildable și evită stări/configurații n
 
 ## Engineering approval
 
-| Actor | Rol | Decizie | Dată | Conditions/evidence |
+| Actor | Role | Decision | Date | Conditions/evidence |
 |---|---|---|---|---|
 | | Engineering owner | Pending / Approved / Rejected / Conditional | | |

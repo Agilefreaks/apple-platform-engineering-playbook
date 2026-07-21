@@ -1,12 +1,12 @@
 # Definition of Ready
 
-Acest gate autorizează planificarea finală și implementarea unui delivery item. Nu
-garantează că nu vor apărea schimbări; garantează că necunoscutele și autoritatea sunt
-vizibile.
+This gate authorizes final planning and implementation of a delivery item. It does not
+guarantee that no changes will appear; it guarantees that unknowns and authority are
+visible.
 
-## Identitate
+## Identity
 
-| Câmp | Valoare |
+| Field | Value |
 |---|---|
 | Delivery ID | |
 | Revision | |
@@ -14,92 +14,92 @@ vizibile.
 | Product owner | |
 | Design owner | |
 | Engineering owner | |
-| Data evaluării | |
+| Evaluation date | |
 
-## 1. Outcome și scope
+## 1. Outcome and scope
 
-- [ ] Problema este formulată din perspectiva utilizatorului/operațiunii.
-- [ ] Outcome-ul observabil este explicit.
-- [ ] Target users și target audience sunt explicite.
-- [ ] In scope și non-goals nu se contrazic.
-- [ ] Itemul este suficient de mic pentru verificare independentă.
-- [ ] Prioritatea și motivul livrării sunt cunoscute.
+- [ ] The problem is stated from the user/operations perspective.
+- [ ] The observable outcome is explicit.
+- [ ] Target users and target audience are explicit.
+- [ ] In scope and non-goals do not contradict each other.
+- [ ] The item is small enough for independent verification.
+- [ ] The priority and the reason for delivering are known.
 
 ## 2. Acceptance contract
 
-- [ ] Fiecare criteriu are un ID stabil `AC-*`.
-- [ ] Criteriile descriu behavior observabil, nu structura codului.
-- [ ] Happy path este acoperit.
-- [ ] Edge/failure states relevante sunt acoperite.
-- [ ] Fiecare criteriu are una sau mai multe metode de verificare.
-- [ ] Must/should/could sau altă prioritate este explicită.
-- [ ] Orice criteriu amânat este mutat în non-goals sau într-un item legat.
+- [ ] Every criterion has a stable `AC-*` ID.
+- [ ] Criteria describe observable behavior, not code structure.
+- [ ] The happy path is covered.
+- [ ] Relevant edge/failure states are covered.
+- [ ] Every criterion has one or more verification methods.
+- [ ] Must/should/could or another priority scheme is explicit.
+- [ ] Any deferred criterion is moved to non-goals or to a linked item.
 
 ## 3. Design
 
-- [ ] `UI required` este declarat.
-- [ ] Dacă există UI, checklist-ul Figma Definition of Ready este trecut.
-- [ ] Node IDs și reviewed version/timestamp sunt în Delivery Packet.
-- [ ] Stările, interacțiunile, copy-ul, assets și accessibility intent sunt suficiente.
-- [ ] Dacă nu există UI, Product + Engineering au aprobat `not applicable`.
-- [ ] Design change policy după READY este cunoscută.
+- [ ] `UI required` is declared.
+- [ ] If there is UI, the Figma Definition of Ready checklist is passed.
+- [ ] Node IDs and the reviewed version/timestamp are in the Delivery Packet.
+- [ ] States, interactions, copy, assets, and accessibility intent are sufficient.
+- [ ] If there is no UI, Product + Engineering have approved `not applicable`.
+- [ ] The design change policy after READY is known.
 
-## 4. Platforme și produs
+## 4. Platforms and product
 
-- [ ] Platformele, minimum OS, device classes și orientările sunt declarate.
-- [ ] Localele și comportamentul de localizare sunt declarate.
-- [ ] Account state, permissions, entitlements și subscription state sunt clare.
-- [ ] Upgrade/background/offline behavior este clar când este relevant.
-- [ ] Apple platform/App Store constraints cunoscute sunt înregistrate.
+- [ ] Platforms, minimum OS, device classes, and orientations are declared.
+- [ ] Locales and localization behavior are declared.
+- [ ] Account state, permissions, entitlements, and subscription state are clear.
+- [ ] Upgrade/background/offline behavior is clear where relevant.
+- [ ] Known Apple platform/App Store constraints are recorded.
 
-## 5. Date și dependențe
+## 5. Data and dependencies
 
-- [ ] API/backend contract este disponibil sau are un stub/fake aprobat.
-- [ ] Compatibilitatea cu versiunile vechi ale aplicației este definită.
-- [ ] Storage, cache, migration și data retention sunt evaluate.
-- [ ] Fiecare dependență are owner și status.
-- [ ] Accesul la environments, test data și conturi necesare este confirmat.
-- [ ] Dependențele blocking sunt `ready` sau itemul nu avansează.
+- [ ] The API/backend contract is available or has an approved stub/fake.
+- [ ] Compatibility with older versions of the app is defined.
+- [ ] Storage, cache, migration, and data retention are assessed.
+- [ ] Every dependency has an owner and a status.
+- [ ] Access to the required environments, test data, and accounts is confirmed.
+- [ ] Blocking dependencies are `ready` or the item does not advance.
 
-## 6. Risk și compliance
+## 6. Risk and compliance
 
-- [ ] Risk level este estimat.
-- [ ] Privacy impact și data classification sunt evaluate.
-- [ ] Security/auth/permissions/secrets impact este evaluat.
-- [ ] Legal/content/licensing impact este evaluat.
-- [ ] Third-party SDK și privacy manifest impact sunt evaluate.
-- [ ] Reviewerii obligatorii au fost identificați.
-- [ ] Nu există un risc critic fără owner și decizie.
+- [ ] The risk level is estimated.
+- [ ] Privacy impact and data classification are assessed.
+- [ ] Security/auth/permissions/secrets impact is assessed.
+- [ ] Legal/content/licensing impact is assessed.
+- [ ] Third-party SDK and privacy manifest impact are assessed.
+- [ ] Mandatory reviewers have been identified.
+- [ ] There is no critical risk without an owner and a decision.
 
-## 7. Măsurare și operare
+## 7. Measurement and operations
 
-- [ ] Success metrics sunt definite sau `not applicable` cu motiv.
-- [ ] Guardrails sunt definite sau `not applicable` cu motiv.
-- [ ] Analytics events și consent behavior sunt schițate.
-- [ ] Operational telemetry necesară pentru verificare există sau este în scope.
-- [ ] Canalul, cohorta și condiția pentru Delivered sunt explicite.
-- [ ] Rollout și rollback concept sunt fezabile.
+- [ ] Success metrics are defined or `not applicable` with a reason.
+- [ ] Guardrails are defined or `not applicable` with a reason.
+- [ ] Analytics events and consent behavior are outlined.
+- [ ] The operational telemetry needed for verification exists or is in scope.
+- [ ] The channel, cohort, and condition for Delivered are explicit.
+- [ ] The rollout and rollback concepts are feasible.
 
-## 8. Necunoscute și ownership
+## 8. Unknowns and ownership
 
-- [ ] Fiecare unknown are owner, due date și blocking flag.
-- [ ] Nu există unknown blocking fără decizie înainte de READY.
-- [ ] Product, Design, Engineering, QA și Release ownerii aplicabili sunt cunoscuți.
-- [ ] Acțiunile protejate și approval path sunt clare.
-- [ ] Delivery Packet-ul validează contra schemei v0.1.
+- [ ] Every unknown has an owner, a due date, and a blocking flag.
+- [ ] There is no blocking unknown without a decision before READY.
+- [ ] The applicable Product, Design, Engineering, QA, and Release owners are known.
+- [ ] Protected actions and the approval path are clear.
+- [ ] The Delivery Packet validates against schema v0.1.
 
-## Aprobări READY
+## READY approvals
 
-| Rol | Obligatoriu | Decizie | Actor | Dată | Evidence/link |
+| Role | Mandatory | Decision | Actor | Date | Evidence/link |
 |---|---:|---|---|---|---|
-| Product | Da | Pending / Approved / Rejected / Conditional | | | |
-| Design | Pentru UI | Pending / Approved / Rejected / Conditional / N/A | | | |
-| Engineering | Da | Pending / Approved / Rejected / Conditional | | | |
-| Security | După risc | Pending / Approved / Rejected / Conditional / N/A | | | |
-| Privacy/Legal | După risc | Pending / Approved / Rejected / Conditional / N/A | | | |
+| Product | Yes | Pending / Approved / Rejected / Conditional | | | |
+| Design | For UI | Pending / Approved / Rejected / Conditional / N/A | | | |
+| Engineering | Yes | Pending / Approved / Rejected / Conditional | | | |
+| Security | Based on risk | Pending / Approved / Rejected / Conditional / N/A | | | |
+| Privacy/Legal | Based on risk | Pending / Approved / Rejected / Conditional / N/A | | | |
 
-**Decizie:** `READY / NOT READY`
+**Decision:** `READY / NOT READY`
 
-**Condiții rămase, cu owner și termen:**
+**Remaining conditions, with owner and due date:**
 
 ---

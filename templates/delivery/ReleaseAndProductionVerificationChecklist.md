@@ -1,11 +1,11 @@
 # Release and Production Verification Checklist
 
-Acest artefact acoperă tranzițiile `QA_ACCEPTED → RELEASE_CANDIDATE → RELEASED →
-PRODUCTION_VERIFIED`. Se completează pentru build-ul și cohorta efectivă.
+This artifact covers the `QA_ACCEPTED → RELEASE_CANDIDATE → RELEASED →
+PRODUCTION_VERIFIED` transitions. Complete it for the effective build and cohort.
 
 ## Release identity
 
-| Câmp | Valoare |
+| Field | Value |
 |---|---|
 | Delivery ID / revision | |
 | Environment | |
@@ -21,136 +21,136 @@ PRODUCTION_VERIFIED`. Se completează pentru build-ul și cohorta efectivă.
 
 ## 1. Pre-release candidate
 
-- [ ] Requirements, Figma reviewed version și acceptance IDs nu s-au schimbat material.
-- [ ] QA_ACCEPTED se referă la acest build sau la un build demonstrabil echivalent.
-- [ ] Toate must acceptance criteria au passed evidence.
-- [ ] Design și accessibility reviews sunt închise pentru UI material.
-- [ ] Open defects au severity, owner și disposition aprobată.
-- [ ] Nu există P0/P1 sau release blocker.
-- [ ] Waivers sunt valide, neexpirate și vizibile ownerilor riscului.
-- [ ] Release notes și known limitations sunt pregătite.
+- [ ] Requirements, the Figma reviewed version, and acceptance IDs have not changed materially.
+- [ ] QA_ACCEPTED refers to this build or to a demonstrably equivalent build.
+- [ ] All must acceptance criteria have passed evidence.
+- [ ] Design and accessibility reviews are closed for material UI.
+- [ ] Open defects have a severity, an owner, and an approved disposition.
+- [ ] There is no P0/P1 or release blocker.
+- [ ] Waivers are valid, unexpired, and visible to the risk owners.
+- [ ] Release notes and known limitations are prepared.
 
-## 2. Build, signing și configuration
+## 2. Build, signing, and configuration
 
-- [ ] Clean archive a fost produs de toolchain/CI suportat.
-- [ ] Bundle ID, version, build și commit corespund Delivery Packet-ului.
-- [ ] Signing certificate și provisioning profile sunt cele așteptate.
-- [ ] Entitlements și capabilities sunt corecte.
-- [ ] Environment URLs și public client configuration sunt corecte.
-- [ ] Nu există debug flags, test endpoints, mock data sau secrete în build.
-- [ ] dSYM/symbols și crash reporting upload sunt confirmate.
-- [ ] Privacy manifest și required-reason APIs sunt verificate.
-- [ ] App Store/TestFlight compliance și metadata sunt complete.
+- [ ] A clean archive was produced by the supported toolchain/CI.
+- [ ] Bundle ID, version, build, and commit match the Delivery Packet.
+- [ ] The signing certificate and provisioning profile are the expected ones.
+- [ ] Entitlements and capabilities are correct.
+- [ ] Environment URLs and public client configuration are correct.
+- [ ] There are no debug flags, test endpoints, mock data, or secrets in the build.
+- [ ] dSYM/symbols and crash reporting upload are confirmed.
+- [ ] The privacy manifest and required-reason APIs are verified.
+- [ ] App Store/TestFlight compliance and metadata are complete.
 
-## 3. Compatibilitate și date
+## 3. Compatibility and data
 
-- [ ] API/backend suportă versiunile instalate pe fereastra declarată.
-- [ ] Schema/migrations sunt forward-safe și au fost testate.
-- [ ] Upgrade de la versiunile relevante a fost verificat.
-- [ ] Downgrade assumptions nu sunt folosite ca rollback implicit.
-- [ ] Cache, stale data și offline behavior au fost evaluate.
-- [ ] Repetarea acțiunilor și idempotency sunt sigure unde se aplică.
-- [ ] Feature flags au defaults sigure pentru clienții vechi și noi.
+- [ ] The API/backend supports the installed versions over the declared window.
+- [ ] Schema/migrations are forward-safe and have been tested.
+- [ ] Upgrading from the relevant versions has been verified.
+- [ ] Downgrade assumptions are not used as an implicit rollback.
+- [ ] Cache, stale data, and offline behavior have been assessed.
+- [ ] Repeated actions and idempotency are safe where applicable.
+- [ ] Feature flags have safe defaults for old and new clients.
 
 ## 4. Observability readiness
 
-- [ ] Crash/error/performance dashboards sau queries sunt legate.
-- [ ] Backend/dependency health queries sunt legate.
-- [ ] Typed product analytics events și schema sunt documentate.
-- [ ] Consent behavior și test account/cohort sunt cunoscute.
-- [ ] Critical-path correlation include build/environment fără PII.
-- [ ] Verificatorul poate identifica lipsa traficului versus trafic sănătos.
-- [ ] Incident owner, canal și escalation path sunt active în fereastra release-ului.
+- [ ] Crash/error/performance dashboards or queries are linked.
+- [ ] Backend/dependency health queries are linked.
+- [ ] Typed product analytics events and their schema are documented.
+- [ ] Consent behavior and the test account/cohort are known.
+- [ ] Critical-path correlation includes build/environment without PII.
+- [ ] The verifier can distinguish the absence of traffic from healthy traffic.
+- [ ] The incident owner, channel, and escalation path are active during the release window.
 
-## 5. Rollout și rollback
+## 5. Rollout and rollback
 
-- [ ] Canalul și cohorta au aprobarea Product + Release.
-- [ ] Flag names, prerequisites, defaults și release values sunt înregistrate.
-- [ ] Abort conditions au prag, fereastră și owner.
-- [ ] Kill switch/flag-off a fost revizuit sau testat proporțional cu riscul.
-- [ ] Server fallback și backward compatibility sunt confirmate.
-- [ ] Data migration nu lasă date corupte după dezactivarea behavior-ului.
-- [ ] Hotfix path și timpul estimat sunt cunoscute.
-- [ ] Communication path pentru support/stakeholders este pregătit.
+- [ ] The channel and cohort have Product + Release approval.
+- [ ] Flag names, prerequisites, defaults, and release values are recorded.
+- [ ] Abort conditions have a threshold, a window, and an owner.
+- [ ] The kill switch/flag-off has been reviewed or tested in proportion to the risk.
+- [ ] Server fallback and backward compatibility are confirmed.
+- [ ] Data migration does not leave corrupted data after the behavior is disabled.
+- [ ] The hotfix path and estimated time are known.
+- [ ] The communication path for support/stakeholders is prepared.
 
-## 6. Aprobări RELEASE_CANDIDATE
+## 6. RELEASE_CANDIDATE approvals
 
-| Rol | Decizie | Actor | Dată | Evidence/link |
+| Role | Decision | Actor | Date | Evidence/link |
 |---|---|---|---|---|
 | Engineering | Pending / Approved / Rejected / Conditional | | | |
 | QA | Pending / Approved / Rejected / Conditional | | | |
-| Product — cohortă | Pending / Approved / Rejected / Conditional | | | |
+| Product — cohort | Pending / Approved / Rejected / Conditional | | | |
 | Release | Pending / Approved / Rejected / Conditional | | | |
-| Security/Privacy/Legal — după risc | Pending / Approved / Rejected / Conditional / N/A | | | |
+| Security/Privacy/Legal — based on risk | Pending / Approved / Rejected / Conditional / N/A | | | |
 
-**Decizie:** `RELEASE_CANDIDATE / NOT READY`
+**Decision:** `RELEASE_CANDIDATE / NOT READY`
 
-## 7. Execuția release-ului
+## 7. Release execution
 
-- [ ] Operatorul a confirmat build-ul și target audience înainte de acțiune.
-- [ ] Build-ul a fost distribuit în canalul aprobat.
-- [ ] Flag/cohort values efective au fost citite după schimbare.
-- [ ] Release time și operatorul sunt înregistrate.
-- [ ] App Store/TestFlight status și link sunt înregistrate.
-- [ ] Nicio acțiune neaprobată nu a extins cohorta sau scope-ul.
-- [ ] `current_status` a fost setat `RELEASED`, nu `DELIVERED`.
+- [ ] The operator confirmed the build and target audience before acting.
+- [ ] The build was distributed to the approved channel.
+- [ ] Effective flag/cohort values were read back after the change.
+- [ ] The release time and the operator are recorded.
+- [ ] App Store/TestFlight status and link are recorded.
+- [ ] No unapproved action extended the cohort or the scope.
+- [ ] `current_status` was set to `RELEASED`, not `DELIVERED`.
 
 ## 8. Production verification
 
 ### Setup
 
-- [ ] Verificatorul folosește build-ul distribuit, nu un debug/local build.
-- [ ] Device, OS, account state, locale și network conditions sunt înregistrate.
-- [ ] Build/version și effective flags sunt confirmate în aplicație/sistem.
-- [ ] Fereastra de telemetry începe după release/config change.
+- [ ] The verifier uses the distributed build, not a debug/local build.
+- [ ] Device, OS, account state, locale, and network conditions are recorded.
+- [ ] Build/version and effective flags are confirmed in the app/system.
+- [ ] The telemetry window starts after the release/config change.
 
-### Smoke și acceptance
+### Smoke and acceptance
 
-- [ ] Install sau upgrade.
-- [ ] Launch și authentication/session state.
-- [ ] Critical path complet.
-- [ ] Cel puțin un failure/recovery path critic, dacă este sigur.
-- [ ] Persistență/background/resume când sunt în acceptance.
-- [ ] Rezultat vizibil corespunde Figma/acceptance pentru stările verificate.
-- [ ] Evidence este legată de acceptance IDs.
+- [ ] Install or upgrade.
+- [ ] Launch and authentication/session state.
+- [ ] Full critical path.
+- [ ] At least one critical failure/recovery path, if safe to do so.
+- [ ] Persistence/background/resume when they are part of acceptance.
+- [ ] The visible result matches Figma/acceptance for the verified states.
+- [ ] Evidence is linked to acceptance IDs.
 
 ### Telemetry
 
-- [ ] Request/dependency outcome relevant a fost observat.
-- [ ] Crash/error signals au fost verificate în fereastra corectă.
-- [ ] Performance guardrails au fost verificate unde se aplică.
-- [ ] Product analytics event a ajuns în destinație, unde consent permite.
-- [ ] Build, environment și cohort pot fi identificate fără expunere de PII.
-- [ ] Semnalele sunt proaspete și aparțin release-ului curent.
+- [ ] The relevant request/dependency outcome was observed.
+- [ ] Crash/error signals were checked in the correct window.
+- [ ] Performance guardrails were checked where applicable.
+- [ ] The product analytics event reached its destination, where consent allows.
+- [ ] Build, environment, and cohort can be identified without exposing PII.
+- [ ] The signals are fresh and belong to the current release.
 
-### Interpretarea dovezilor
+### Evidence interpretation
 
-Selectează exact una:
+Select exactly one:
 
-- [ ] **Exercised and healthy:** a existat exercițiu valid și nu au apărut blockers.
-- [ ] **Exercised and unhealthy:** a existat exercițiu valid și au apărut erori/blockers.
-- [ ] **Not exercised:** nu există trafic/control test suficient; absența erorilor nu
-  este interpretată ca sănătate.
-- [ ] **Inconclusive:** semnalele sunt contradictorii sau telemetry lipsește.
+- [ ] **Exercised and healthy:** there was valid exercise and no blockers appeared.
+- [ ] **Exercised and unhealthy:** there was valid exercise and errors/blockers appeared.
+- [ ] **Not exercised:** there is insufficient traffic/controlled testing; the absence of
+  errors is not interpreted as health.
+- [ ] **Inconclusive:** the signals are contradictory or telemetry is missing.
 
-Pentru `Not exercised` sau `Inconclusive`, itemul rămâne `RELEASED` ori `BLOCKED` și are
-owner + următoarea verificare. Nu avansează la `PRODUCTION_VERIFIED`.
+For `Not exercised` or `Inconclusive`, the item remains `RELEASED` or `BLOCKED` and has
+an owner + the next verification. It does not advance to `PRODUCTION_VERIFIED`.
 
-## 9. Decizie și închidere
+## 9. Decision and closure
 
-| Rol | Decizie | Actor | Dată | Evidence/link |
+| Role | Decision | Actor | Date | Evidence/link |
 |---|---|---|---|---|
 | Runtime verifier | Verified / Not verified / Inconclusive | | | |
 | Engineering/Operations | Healthy / Unhealthy / Inconclusive | | | |
 | QA | Accepted / Rejected / Conditional | | | |
 | Release owner | Continue / Pause / Roll back / Mitigate | | | |
 
-**Status rezultat:** `PRODUCTION_VERIFIED / REMAINS RELEASED / BLOCKED / REOPENED`
+**Resulting status:** `PRODUCTION_VERIFIED / REMAINS RELEASED / BLOCKED / REOPENED`
 
-**Evidence window și sumar:**
+**Evidence window and summary:**
 
-**Anomalii, missing observability și follow-up:**
+**Anomalies, missing observability, and follow-up:**
 
-**Rollback/mitigation executat, dacă este cazul:**
+**Rollback/mitigation executed, if applicable:**
 
 ---

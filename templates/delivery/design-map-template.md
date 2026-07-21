@@ -2,11 +2,11 @@
 
 ## Reviewed design identity
 
-| Câmp | Valoare |
+| Field | Value |
 |---|---|
 | Figma file URL/key | |
 | Page / flow | |
-| Named version sau reviewed timestamp | |
+| Named version or reviewed timestamp | |
 | Design owner | |
 | Engineering reviewer | |
 | Last change check | |
@@ -19,7 +19,7 @@
 
 ## State matrix
 
-| Screen | State | Node ID sau rule | Device/layout | Appearance | Dynamic Type | Status |
+| Screen | State | Node ID or rule | Device/layout | Appearance | Dynamic Type | Status |
 |---|---|---|---|---|---|---|
 | | loading | | | light/dark | | Pending |
 | | loaded | | | light/dark | | Pending |
@@ -33,7 +33,7 @@
 |---|---|---|---|---|---|
 | | | | | | |
 
-## Interaction și navigation
+## Interaction and navigation
 
 | Trigger | Precondition | Transition/action | Loading/cancellation | Error/recovery | Route/deep link |
 |---|---|---|---|---|---|
@@ -41,7 +41,7 @@
 
 ## Accessibility intent
 
-| Zonă | Intenție | Verificare |
+| Area | Intent | Verification |
 |---|---|---|
 | VoiceOver semantics/order | | |
 | Dynamic Type | | |
@@ -50,9 +50,9 @@
 | Reduce Motion | | |
 | Touch targets/actions | | |
 
-## Copy și assets
+## Copy and assets
 
-| Tip | Figma source | Production mapping | Locale/license/alt behavior | Owner |
+| Type | Figma source | Production mapping | Locale/license/alt behavior | Owner |
 |---|---|---|---|---|
 | Copy | | String Catalog key/context | | |
 | Asset | | Asset Catalog/remote resource | | |
@@ -63,8 +63,8 @@
 |---|---|---|---|---|---|
 | DEV-01 | | | | | |
 
-## Change log după READY
+## Change log after READY
 
-| Dată | Figma node/version change | Material? | Acceptance/plan impact | Decision/approver |
+| Date | Figma node/version change | Material? | Acceptance/plan impact | Decision/approver |
 |---|---|---:|---|---|
 | | | | | |

@@ -1,115 +1,116 @@
-# Cum livrăm continuu aplicații Apple — v0.1
+# How we continuously deliver Apple applications — v0.1
 
-Handbook-ul Apple Team pentru transformarea requirements + Figma într-un rezultat
-livrat și verificat pe iOS, iPadOS și tvOS.
+The Apple Team handbook for turning requirements + Figma into a delivered, verified
+outcome on iOS, iPadOS, and tvOS.
 
-| Metadata | Valoare |
+| Metadata | Value |
 |---|---|
-| Status | Propunere v0.1 — pregătită pentru pilot |
-| Versiune | 0.1 |
-| Owner propus | Apple Platform Team + Product Delivery |
-| Audiență | Product, Design, Engineering, QA, Release și agenți AI |
+| Status | Proposed v0.1 — ready for pilot |
+| Version | 0.1 |
+| Proposed owner | Apple Platform Team + Product Delivery |
+| Audience | Product, Design, Engineering, QA, Release, and AI agents |
 | Companion | AppleTeamDeliveryLoopStandard.md |
-| Standard tehnic | Apple Team Architecture Standard v2.1 |
-| Review | După fiecare pilot, apoi minimum de două ori pe an |
+| Technical standard | Apple Team Architecture Standard v2.1 |
+| Review | After each pilot, then at least twice per year |
 
-## Cum folosim acest handbook
+## How we use this handbook
 
-Standardul de arhitectură răspunde la întrebarea „cum construim codul?”. Acest handbook
-răspunde la întrebarea „cum știm că am transformat o intenție într-un rezultat real,
-disponibil și verificat?”.
+The Architecture Standard answers the question "how do we build the code?". This
+handbook answers the question "how do we know we turned an intent into a real,
+available, and verified outcome?".
 
-Documentul de față este sursa canonică pentru oameni. Companion-ul compact este forma
-normativă pentru agenți și automatizări. Fiecare decizie are un ID `DLV-*`; setul de
-ID-uri trebuie să fie identic în ambele documente.
+This document is the canonical source for humans. The compact companion is the
+normative form for agents and automation. Every decision has a `DLV-*` ID; the set of
+IDs must be identical in both documents.
 
-Acesta este un draft pentru pilot, nu un proces final impus tuturor proiectelor. Îl
-testăm pe 1–2 vertical slices reale, măsurăm unde produce claritate și unde adaugă
-fricțiune, apoi îl promovăm la v1.0.
+This is a pilot draft, not a final process imposed on every project. We test it on 1–2
+real vertical slices, measure where it produces clarity and where it adds friction,
+then promote it to v1.0.
 
 ---
 
-## 0. Rezumatul deciziilor
+## 0. Decision summary
 
-| ID | Zonă | Decizie |
+| ID | Area | Decision |
 |---|---|---|
-| DLV-001 | Autoritate | Requirements aprobate, constrângerile de compliance, ARCH și acest standard au precedență explicită. |
-| DLV-002 | Unitatea de livrare | Urmărim un rezultat mic, independent verificabil, nu doar un ticket sau un set de fișiere. |
-| DLV-003 | Contract requirements | Problema, rezultatul, scope-ul, acceptance, riscurile, măsurarea, rollout-ul și ownerii sunt explicite. |
-| DLV-004 | Contract Figma | Păstrăm nodurile exacte, versiunea verificată, stările, tokens, copy, assets, interacțiunile și intenția de accesibilitate. |
-| DLV-005 | Delivery Packet | Fiecare rezultat are un `delivery.yml` versionat și legături către planuri și dovezi. |
-| DLV-006 | State machine | Statusurile sunt explicite, susținute de dovezi și nu sunt deduse doar din Git sau CI. |
-| DLV-007 | Definition of Ready | Implementarea începe după clarificarea cerinței, designului, dependențelor, ownerilor și acceptance-ului. |
-| DLV-008 | Plan tehnic | Planul leagă acceptance de arhitectură, date, analytics, teste, rollout și rollback. |
-| DLV-009 | Implementare | Construim vertical slices, ținem aplicația rulabilă și păstrăm trasabilitatea. |
-| DLV-010 | Quality gates | Build, behavior, runtime, design, accessibility, localization, performance, privacy, security și analytics sunt verificate proporțional. |
-| DLV-011 | Agenți și autonomie | Rolurile agenților sunt capabilități; agenții execută muncă reversibilă, dar nu se auto-aprobă și nu fac release protejat fără autoritate. |
-| DLV-012 | Aprobări | Product, Design, Engineering, QA și Release aprobă explicit punctele care le aparțin. |
-| DLV-013 | Release și rollback | Canalul, cohorta, build-ul, flags, pragurile de oprire și mitigarea sunt cunoscute înainte de release. |
-| DLV-014 | Verificare în producție | Verificăm build-ul distribuit cu dovezi proaspete; lipsa traficului nu demonstrează sănătatea. |
-| DLV-015 | Delivered | Rezultatul este disponibil audienței declarate, acceptance-ul este verificat și nu există blocker de release. |
-| DLV-016 | Feedback loop | Dovezile, defectele, schimbările de design și metricile creează noi intrări fără a rescrie istoria. |
+| DLV-001 | Authority | Approved requirements, compliance constraints, ARCH, and this standard have explicit precedence. |
+| DLV-002 | Unit of delivery | We track a small, independently verifiable outcome, not just a ticket or a set of files. |
+| DLV-003 | Requirements contract | Problem, outcome, scope, acceptance, risks, measurement, rollout, and owners are explicit. |
+| DLV-004 | Figma contract | We record the exact nodes, the reviewed version, states, tokens, copy, assets, interactions, and accessibility intent. |
+| DLV-005 | Delivery Packet | Every outcome has a versioned `delivery.yml` plus links to plans and evidence. |
+| DLV-006 | State machine | Statuses are explicit, evidence-backed, and never inferred from Git or CI alone. |
+| DLV-007 | Definition of Ready | Implementation starts only after the requirement, design, dependencies, owners, and acceptance are clarified. |
+| DLV-008 | Technical plan | The plan ties acceptance to architecture, data, analytics, tests, rollout, and rollback. |
+| DLV-009 | Implementation | We build vertical slices, keep the app runnable, and preserve traceability. |
+| DLV-010 | Quality gates | Build, behavior, runtime, design, accessibility, localization, performance, privacy, security, and analytics are verified proportionally. |
+| DLV-011 | Agents and autonomy | Agent roles are capabilities; agents execute reversible work but do not self-approve and do not perform protected releases without authority. |
+| DLV-012 | Approvals | Product, Design, Engineering, QA, and Release explicitly approve the points they own. |
+| DLV-013 | Release and rollback | Channel, cohort, build, flags, abort thresholds, and mitigation are known before release. |
+| DLV-014 | Production verification | We verify the distributed build with fresh evidence; the absence of traffic does not prove health. |
+| DLV-015 | Delivered | The outcome is available to the declared audience, acceptance is verified, and no release blocker remains. |
+| DLV-016 | Feedback loop | Evidence, defects, design changes, and metrics create new inputs without rewriting history. |
 
 ---
 
-## 1. De ce avem nevoie de un Delivery Loop [DLV-001] [DLV-002]
+## 1. Why we need a Delivery Loop [DLV-001] [DLV-002]
 
-Într-un proces fără contract comun, fiecare disciplină folosește altă definiție pentru
-„gata”:
+In a process without a shared contract, every discipline uses a different definition of
+"done":
 
-- Product: cerința este scrisă;
-- Design: ecranul principal este în Figma;
-- Engineering: pull request-ul este merged;
-- QA: scenariul fericit a trecut pe un build;
-- Release: build-ul este aprobat sau disponibil;
-- utilizatorul: comportamentul funcționează pentru el.
+- Product: the requirement is written;
+- Design: the main screen is in Figma;
+- Engineering: the pull request is merged;
+- QA: the happy path passed on some build;
+- Release: the build is approved or available;
+- the user: the behavior works for them.
 
-Toate afirmațiile pot fi adevărate simultan și totuși rezultatul să nu fie livrat.
-Delivery Loop-ul creează un limbaj comun, un status comun și o urmă comună de dovezi.
+All of these statements can be true at the same time while the outcome is still not
+delivered. The Delivery Loop creates a shared language, a shared status, and a shared
+trail of evidence.
 
-Unitatea de lucru este un **delivery item**: cel mai mic rezultat de produs sau
-operațional care poate fi verificat independent. Poate corespunde unui ticket, dar nu
-este definit de forma ticketului.
+The unit of work is a **delivery item**: the smallest product or operational outcome
+that can be verified independently. It may correspond to a ticket, but it is not
+defined by the shape of the ticket.
 
-Exemplu bun:
+A good example:
 
-> Un utilizator autentificat își poate salva traseul favorit și îl regăsește după
-> relansarea aplicației, pentru cohorta internă TestFlight.
+> A signed-in user can save their favorite route and find it again after relaunching
+> the app, for the internal TestFlight cohort.
 
-Exemplu slab:
+A weak example:
 
-> Implementăm view model-ul, endpoint-ul și trei ecrane.
+> We implement the view model, the endpoint, and three screens.
 
-Al doilea descrie activitate și structură, nu rezultatul observabil.
+The second describes activity and structure, not an observable outcome.
 
-### Ordinea autorității
+### Order of authority
 
-Când sursele se contrazic:
+When sources conflict:
 
-1. requirements și acceptance aprobate pentru itemul curent;
-2. constrângeri aprobate de security, privacy, legal și platformă;
-3. ADR-uri și standardul de arhitectură v2.1;
-4. acest Delivery Loop;
-5. convenții locale de delivery.
+1. approved requirements and acceptance for the current item;
+2. approved security, privacy, legal, and platform constraints;
+3. ADRs and the Architecture Standard v2.1;
+4. this Delivery Loop;
+5. local delivery conventions.
 
-Conflictul nu este rezolvat în tăcere de persoana sau agentul care implementează. El
-este documentat și trimis ownerului care are autoritatea asupra deciziei.
+A conflict is not resolved silently by the person or agent doing the implementation. It
+is documented and routed to the owner who holds authority over the decision.
 
 ---
 
-## 2. Loop-ul complet
+## 2. The full loop
 
 ~~~text
 Requirements + Figma
         │
         ▼
-Normalizează și clarifică
+Normalize and clarify
         │
         ▼
 Definition of Ready ────────┐
-        │                    │ lipsuri / schimbări
+        │                    │ gaps / changes
         ▼                    │
-Plan tehnic                 │
+Technical plan              │
         │                    │
         ▼                    │
 Vertical slice              │
@@ -124,7 +125,7 @@ Code / Design / Product review
 Release candidate
         │
         ▼
-TestFlight / App Store / cohortă
+TestFlight / App Store / cohort
         │
         ▼
 Production verification
@@ -133,121 +134,122 @@ Production verification
 Delivered
         │
         ▼
-Metrics + feedback + incidente ─┘
+Metrics + feedback + incidents ─┘
 ~~~
 
-Loop-ul nu presupune că toate livrările ajung imediat la întregul App Store. Audiența
-poate fi un grup intern, beta externă, 10% rollout sau toți utilizatorii. Important este
-ca audiența să fie declarată înainte și ca `DELIVERED` să fie interpretat în acel scope.
+The loop does not assume every delivery immediately reaches the entire App Store. The
+audience may be an internal group, an external beta, a 10% rollout, or all users. What
+matters is that the audience is declared up front and that `DELIVERED` is interpreted
+within that scope.
 
 ---
 
-## 3. Contractul de requirements [DLV-003]
+## 3. The requirements contract [DLV-003]
 
-Un agent poate scrie cod repede dintr-o propoziție ambiguă. Tocmai aceasta este una
-dintre cele mai riscante situații: viteza ascunde presupunerile. Contractul de
-requirements nu trebuie să fie lung, ci suficient de precis încât două persoane să
-poată verifica același rezultat.
+An agent can write code quickly from an ambiguous sentence. That is exactly one of the
+riskiest situations: speed hides assumptions. The requirements contract does not need
+to be long; it needs to be precise enough that two people can verify the same outcome.
 
-### Conținut minim
+### Minimum content
 
-- **Problemă:** ce nu poate face utilizatorul sau operațiunea astăzi.
-- **Outcome:** ce devine adevărat după livrare.
-- **Target users:** pentru cine și în ce condiții.
-- **In scope / out of scope:** granițe vizibile.
-- **Acceptance criteria:** comportamente observabile cu ID-uri stabile `AC-01`,
-  `AC-02` etc.
+- **Problem:** what the user or the operation cannot do today.
+- **Outcome:** what becomes true after delivery.
+- **Target users:** for whom and under what conditions.
+- **In scope / out of scope:** visible boundaries.
+- **Acceptance criteria:** observable behaviors with stable IDs `AC-01`,
+  `AC-02`, and so on.
 - **Edge cases:** loading, empty, error, offline, permission, retry, cancellation,
-  duplicate action, background/foreground, unde sunt relevante.
-- **Platform constraints:** iOS/iPadOS/tvOS, minimum OS, device classes, orientări,
-  limbi și conturi/entitlements.
-- **Analytics și succes:** evenimentele și semnalul că outcome-ul este folosit.
-- **Guardrails:** crash, latency, conversion, privacy sau alte metrici care nu trebuie
-  degradate.
-- **Date și compliance:** clasificare, consimțământ, retenție, logging, third-party.
-- **Dependențe:** backend, schema, content, feature flag, App Store metadata.
-- **Rollout:** canal, cohortă, owner, abort și rollback concept.
-- **Unknowns:** întrebare, owner și termen, nu doar o listă fără responsabilitate.
+  duplicate action, background/foreground, where relevant.
+- **Platform constraints:** iOS/iPadOS/tvOS, minimum OS, device classes, orientations,
+  languages, and accounts/entitlements.
+- **Analytics and success:** the events and the signal that the outcome is being used.
+- **Guardrails:** crash, latency, conversion, privacy, or other metrics that must not
+  degrade.
+- **Data and compliance:** classification, consent, retention, logging, third parties.
+- **Dependencies:** backend, schema, content, feature flags, App Store metadata.
+- **Rollout:** channel, cohort, owner, abort, and rollback concept.
+- **Unknowns:** question, owner, and due date, not just a list without accountability.
 
-### Cum scriem acceptance criteria
+### How we write acceptance criteria
 
-Un criteriu bun poate fi verificat fără a citi implementarea:
+A good criterion can be verified without reading the implementation:
 
-> AC-03 — Dat fiind că utilizatorul nu are rețea, când salvează un favorit, aplicația
-> păstrează acțiunea local, arată starea pending și sincronizează o singură dată după
-> reconectare.
+> AC-03 — Given that the user has no network, when they save a favorite, the app keeps
+> the action locally, shows the pending state, and syncs exactly once after
+> reconnecting.
 
-Un criteriu slab spune cum să scriem codul:
+A weak criterion says how to write the code:
 
-> Se folosește un repository și un enum pentru loading.
+> Use a repository and an enum for loading.
 
-Aceasta poate fi o decizie tehnică, dar nu este acceptance de produs.
+That may be a technical decision, but it is not product acceptance.
 
-Fiecare criteriu primește o metodă de verificare: test automat, runtime, design review,
-analytics sau o combinație. Criteriile care nu pot fi verificate sunt rescrise înainte
-de READY.
+Every criterion gets a verification method: automated test, runtime, design review,
+analytics, or a combination. Criteria that cannot be verified are rewritten before
+READY.
 
 ---
 
-## 4. Contractul Figma [DLV-004]
+## 4. The Figma contract [DLV-004]
 
-Un URL Figma singur nu este un contract. Fișierul poate conține explorări, ecrane
-vechi, componente detașate sau modificări făcute după ce implementarea a început.
+A Figma URL on its own is not a contract. The file may contain explorations, old
+screens, detached components, or changes made after implementation started.
 
-### Identitatea designului
+### Design identity
 
-Delivery Packet-ul păstrează:
+The Delivery Packet records:
 
-- file URL/key;
-- pagina și flow-ul;
-- node IDs exacte pentru ecrane și componente;
-- timestamp-ul review-ului sau named version;
-- ownerul design parity;
-- data ultimei verificări după o schimbare.
+- the file URL/key;
+- the page and the flow;
+- exact node IDs for screens and components;
+- the review timestamp or named version;
+- the design-parity owner;
+- the date of the last check after a change.
 
-Nu blocăm designul tehnic prin exporturi fără context, dar putem demonstra ce versiune
-a fost aprobată.
+We do not freeze the design through context-free exports, but we can prove which
+version was approved.
 
-### Matricea de stări
+### The state matrix
 
-Pentru fiecare ecran relevant, designul declară cel puțin stările aplicabile:
+For every relevant screen, the design declares at least the applicable states:
 
-| Categorie | Exemple |
+| Category | Examples |
 |---|---|
-| Conținut | loading, loaded, empty, partial, stale |
-| Eroare | recoverable, blocking, offline, permission denied |
+| Content | loading, loaded, empty, partial, stale |
+| Error | recoverable, blocking, offline, permission denied |
 | Input | default, focused, validation, disabled, submitted |
-| Acțiune | pressed, selected, destructive confirmation, success |
-| Sistem | light/dark, Dynamic Type, Reduce Motion, VoiceOver, tvOS focus |
+| Action | pressed, selected, destructive confirmation, success |
+| System | light/dark, Dynamic Type, Reduce Motion, VoiceOver, tvOS focus |
 
-Nu cerem mockup separat pentru fiecare combinație dacă intenția este clară prin
-componentă și reguli. Cerem însă ca stările să nu fie inventate în implementare.
+We do not require a separate mockup for every combination when the intent is clear from
+the component and its rules. We do require that states are not invented during
+implementation.
 
-### Tokens, componente, assets și copy
+### Tokens, components, assets, and copy
 
-Design handoff-ul indică:
+The design handoff identifies:
 
-- componenta și varianta din design system;
-- variables/tokens pentru culori, spațiere, tipografie, radius și motion;
-- assets sursă și formatul corect de export;
-- copy final și cine aprobă schimbările;
-- interacțiuni, navigation și tranziții care nu se văd într-un frame static.
+- the design-system component and variant;
+- variables/tokens for color, spacing, typography, radius, and motion;
+- source assets and the correct export format;
+- the final copy and who approves changes to it;
+- interactions, navigation, and transitions that a static frame cannot show.
 
-### Schimbări după READY
+### Changes after READY
 
-O modificare cosmetică minoră poate fi înregistrată fără resetarea întregului flow. O
-schimbare materială — navigation, behavior, component contract, state, asset, copy cu
-impact legal sau acceptance — declanșează impact review și întoarcerea la gate-ul
-potrivit. Statusul nu rămâne artificial în față doar pentru a proteja un deadline.
+A minor cosmetic change can be recorded without resetting the whole flow. A material
+change — navigation, behavior, component contract, state, asset, copy with legal
+impact, or acceptance — triggers an impact review and a return to the appropriate gate.
+The status does not stay artificially ahead just to protect a deadline.
 
-Artefactul `FigmaDefinitionOfReadyChecklist.md` oferă checklist-ul complet.
+The `FigmaDefinitionOfReadyChecklist.md` artifact provides the complete checklist.
 
 ---
 
 ## 5. Delivery Packet [DLV-005]
 
-Delivery Packet-ul este memoria operațională a itemului. Nu înlocuiește Figma, ticketul,
-PR-ul sau dashboard-ul; le leagă într-un contract verificabil.
+The Delivery Packet is the item's operational memory. It does not replace Figma, the
+ticket, the PR, or the dashboard; it ties them together into a verifiable contract.
 
 ~~~text
 delivery/items/AF-123/
@@ -266,445 +268,447 @@ delivery/items/AF-123/
     └── production/
 ~~~
 
-### Ce aparține unde
+### What belongs where
 
-| Informație | Sursa potrivită |
+| Information | Correct source |
 |---|---|
-| Scope și acceptance | requirements + `delivery.yml` |
+| Scope and acceptance | requirements + `delivery.yml` |
 | Figma node/state mapping | `design-map.md` + `delivery.yml` |
-| Decizie arhitecturală | ADR |
-| Plan de implementare | `technical-plan.md` |
+| Architecture decision | ADR |
+| Implementation plan | `technical-plan.md` |
 | Test matrix | `test-plan.md` |
-| Status curent, approvals, release facts | `delivery.yml` |
-| Rezultate, screenshots, logs, build IDs | `evidence/` sau link durabil |
+| Current status, approvals, release facts | `delivery.yml` |
+| Results, screenshots, logs, build IDs | `evidence/` or a durable link |
 
-Evităm copierea integrală a surselor, fiindcă apar versiuni divergente. Păstrăm
-identificatori stabili, versiunea revizuită, rezumatul necesar și legătura durabilă.
+We avoid copying sources wholesale, because divergent versions appear. We keep stable
+identifiers, the reviewed version, the necessary summary, and a durable link.
 
-### Dovezi bune
+### Good evidence
 
-- rezultat CI legat de commit;
-- output de test cu toolchain și destinație;
-- screenshot al stării și device/configuration;
-- flow Tapia cu build, configurație, Simulator, pași și timestamp declarate;
-- video scurt pentru o interacțiune sau focus;
-- build/version identificat fără ambiguitate;
-- query de telemetry cu interval și environment;
-- approval atribuit, datat și limitat la un scope.
+- a CI result tied to a commit;
+- test output with toolchain and destination;
+- a screenshot of the state plus device/configuration;
+- a Tapia flow with declared build, configuration, Simulator, steps, and timestamp;
+- a short video for an interaction or focus behavior;
+- an unambiguously identified build/version;
+- a telemetry query with time window and environment;
+- an approval that is attributed, dated, and limited to a scope.
 
-Un mesaj „works for me” sau un screenshot fără build/state nu este o dovadă suficientă
-pentru un gate protejat.
+A "works for me" message or a screenshot without build/state is not sufficient evidence
+for a protected gate.
 
 ---
 
 ## 6. State machine [DLV-006]
 
-Statusurile sunt fapte distincte:
+Statuses are distinct facts:
 
-| Status | Ce dovedește | Ce nu dovedește |
+| Status | What it proves | What it does not prove |
 |---|---|---|
-| DRAFT | itemul există și este clarificat | că poate fi implementat |
-| READY | inputurile și ownerii sunt pregătiți | că soluția tehnică este aprobată |
-| PLANNED | soluția, testarea și rollout-ul sunt planificate | că există cod |
-| IMPLEMENTING | există muncă activă autorizată | că feature-ul este complet |
-| CODE_COMPLETE | scope-ul implementat trece verificările locale/CI declarate | că este integrat sau distribuit |
-| MERGED | codul este în branch-ul protejat | că există în build-ul utilizatorului |
-| QA_ACCEPTED | acceptance-ul a trecut pe build-ul declarat | că build-ul este disponibil audienței |
-| RELEASE_CANDIDATE | build-ul este pregătit și aprobat pentru distribuție | că a fost distribuit |
-| RELEASED | build/config a devenit disponibil în canal | că flow-ul a fost exercitat cu succes |
-| PRODUCTION_VERIFIED | build-ul distribuit și critical path au dovezi proaspete | că toate criteriile de Delivered sunt închise |
-| DELIVERED | outcome-ul este disponibil și acceptat pentru audiența declarată | că este livrat tuturor audiențelor posibile |
+| DRAFT | the item exists and is being clarified | that it can be implemented |
+| READY | the inputs and owners are in place | that the technical solution is approved |
+| PLANNED | the solution, testing, and rollout are planned | that any code exists |
+| IMPLEMENTING | authorized active work exists | that the feature is complete |
+| CODE_COMPLETE | the implemented scope passes the declared local/CI checks | that it is integrated or distributed |
+| MERGED | the code is in the protected branch | that it exists in the user's build |
+| QA_ACCEPTED | acceptance passed on the declared build | that the build is available to the audience |
+| RELEASE_CANDIDATE | the build is prepared and approved for distribution | that it was distributed |
+| RELEASED | the build/config became available in the channel | that the flow was exercised successfully |
+| PRODUCTION_VERIFIED | the distributed build and critical path have fresh evidence | that every Delivered criterion is closed |
+| DELIVERED | the outcome is available and accepted for the declared audience | that it is delivered to every possible audience |
 
-### BLOCKED, CANCELLED și REOPENED
+### BLOCKED, CANCELLED, and REOPENED
 
-`BLOCKED` are owner, motiv, condiție de deblocare și următor review. Nu este un sertar
-pentru „lucrăm mai târziu”.
+`BLOCKED` has an owner, a reason, an unblock condition, and a next review. It is not a
+drawer for "we'll work on it later".
 
-`CANCELLED` păstrează motivul și autoritatea Product care a oprit rezultatul.
+`CANCELLED` records the reason and the Product authority that stopped the outcome.
 
-`REOPENED` păstrează istoria și explică dovada invalidată sau regresia. Nu ștergem
-statusul vechi pentru a arăta un istoric mai curat.
+`REOPENED` preserves the history and explains the invalidated evidence or the
+regression. We do not delete the old status to show a cleaner history.
 
-Integrările pot propune statusuri: CI poate sugera `CODE_COMPLETE`, merge-ul poate
-sugera `MERGED`, iar App Store Connect poate sugera `RELEASED`. Ele nu pot inventa
-approvals sau acceptance lipsă.
+Integrations may propose statuses: CI may suggest `CODE_COMPLETE`, a merge may suggest
+`MERGED`, and App Store Connect may suggest `RELEASED`. They cannot invent missing
+approvals or acceptance.
 
 ---
 
 ## 7. Definition of Ready [DLV-007]
 
-READY este un gate împotriva implementării pe presupuneri, nu o ceremonie de
-perfecționism. Un item este ready când necunoscutele rămase sunt suficient de mici și au
-owner, iar echipa știe ce rezultat verifică.
+READY is a gate against implementing on assumptions, not a perfectionism ceremony. An
+item is ready when the remaining unknowns are small enough and have an owner, and the
+team knows what outcome it is verifying.
 
-Condiții minime:
+Minimum conditions:
 
-- outcome și audiență clare;
-- scope și non-goals clare;
-- acceptance IDs verificabile;
-- Figma contract complet sau declarație explicită că nu există UI;
-- dependențe accesibile și contracte backend suficient de stabile;
-- privacy/security/analytics evaluate;
-- rollout și rollback concept;
-- Product, Design și Engineering owners;
-- aprobările READY înregistrate.
+- a clear outcome and audience;
+- clear scope and non-goals;
+- verifiable acceptance IDs;
+- a complete Figma contract or an explicit declaration that there is no UI;
+- accessible dependencies and sufficiently stable backend contracts;
+- privacy/security/analytics assessed;
+- a rollout and rollback concept;
+- Product, Design, and Engineering owners;
+- the READY approvals recorded.
 
-Un spike este permis pentru o necunoscută tehnică, dar are output și limită proprie. Nu
-folosim spike-ul drept pretext pentru a declara implementat behavior de produs.
+A spike is allowed for a technical unknown, but it has its own output and its own
+limit. We do not use a spike as a pretext to declare product behavior implemented.
 
-Checklist-ul separat `DefinitionOfReady.md` este forma de lucru.
+The separate `DefinitionOfReady.md` checklist is the working form.
 
 ---
 
-## 8. Planul tehnic [DLV-008]
+## 8. The technical plan [DLV-008]
 
-Planul nu trebuie să prezică fiecare linie de cod. Trebuie să reducă riscurile care,
-dacă sunt descoperite după implementare, ar schimba scope-ul sau ar invalida soluția.
+The plan does not have to predict every line of code. It has to reduce the risks that,
+if discovered after implementation, would change the scope or invalidate the solution.
 
-### Mapare obligatorie
+### Mandatory mapping
 
-Pentru fiecare acceptance ID:
+For each acceptance ID:
 
-- feature/modules afectate;
-- UI, state și navigation;
-- API, model, mapping, cache și persistence;
-- offline, retry, cancellation și failure modes;
-- analytics și operational telemetry;
-- test unit/integration/UI/runtime;
-- accessibility, localization și performance;
-- privacy/security și third-party impact;
-- feature flag, compatibilitate, rollout, abort și rollback;
-- dovada așteptată și cine o aprobă.
+- the affected feature/modules;
+- UI, state, and navigation;
+- API, model, mapping, cache, and persistence;
+- offline, retry, cancellation, and failure modes;
+- analytics and operational telemetry;
+- unit/integration/UI/runtime tests;
+- accessibility, localization, and performance;
+- privacy/security and third-party impact;
+- feature flag, compatibility, rollout, abort, and rollback;
+- the expected evidence and who approves it.
 
-Planul respectă ARCH v2.1. Dacă propune TCA într-un proiect MVVM/R, un package nou, o
-dependență care schimbă arhitectura sau o abatere de la dependency graph, decizia are
-ADR. Delivery Packet-ul leagă ADR-ul; nu îl înlocuiește.
+The plan follows ARCH v2.1. If it proposes TCA in an MVVM/R project, a new package, a
+dependency that changes the architecture, or a deviation from the dependency graph, the
+decision gets an ADR. The Delivery Packet links the ADR; it does not replace it.
 
 ### Vertical slices
 
-Preferăm o bucată care poate fi demonstrată end-to-end: UI + state + dependency + test
-+ runtime. Separarea exclusiv pe layere poate produce multe „90% complete” care nu pot
-fi folosite sau verificate.
+We prefer a piece that can be demonstrated end to end: UI + state + dependency + test
++ runtime. Splitting purely by layer can produce many "90% complete" pieces that cannot
+be used or verified.
 
 ---
 
-## 9. Loop-ul de implementare [DLV-009]
+## 9. The implementation loop [DLV-009]
 
-Pentru fiecare slice:
+For each slice:
 
-1. Selectăm acceptance IDs și nodurile/stările Figma.
-2. Confirmăm că sursele nu s-au schimbat material după READY.
-3. Implementăm conform ARCH și instrucțiunilor repo-ului.
-4. Rulăm comenzile deterministe relevante: format, lint, build, tests, runtime.
-5. Verificăm happy path, edge/failure state și accessibility aplicabilă.
-6. Capturăm dovezi atribuite build-ului/commitului.
-7. Facem review de cod, design parity și trasabilitate.
-8. Actualizăm `delivery.yml` și continuăm.
+1. Select the acceptance IDs and the Figma nodes/states.
+2. Confirm that the sources have not changed materially since READY.
+3. Implement according to ARCH and the repository instructions.
+4. Run the relevant deterministic commands: format, lint, build, tests, runtime.
+5. Verify the happy path, edge/failure states, and applicable accessibility.
+6. Capture evidence attributed to the build/commit.
+7. Review the code, design parity, and traceability.
+8. Update `delivery.yml` and continue.
 
-Aplicația rămâne buildable și, pe cât posibil, rulabilă între slices. Feature flags pot
-separa integrarea de expunere, dar nu trebuie să creeze combinații neverificate sau cod
-fără owner care rămâne ascuns permanent.
+The app stays buildable and, as far as possible, runnable between slices. Feature flags
+may separate integration from exposure, but they must not create unverified
+combinations or ownerless code that stays hidden permanently.
 
 ---
 
-## 10. Quality gates și evidence matrix [DLV-010]
+## 10. Quality gates and the evidence matrix [DLV-010]
 
-„Testele sunt verzi” este necesar, dar incomplet. Fiecare tip de dovadă răspunde la
-altă întrebare:
+"The tests are green" is necessary but incomplete. Each kind of evidence answers a
+different question:
 
-| Dovadă | Poate demonstra | Nu poate demonstra singură |
+| Evidence | Can prove | Cannot prove on its own |
 |---|---|---|
-| Unit test | logică și state transitions | integrarea reală sau distribuția |
-| Integration test | contracte între componente | UI și experiența completă |
-| UI test | flow repetabil în app | fidelitate completă și producție |
-| Screenshot | aspect într-o stare | behavior și interacțiune |
-| Runtime local | behavior pe build local | build-ul distribuit |
-| CI verde | setul declarat de verificări | acceptance necodificat în checks |
-| App Store approval | acceptarea build-ului de Apple | outcome funcțional pentru utilizator |
-| Telemetry proaspătă | behavior exercitat în environment | întreaga experiență fără context |
+| Unit test | logic and state transitions | real integration or distribution |
+| Integration test | contracts between components | the UI and the full experience |
+| UI test | a repeatable in-app flow | full fidelity and production |
+| Screenshot | appearance in one state | behavior and interaction |
+| Local runtime | behavior on a local build | the distributed build |
+| Green CI | the declared set of checks | acceptance not encoded in checks |
+| App Store approval | Apple's acceptance of the build | a working outcome for the user |
+| Fresh telemetry | behavior exercised in an environment | the whole experience without context |
 
-### Categoriile verificate
+### The verified categories
 
-- clean build și toolchain suportat;
-- behavior și failure modes;
-- design parity pentru stări/dispozitive relevante;
-- Dynamic Type, VoiceOver, contrast, focus/input și Reduce Motion;
-- localizare, truncation, valori locale și RTL când este suportat;
-- performance/energy/memory/network unde feature-ul le poate afecta;
+- clean build and a supported toolchain;
+- behavior and failure modes;
+- design parity for the relevant states/devices;
+- Dynamic Type, VoiceOver, contrast, focus/input, and Reduce Motion;
+- localization, truncation, locale-sensitive values, and RTL when supported;
+- performance/energy/memory/network where the feature can affect them;
 - reliability: offline, retry, duplicate action, cancellation, migrations;
-- privacy/security: date, consent, storage, logs, permissions, SDK-uri;
-- analytics: schema, consent, deduplicare și ingestie;
-- upgrade și backward compatibility pentru aplicația instalată.
+- privacy/security: data, consent, storage, logs, permissions, SDKs;
+- analytics: schema, consent, deduplication, and ingestion;
+- upgrade and backward compatibility for the installed app.
 
-`not applicable` este o decizie cu motiv, nu un câmp omis. Rigoarea este proporțională
-cu riscul: un text static nu primește același plan ca payments, health data sau o
-migrare persistentă.
+`not applicable` is a decision with a reason, not an omitted field. Rigor is
+proportional to risk: a static text does not get the same plan as payments, health
+data, or a persistent-store migration.
 
 ---
 
-## 11. Roluri, agenți și skills [DLV-011]
+## 11. Roles, agents, and skills [DLV-011]
 
-Rolurile sunt **capabilități logice**, nu obligația de a porni opt agenți simultan.
-O persoană sau un agent poate face analiză și implementare, dar nu poate fabrica
-approval-ul Product, Design sau Release.
+Roles are **logical capabilities**, not an obligation to start eight agents at once.
+One person or agent can do analysis and implementation, but cannot fabricate the
+Product, Design, or Release approval.
 
-### Roluri de execuție
+### Execution roles
 
-- **Orchestrator:** ține Delivery Packet-ul coerent și selectează următorul gate.
-- **Requirements analyst:** normalizează outcome-ul și acceptance IDs.
-- **Design-context agent:** extrage nodes, states, tokens, assets și detectează schimbări.
-- **iOS implementation agent:** implementează vertical slice sub ARCH.
-- **Test agent:** construiește matricea de verificare și rulează checks.
-- **Review agent:** verifică cod, arhitectură, risc și trasabilitate.
-- **Runtime verifier:** exercită aplicația și capturează dovezi.
-- **Release operator:** execută numai release-ul aprobat.
+- **Orchestrator:** keeps the Delivery Packet coherent and selects the next gate.
+- **Requirements analyst:** normalizes the outcome and the acceptance IDs.
+- **Design-context agent:** extracts nodes, states, tokens, and assets, and detects changes.
+- **iOS implementation agent:** implements the vertical slice under ARCH.
+- **Test agent:** builds the verification matrix and runs checks.
+- **Review agent:** reviews code, architecture, risk, and traceability.
+- **Runtime verifier:** exercises the app and captures evidence.
+- **Release operator:** executes only the approved release.
 
-### Ce pot face agenții autonom
+### What agents can do autonomously
 
-În limitele accesului acordat repo-ului:
+Within the access granted to them in the repository:
 
-- citesc requirements, Figma, cod, CI și telemetry;
-- creează plan, cod, tests și evidence local;
-- rulează checks deterministe;
-- actualizează Delivery Packet-ul cu fapte observate;
-- propun statusul următor sau raportează un blocker.
+- read requirements, Figma, code, CI, and telemetry;
+- create the plan, code, tests, and evidence locally;
+- run deterministic checks;
+- update the Delivery Packet with observed facts;
+- propose the next status or report a blocker.
 
-### Unde se opresc
+### Where they stop
 
-Fără autoritate umană explicită, agenții nu:
+Without explicit human authority, agents do not:
 
-- aprobă scope, design, legal/privacy sau gate waivers;
-- se auto-aprobă unde este cerut review independent;
-- schimbă signing, certificates, entitlements, App Store contracts sau production
+- approve scope, design, legal/privacy risk, or gate waivers;
+- self-approve where independent review is required;
+- change signing, certificates, entitlements, App Store contracts, or production
   credentials;
-- trimit build-ul, modifică un flag/cohort de producție, comunică utilizatorilor sau
-  șterg date;
-- ascund un check eșuat ori transformă lipsa traficului în „healthy”.
+- submit the build, change a production flag/cohort, communicate with users, or delete
+  data;
+- hide a failed check or turn the absence of traffic into "healthy".
 
 ### Skill map
 
-Loop-ul reutilizează skills canonice din ARCH v2.1:
+The loop reuses the canonical skills from ARCH v2.1:
 
 | Context | Skill |
 |---|---|
-| Implementare SwiftUI | `apple/swiftui-patterns` |
-| Refactor SwiftUI | `apple/swiftui-refactoring` |
-| Performance SwiftUI | `apple/swiftui-performance` |
+| SwiftUI implementation | `apple/swiftui-patterns` |
+| SwiftUI refactoring | `apple/swiftui-refactoring` |
+| SwiftUI performance | `apple/swiftui-performance` |
 | Concurrency | `apple/swift-concurrency` |
-| Testare | `apple/swift-testing` |
+| Testing | `apple/swift-testing` |
 | Simulator/device runtime | `apple/ios-runtime-debugging` |
 | Accessibility | `apple/apple-accessibility` |
-| Proiect TCA | `apple/tca` |
+| TCA project | `apple/tca` |
 
-Propunem patru skills noi pentru registrul companiei:
+We propose four new skills for the company registry:
 
 - `delivery/requirements-normalization`;
 - `delivery/figma-handoff`;
 - `delivery/technical-planning`;
 - `delivery/release-verification`.
 
-Până când acestea există și sunt versionate, checklist-urile din pachet sunt fallback-ul
-manual. Nu inventăm că un skill există doar fiindcă avem un ID propus. `AGENTS.md`
-mapează numele canonice la runtime-ul disponibil; `tooling/skills.yml` și `skills.lock`
-declară versiunile atunci când sistemul le suportă.
+Until these exist and are versioned, the checklists in this package are the manual
+fallback. We do not pretend a skill exists just because we have a proposed ID.
+`AGENTS.md` maps the canonical names to the available runtime; `tooling/skills.yml` and
+`skills.lock` declare the versions once the system supports them.
 
-### Tool capabilities și Tapia MCP
+### Tool capabilities and Tapia MCP
 
-Skills-urile descriu cum lucrăm. Tool-urile oferă acțiuni executabile și se declară
-separat în `tooling/tools.yml`.
+Skills describe how we work. Tools provide executable actions and are declared
+separately in `tooling/tools.yml`.
 
-- `apple/xcode-automation` este recomandat pentru build, test, diagnostics și operații
-  Xcode suportate;
-- `apple/ios-simulator-automation`, implementat prin Tapia MCP, este
-  `recommended_conditional` când agenții trebuie să exercite repetabil flow-uri UI,
-  să inspecteze accessibility tree sau să captureze dovezi locale în Simulator.
+- `apple/xcode-automation` is recommended for build, test, diagnostics, and supported
+  Xcode operations;
+- `apple/ios-simulator-automation`, implemented through Tapia MCP, is
+  `recommended_conditional` when agents need to exercise UI flows repeatably, inspect
+  the accessibility tree, or capture local evidence in the Simulator.
 
-Tapia folosește selectori semantici și `accessibilityIdentifier` stabil pentru
-controalele critice. Îl rulăm într-un Simulator izolat, cu conturi/date non-production,
-commit revizuit fixat și aprobări restrânse. Păstrăm XCUITest pentru suitele de regresie
-și CI. Un flow Tapia reușit demonstrează numai interacțiunea observată pe build-ul și
-Simulatorul declarat; nu acordă approval și nu demonstrează distribuția sau producția.
-Ghidul operațional se află în `docs/tooling/TapiaMCPGuide.md`.
+Tapia uses semantic selectors and stable `accessibilityIdentifier` values for critical
+controls. We run it in an isolated Simulator, with non-production accounts/data, a
+pinned reviewed commit, and narrow approvals. We keep XCUITest for the regression
+suites and CI. A successful Tapia flow proves only the interaction observed on the
+declared build and Simulator; it does not grant approval and does not prove
+distribution or production. The operational guide lives in
+`docs/tooling/TapiaMCPGuide.md`.
 
 ---
 
-## 12. Aprobări și RACI [DLV-012]
+## 12. Approvals and RACI [DLV-012]
 
-Approval înseamnă actor, rol, scope, rezultat, timestamp și eventuale condiții. Un
-emoji sau un „ok” fără context durabil nu este suficient pentru un gate protejat.
+An approval means actor, role, scope, result, timestamp, and any conditions. An emoji
+or an "ok" without durable context is not sufficient for a protected gate.
 
 Baseline:
 
-- READY: Product + Design pentru UI + Engineering;
-- PLANNED: Engineering, plus Security/Privacy când riscul o cere;
-- QA_ACCEPTED: QA/acceptance owner + Design pentru UI material;
-- RELEASE_CANDIDATE: Engineering + QA + Release, iar Product confirmă cohorta;
-- DELIVERED: Product sau Delivery owner după production verification.
+- READY: Product + Design for UI work + Engineering;
+- PLANNED: Engineering, plus Security/Privacy when the risk demands it;
+- QA_ACCEPTED: QA/acceptance owner + Design for material UI work;
+- RELEASE_CANDIDATE: Engineering + QA + Release, with Product confirming the cohort;
+- DELIVERED: Product or Delivery owner after production verification.
 
-Într-o echipă mică rolurile se pot combina, dar autoritatea rămâne explicită. Autorul
-unei schimbări cu risc ridicat nu este singurul engineering reviewer. Matricea completă
-se află în `DeliveryRACI.md`.
+In a small team the roles may combine, but the authority stays explicit. The author of
+a high-risk change is not the only engineering reviewer. The full matrix lives in
+`DeliveryRACI.md`.
 
 ### Waivers
 
-Un waiver conține:
+A waiver contains:
 
-- check-ul exact;
-- riscul și impactul;
-- motivul;
-- ownerul riscului și aprobarea sa;
-- mitigation;
-- expirare;
-- follow-up obligatoriu.
+- the exact check;
+- the risk and the impact;
+- the rationale;
+- the risk owner and their approval;
+- the mitigation;
+- an expiry;
+- a mandatory follow-up.
 
-Un agent poate redacta waiver-ul, dar nu poate produce aprobarea. Nu folosim waiver
-pentru a numi `PRODUCTION_VERIFIED` un release care nu a fost exercitat.
+An agent may draft the waiver, but cannot produce the approval. We do not use a waiver
+to call a release `PRODUCTION_VERIFIED` when it was never exercised.
 
 ---
 
-## 13. Release și rollback [DLV-013]
+## 13. Release and rollback [DLV-013]
 
-Release readiness fixează:
+Release readiness pins down:
 
-- canalul: internal, TestFlight, phased App Store sau full production;
-- environment-ul și audiența;
-- bundle ID, version, build, commit și archive/CI run;
-- flags, defaults, prerequisites și operator;
-- metadata și compliance App Store;
-- compatibilitatea cu API/schema și versiunile vechi instalate;
-- health signals, praguri de abort și incident owner;
-- rollback sau mitigation concretă.
+- the channel: internal, TestFlight, phased App Store, or full production;
+- the environment and the audience;
+- bundle ID, version, build, commit, and archive/CI run;
+- flags, defaults, prerequisites, and the operator;
+- App Store metadata and compliance;
+- compatibility with the API/schema and with older installed versions;
+- health signals, abort thresholds, and the incident owner;
+- a concrete rollback or mitigation.
 
-Pe mobile, rollback-ul nu este echivalent cu web deploy rollback. Nu putem conta că
-toți utilizatorii vor instala imediat o versiune nouă și, în general, nu putem forța
-downgrade-ul binarului instalat. De aceea:
+On mobile, rollback is not equivalent to a web deploy rollback. We cannot count on all
+users immediately installing a new version and, in general, we cannot force a downgrade
+of the installed binary. Therefore:
 
-- serviciile rămân backward compatible pe fereastra declarată;
-- migrations sunt forward-safe și tolerant citibile unde este necesar;
-- feature flags permit dezactivarea comportamentului riscant;
-- server-side fallback și kill switch au owner;
-- hotfix-ul este ultima linie, nu singurul plan.
+- services stay backward compatible for the declared window;
+- migrations are forward-safe and tolerantly readable where necessary;
+- feature flags allow the risky behavior to be disabled;
+- the server-side fallback and kill switch have an owner;
+- a hotfix is the last line of defense, not the only plan.
 
-Checklist-ul `ReleaseAndProductionVerificationChecklist.md` este forma executabilă.
+The `ReleaseAndProductionVerificationChecklist.md` checklist is the executable form.
 
 ---
 
 ## 14. Production verification [DLV-014]
 
-Verificarea folosește build-ul distribuit în environment-ul declarat. Un debug build
-local poate demonstra implementarea, dar nu poate demonstra signing, configuration,
-distribution, flags sau dependențele de producție. Același lucru este valabil pentru
-un flow reușit în Tapia, Simulator, preview sau XCUITest local.
+Verification uses the distributed build in the declared environment. A local debug
+build can prove the implementation, but it cannot prove signing, configuration,
+distribution, flags, or the production dependencies. The same holds for a successful
+flow in Tapia, the Simulator, a preview, or local XCUITest.
 
-### Dovezi minime proaspete
+### Minimum fresh evidence
 
-- version/build/commit și flag state efectiv;
-- install sau upgrade, launch și critical-path smoke pe device reprezentativ;
-- răspunsurile dependențelor și backend-ului relevant;
-- crash/error/performance în intervalul verificării;
-- evenimentul analytics așteptat ajuns în destinație, respectând consent;
-- output specific acceptance-ului;
-- verifier, timestamp, cohortă și links.
+- version/build/commit and the effective flag state;
+- install or upgrade, launch, and a critical-path smoke test on a representative device;
+- the responses of the relevant dependencies and backend;
+- crash/error/performance for the verification window;
+- the expected analytics event arriving at its destination, respecting consent;
+- acceptance-specific output;
+- verifier, timestamp, cohort, and links.
 
-### Cum interpretăm lipsa erorilor
+### How we interpret the absence of errors
 
-- trafic valid + fără erori relevante poate susține „healthy”;
-- fără erori + fără trafic înseamnă „not exercised”;
-- datele vechi de la alt build nu verifică release-ul curent;
-- install, launch, backend request, analytics ingestion și outcome sunt semnale
-  distincte.
+- valid traffic + no relevant errors can support "healthy";
+- no errors + no traffic means "not exercised";
+- stale data from another build does not verify the current release;
+- install, launch, backend request, analytics ingestion, and outcome are distinct
+  signals.
 
-Dacă feature-ul are trafic natural prea mic, folosim un cont/control test autorizat
-sau un smoke sintetic sigur. Dacă nici acesta nu este posibil, statusul rămâne
-`RELEASED`, iar blocker-ul pentru `PRODUCTION_VERIFIED` este raportat onest.
+If the feature has too little natural traffic, we use an authorized test
+account/control or a safe synthetic smoke test. If even that is not possible, the
+status stays `RELEASED`, and the blocker for `PRODUCTION_VERIFIED` is reported
+honestly.
 
 ---
 
 ## 15. Definition of Delivered [DLV-015]
 
-`DELIVERED` înseamnă că:
+`DELIVERED` means that:
 
-1. build-ul/configurația este accesibilă audienței declarate;
-2. toate acceptance criteria in scope au trecut sau au o dispoziție non-blocking
-   aprobată și vizibilă Product;
-3. critical path a fost exercitat proaspăt pe build-ul distribuit;
-4. design, accessibility, localization, performance, privacy, security și analytics au
-   trecut unde sunt aplicabile;
-5. telemetry a fost generată și ingestia verificată;
-6. nu există P0/P1, release blocker sau waiver expirat;
-7. release, rollback, limitări și approvals sunt legate;
-8. Product/Delivery owner a acceptat rezultatul pentru audiență.
+1. the build/configuration is accessible to the declared audience;
+2. every in-scope acceptance criterion passed or has an approved non-blocking
+   disposition visible to Product;
+3. the critical path was freshly exercised on the distributed build;
+4. design, accessibility, localization, performance, privacy, security, and analytics
+   passed where applicable;
+5. telemetry was generated and its ingestion verified;
+6. there is no P0/P1, release blocker, or expired waiver;
+7. the release, rollback, limitations, and approvals are linked;
+8. the Product/Delivery owner accepted the outcome for the audience.
 
-Nu spunem „delivered” pentru:
+We do not say "delivered" for:
 
-- cod local complet;
-- PR deschis sau merged;
-- build arhivat;
-- App Review aprobat;
-- build `RELEASED` dar neexercitat;
-- absența incidentelor într-o fereastră fără trafic.
+- locally complete code;
+- an open or merged PR;
+- an archived build;
+- an approved App Review;
+- a `RELEASED` but unexercised build;
+- the absence of incidents in a window with no traffic.
 
-Checklist-ul `DefinitionOfDelivered.md` trebuie completat înaintea tranziției finale.
+The `DefinitionOfDelivered.md` checklist must be completed before the final transition.
 
 ---
 
-## 16. Feedback loop și îmbunătățire [DLV-016]
+## 16. Feedback loop and improvement [DLV-016]
 
-Delivery nu închide învățarea. După release:
+Delivery does not close the learning. After release:
 
-- feedback-ul și defectele devin itemuri legate;
-- o schimbare materială în requirements/Figma creează revision și impact review;
-- regresiile folosesc `REOPENED`;
-- incidentele sunt legate de build, flags și Delivery Packet;
-- lecțiile reutilizabile intră în standard, bootstrap, skills sau regression tests.
+- feedback and defects become linked items;
+- a material change in requirements/Figma creates a revision and an impact review;
+- regressions use `REOPENED`;
+- incidents are linked to the build, the flags, and the Delivery Packet;
+- reusable lessons flow into the standard, the bootstrap, skills, or regression tests.
 
-### Metrici sănătoase
+### Healthy metrics
 
-- lead time READY → DELIVERED;
-- timp blocat și cele mai frecvente cauze;
+- READY → DELIVERED lead time;
+- blocked time and the most frequent causes;
 - first-pass rate per gate;
-- churn de requirements/design după READY;
-- escaped defects și change failure rate;
-- timp de rollback/mitigation;
-- latență RELEASED → PRODUCTION_VERIFIED;
-- procent de acceptance cu dovadă automată și runtime.
+- requirements/design churn after READY;
+- escaped defects and change failure rate;
+- rollback/mitigation time;
+- RELEASED → PRODUCTION_VERIFIED latency;
+- percentage of acceptance criteria with automated and runtime evidence.
 
-Nu măsurăm productivitatea individuală prin număr de commits, linii, prompts sau tokeni.
-O scădere a lead time-ului nu este progres dacă au crescut escaped defects, waivers sau
-zonele fără telemetry.
-
----
-
-## 17. Ce automatizăm și ce rămâne judecată umană
-
-### Automatizabil
-
-- validarea `delivery.yml`;
-- consistența ID-urilor DLV între documente;
-- existența acceptance IDs și mapping-ului către tests;
-- build, lint, tests, coverage policy și artifact capture;
-- detectarea schimbării node/version Figma când integrarea permite;
-- colectarea build/commit/release facts;
-- verificarea existenței approvals și evidence links;
-- interogări de health și analytics definite în plan;
-- propunerea următorului status.
-
-### Rămâne cu autoritate umană
-
-- aprobarea problemei, outcome-ului și scope-ului;
-- trade-off-uri de design și experiență;
-- acceptarea riscului privacy/security/legal;
-- waiver-ul unui gate;
-- decizia de release, cohortă și comunicare;
-- acceptarea finală a valorii livrate.
-
-Automatizarea produce fapte și recomandări. Autoritatea explicită produce aprobări.
+We do not measure individual productivity by the number of commits, lines, prompts, or
+tokens. A drop in lead time is not progress if escaped defects, waivers, or the areas
+without telemetry have grown.
 
 ---
 
-## 18. Integrarea în repo
+## 17. What we automate and what stays human judgment
 
-Un repo pregătit pentru acest loop oferă:
+### Automatable
+
+- validating `delivery.yml`;
+- the consistency of DLV IDs across documents;
+- the existence of acceptance IDs and of their mapping to tests;
+- build, lint, tests, coverage policy, and artifact capture;
+- detecting Figma node/version changes when the integration allows it;
+- collecting build/commit/release facts;
+- checking that approvals and evidence links exist;
+- the health and analytics queries defined in the plan;
+- proposing the next status.
+
+### Stays under human authority
+
+- approving the problem, the outcome, and the scope;
+- design and experience trade-offs;
+- accepting privacy/security/legal risk;
+- waiving a gate;
+- the release, cohort, and communication decision;
+- the final acceptance of the delivered value.
+
+Automation produces facts and recommendations. Explicit authority produces approvals.
+
+---
+
+## 18. Repository integration
+
+A repository prepared for this loop provides:
 
 ~~~text
 AGENTS.md
@@ -720,79 +724,79 @@ docs/adr/
 scripts/
 ~~~
 
-`AGENTS.md` spune rapid:
+`AGENTS.md` states at a glance:
 
-- comenzile build/test/lint/format/runtime;
-- scheme, destinations și toolchain;
-- cum se accesează design context;
-- cum se validează Delivery Packet-ul;
-- ce skills/capabilități sunt instalate;
-- ce MCP/tool capabilities sunt active, condițiile și fallback-urile lor;
-- ce acțiuni sunt protejate;
-- unde se găsesc CI, release și telemetry;
-- deviațiile locale și ADR-urile lor.
+- the build/test/lint/format/runtime commands;
+- schemes, destinations, and toolchain;
+- how design context is accessed;
+- how the Delivery Packet is validated;
+- which skills/capabilities are installed;
+- which MCP/tool capabilities are active, their conditions, and their fallbacks;
+- which actions are protected;
+- where CI, release, and telemetry are found;
+- the local deviations and their ADRs.
 
-Bootstrap-ul proiectului trebuie să creeze această interfață înainte ca loop-ul să fie
-folosit la scară. Delivery Loop-ul nu poate compensa un repo fără build determinist,
-signing ownership, environments sau observability.
-
----
-
-## 19. Pilotul recomandat
-
-### Alegerea itemurilor
-
-Pentru v0.1 alegem:
-
-- un vertical slice UI + API de risc mediu;
-- opțional, un item mic fără UI sau un bug de producție pentru contrast;
-- fără payments/health/legal-critical ca prim experiment;
-- cu acces real la requirements, Figma, CI, TestFlight și telemetry.
-
-### Ce observăm
-
-- câmpuri care nu au owner sau sursă;
-- gates care se dublează;
-- evidence dificil de obținut;
-- statusuri care nu descriu realitatea;
-- aprobări imposibile într-o echipă mică;
-- pași pe care agenții îi pot automatiza sigur;
-- lipsuri în bootstrap, skills sau observability.
-
-### Criterii pentru v1.0
-
-- schema a funcționat pentru cel puțin două itemuri diferite;
-- fiecare status a avut semnificație clară;
-- Product, Design, Engineering, QA și Release au confirmat ownership-ul;
-- `DELIVERED` a putut fi demonstrat din dovezi, nu din memorie;
-- waivers și `not applicable` nu au devenit scurtături;
-- costul de menținere a Delivery Packet-ului este mai mic decât costul ambiguității pe
-  care o elimină.
+The project bootstrap must create this interface before the loop is used at scale. The
+Delivery Loop cannot compensate for a repository without a deterministic build, signing
+ownership, environments, or observability.
 
 ---
 
-## 20. Guvernanță și changelog
+## 19. The recommended pilot
 
-Ownerii propuși sunt Apple Platform Team pentru integrarea tehnică și Product Delivery
-pentru lifecycle/approval. Security, Privacy, DesignOps, QA și Release revizuiesc
-secțiunile care le afectează autoritatea.
+### Choosing the items
 
-O modificare de decizie:
+For v0.1 we choose:
 
-1. actualizează handbook-ul și standardul compact în același PR;
-2. păstrează același ID `DLV-*`;
-3. actualizează schema/template/checklist-urile afectate;
-4. include impactul asupra itemurilor active și o strategie de migrare;
-5. actualizează changelog-ul.
+- one medium-risk UI + API vertical slice;
+- optionally, one small no-UI item or one production bug for contrast;
+- no payments/health/legal-critical work as the first experiment;
+- with real access to requirements, Figma, CI, TestFlight, and telemetry.
+
+### What we watch for
+
+- fields that have no owner or source;
+- gates that duplicate each other;
+- evidence that is hard to obtain;
+- statuses that do not describe reality;
+- approvals that are impossible in a small team;
+- steps that agents can automate safely;
+- gaps in the bootstrap, skills, or observability.
+
+### Criteria for v1.0
+
+- the schema worked for at least two different items;
+- every status had a clear meaning;
+- Product, Design, Engineering, QA, and Release confirmed their ownership;
+- `DELIVERED` could be demonstrated from evidence, not from memory;
+- waivers and `not applicable` did not become shortcuts;
+- the cost of maintaining the Delivery Packet is lower than the cost of the ambiguity
+  it removes.
+
+---
+
+## 20. Governance and changelog
+
+The proposed owners are the Apple Platform Team for technical integration and Product
+Delivery for lifecycle/approval. Security, Privacy, DesignOps, QA, and Release review
+the sections that affect their authority.
+
+A decision change:
+
+1. updates the handbook and the compact standard in the same PR;
+2. keeps the same `DLV-*` ID;
+3. updates the affected schema/templates/checklists;
+4. includes the impact on active items and a migration strategy;
+5. updates the changelog.
 
 ### Changelog v0.1
 
-- a definit unitatea de livrare și target audience;
-- a introdus contractele requirements și Figma;
-- a introdus Delivery Packet și schema de status;
-- a separat CODE_COMPLETE, MERGED, RELEASED, PRODUCTION_VERIFIED și DELIVERED;
-- a definit gates, evidence, approvals, waivers și RACI;
-- a delimitat autonomia agenților de autoritatea umană;
-- a legat skills Apple existente și a propus patru capabilities de delivery;
-- a introdus release/rollback și regula „no traffic is not health”;
-- a definit feedback loop și metricile pentru pilot.
+- defined the unit of delivery and the target audience;
+- introduced the requirements and Figma contracts;
+- introduced the Delivery Packet and the status schema;
+- separated CODE_COMPLETE, MERGED, RELEASED, PRODUCTION_VERIFIED, and DELIVERED;
+- defined gates, evidence, approvals, waivers, and RACI;
+- separated agent autonomy from human authority;
+- linked the existing Apple skills and proposed four delivery capabilities;
+- introduced release/rollback and the "no traffic is not health" rule;
+- defined the feedback loop and the pilot metrics.

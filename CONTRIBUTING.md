@@ -16,6 +16,13 @@ framework or an unreviewable policy dump.
   screenshots, or internal tokens as evidence.
 - Run `make validate` before requesting review.
 
+## Language
+
+The entire repository is authored in English — templates, schemas, scripts, standards,
+and handbooks alike. The bootstrap copies artifacts verbatim into client projects, so
+no Romanian (or other non-English) text may enter any file. Localized copies, if ever
+needed, live outside this repository; the English set is the normative one.
+
 ## Decision changes
 
 Every normative change states:

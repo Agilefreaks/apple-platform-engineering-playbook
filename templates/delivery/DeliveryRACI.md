@@ -1,96 +1,96 @@
 # Delivery Loop RACI
 
-Matrice baseline pentru Apple Team. Se adaptează proiectului fără a elimina ownerul
-unic de decizie și fără a transforma un agent într-o autoritate umană implicită.
+Baseline matrix for the Apple Team. Adapt it to the project without removing the single
+decision owner and without turning an agent into an implicit human authority.
 
-## Legendă
+## Legend
 
-- **A — Accountable:** aprobă rezultatul; ideal un singur A pe activitate.
-- **R — Responsible:** execută munca.
-- **C — Consulted:** oferă input înaintea deciziei.
-- **I — Informed:** primește rezultatul/decizia.
-- **—:** fără responsabilitate implicită.
+- **A — Accountable:** approves the result; ideally a single A per activity.
+- **R — Responsible:** performs the work.
+- **C — Consulted:** provides input before the decision.
+- **I — Informed:** receives the result/decision.
+- **—:** no implicit responsibility.
 
-## Roluri
+## Roles
 
-| Rol | Responsabilitate principală |
+| Role | Primary responsibility |
 |---|---|
-| Product (P) | Problemă, outcome, scope, priority, target audience, acceptance final |
-| Design (D) | Figma contract, UX, copy, design parity și design accessibility intent |
-| Engineering (E) | Arhitectură, plan tehnic, implementare, code quality și technical risk |
-| QA (Q) | Test strategy, acceptance execution, exploratory quality și defect disposition |
-| Security/Privacy/Legal (S) | Aprobarea riscului în domeniul lor, când este declanșată |
-| Release (R) | Signing/release readiness, distribuție, cohortă operațională și rollback execution |
-| Analytics/Operations (O) | Measurement contract, telemetry, dashboards și production evidence |
-| Delivery owner (L) | Coerența Delivery Packet-ului, gates, status history și follow-up |
+| Product (P) | Problem, outcome, scope, priority, target audience, final acceptance |
+| Design (D) | Figma contract, UX, copy, design parity, and design accessibility intent |
+| Engineering (E) | Architecture, technical plan, implementation, code quality, and technical risk |
+| QA (Q) | Test strategy, acceptance execution, exploratory quality, and defect disposition |
+| Security/Privacy/Legal (S) | Risk approval within their domain, when triggered |
+| Release (R) | Signing/release readiness, distribution, operational cohort, and rollback execution |
+| Analytics/Operations (O) | Measurement contract, telemetry, dashboards, and production evidence |
+| Delivery owner (L) | Delivery Packet coherence, gates, status history, and follow-up |
 
-## Matrice baseline
+## Baseline matrix
 
-| Activitate / Gate | P | D | E | Q | S | R | O | L |
+| Activity / Gate | P | D | E | Q | S | R | O | L |
 |---|---|---|---|---|---|---|---|---|
-| Definește problemă/outcome/scope | A/R | C | C | C | C | I | C | R |
-| Scrie acceptance criteria | A | C | C | R | C | I | C | R |
-| Aprobă Figma contract | C | A/R | C | C | C | I | — | R |
-| Declară target audience | A/R | I | C | C | C | C | C | R |
-| Evaluează privacy/security/legal | C | C | R | C | A/R | I | C | I |
-| Gate READY | A | A pentru UI | A | C | C după risc | I | C | R |
-| Scrie plan tehnic | C | C | A/R | C | C | C | C | I |
-| Aprobă arhitectura / ADR | I | C | A/R | C | C | I | — | I |
-| Implementează vertical slice | I | C | A/R | C | C | I | C | I |
+| Define problem/outcome/scope | A/R | C | C | C | C | I | C | R |
+| Write acceptance criteria | A | C | C | R | C | I | C | R |
+| Approve Figma contract | C | A/R | C | C | C | I | — | R |
+| Declare target audience | A/R | I | C | C | C | C | C | R |
+| Assess privacy/security/legal | C | C | R | C | A/R | I | C | I |
+| Gate READY | A | A for UI | A | C | C based on risk | I | C | R |
+| Write technical plan | C | C | A/R | C | C | C | C | I |
+| Approve architecture / ADR | I | C | A/R | C | C | I | — | I |
+| Implement vertical slice | I | C | A/R | C | C | I | C | I |
 | Code review | I | C | A/R | C | C | I | — | I |
 | Design parity review | C | A/R | R | C | C | I | — | I |
-| Accessibility verification | I | A pentru intent | R | A/R pentru verificare | C | I | — | I |
-| Test strategy și execuție | C | C | R | A/R | C | I | C | I |
-| Defect disposition înainte de release | A | C | R | R | C | C | I | I |
-| Gate QA_ACCEPTED | C | A pentru UI material | C | A/R | C | I | I | R |
+| Accessibility verification | I | A for intent | R | A/R for verification | C | I | — | I |
+| Test strategy and execution | C | C | R | A/R | C | I | C | I |
+| Defect disposition before release | A | C | R | R | C | C | I | I |
+| Gate QA_ACCEPTED | C | A for material UI | C | A/R | C | I | I | R |
 | Measurement/telemetry readiness | C | I | R | C | C | I | A/R | I |
-| Rollout și abort thresholds | A | I | C | C | C | A/R | R | I |
-| Rollback plan | I | I | A/R tehnic | C | C | R operațional | C | I |
-| Gate RELEASE_CANDIDATE | C | C | A | A | C după risc | A/R | C | R |
-| Execută release/flag/cohort | I | I | C | I | I | A/R | C | I |
+| Rollout and abort thresholds | A | I | C | C | C | A/R | R | I |
+| Rollback plan | I | I | A/R technical | C | C | R operational | C | I |
+| Gate RELEASE_CANDIDATE | C | C | A | A | C based on risk | A/R | C | R |
+| Execute release/flag/cohort | I | I | C | I | I | A/R | C | I |
 | Production verification | I | C | R | R | C | C | A/R | R |
-| Declară DELIVERED | A | C | C | C | C | C | C | R |
+| Declare DELIVERED | A | C | C | C | C | C | C | R |
 | Incident / mitigation | I | I | R | C | C | A | R | I |
 | Reopen / follow-up | A | C | C | C | C | I | C | R |
 
-În tabelele cu mai mulți `A`, fiecare A aprobă numai domeniul său. Delivery ownerul nu
-poate substitui aprobarea Product, Design, Security sau Release.
+In rows with multiple `A`s, each A approves only its own domain. The Delivery owner
+cannot substitute for Product, Design, Security, or Release approval.
 
-## Echipe mici
+## Small teams
 
-Rolurile pot fi deținute de aceeași persoană, cu următoarele guardrails:
+Roles may be held by the same person, with the following guardrails:
 
-- Product authority și release execution rămân explicit atribuite.
-- Pentru risc high/critical, autorul codului nu este unicul engineering reviewer.
-- Security/Privacy/Legal approval nu este absorbit informal de Engineering.
-- QA poate fi o responsabilitate partajată, dar acceptance evidence are owner.
-- Orice rol combinat este declarat în `owners`; nu îl deducem din lipsa unui nume.
+- Product authority and release execution remain explicitly assigned.
+- For high/critical risk, the code author is not the only engineering reviewer.
+- Security/Privacy/Legal approval is not informally absorbed by Engineering.
+- QA may be a shared responsibility, but acceptance evidence has an owner.
+- Any combined role is declared in `owners`; we do not infer it from the absence of a name.
 
-## Agenți AI
+## AI agents
 
-Un agent poate fi `R` pentru analiză, implementare, testare, documentare și colectare de
-dovezi. Un agent poate recomanda o decizie și poate înregistra o aprobare autentică
-venită de la owner.
+An agent may be `R` for analysis, implementation, testing, documentation, and evidence
+collection. An agent may recommend a decision and may record a genuine approval that
+came from the owner.
 
-Un agent nu devine `A` pentru:
+An agent does not become `A` for:
 
-- scope și product acceptance;
+- scope and product acceptance;
 - design acceptance;
 - privacy/security/legal risk acceptance;
-- gate waiver;
-- signing, release sau production flag authority;
-- declarația finală Delivered.
+- gate waivers;
+- signing, release, or production flag authority;
+- the final Delivered declaration.
 
-Un agent nu se prezintă drept reviewer independent al propriului output. Dacă același
-agent rulează un review tehnic, rezultatul este o auto-verificare până când policy-ul
-proiectului îl acceptă explicit sau intervine un reviewer independent.
+An agent does not present itself as an independent reviewer of its own output. If the
+same agent runs a technical review, the result is a self-check until the project's
+policy explicitly accepts it or an independent reviewer steps in.
 
-## Adaptarea matricei
+## Adapting the matrix
 
-Orice proiect poate adăuga roluri precum Backend, Data, Support sau Client. Adaptarea:
+Any project may add roles such as Backend, Data, Support, or Client. The adaptation:
 
-1. păstrează un owner clar pentru fiecare gate;
-2. documentează rolurile combinate;
-3. nu elimină approvals cerute de nivelul de risc;
-4. este legată din `AGENTS.md` sau Delivery Packet;
-5. are owner și dată de review.
+1. keeps a clear owner for every gate;
+2. documents combined roles;
+3. does not remove approvals required by the risk level;
+4. is linked from `AGENTS.md` or the Delivery Packet;
+5. has an owner and a review date.
