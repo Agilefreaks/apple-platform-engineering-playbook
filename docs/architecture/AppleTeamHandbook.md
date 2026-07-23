@@ -908,6 +908,27 @@ universal variant (Single Scale) in the catalog instead of 1x/2x/3x triplets, SV
 enable Preserve Vector Data when they render at more than one size, and views size
 images explicitly rather than relying on intrinsic size.
 
+Reach every catalog color and image through the compiler-generated asset symbols,
+never a stringly-typed initializer. Keep the `Generate Swift Asset Symbol
+Extensions` build setting on (the Xcode 15+ default) so Xcode emits a typed symbol
+per asset. DesignSystem is the one place those symbols are referenced; features
+consume the semantic wrapper:
+
+~~~swift
+extension Color {
+    static let brandPurple = Color(.brandPurple)   // generated ColorResource symbol
+}
+
+extension Image {
+    static let logo = Image(.logo)                 // generated ImageResource symbol
+}
+~~~
+
+We do not use `Color("BrandPurple")` or `Image("Logo")`. The string form fails
+silently to a fallback when an asset is renamed or removed; the generated symbol
+fails the build instead. Routing through DesignSystem also makes an asset rename a
+one-line change rather than a project-wide find-and-replace of magic strings.
+
 DesignSystem holds the components with at least two real consumers, or those defined
 explicitly as product primitives.
 

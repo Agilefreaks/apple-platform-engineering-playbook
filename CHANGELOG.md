@@ -4,6 +4,11 @@ All notable changes to the complete playbook package are recorded here.
 
 ## Unreleased
 
+- Required compiler-generated asset symbols for catalog colors and images
+  (`Color(.brandPurple)`, `Image(.logo)`) and banned the stringly-typed
+  initializers (`Color("BrandPurple")`, `Image("Logo")`) as a review-blocking
+  violation, with `Generate Swift Asset Symbol Extensions` kept enabled. Updated
+  the Architecture Standard (ARCH-014) and the Handbook DesignSystem section.
 - Recorded the explicit Figma→Xcode asset export rule across the delivery and
   architecture documents: export SVG whenever Figma renders the artwork faithfully
   as vector, otherwise PNG at 3x only; every Asset Catalog image set holds one

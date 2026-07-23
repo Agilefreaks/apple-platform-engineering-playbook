@@ -368,6 +368,12 @@ Logging:
 ## Design system and accessibility [ARCH-014]
 
 - Colors, fonts, spacing tokens, and images come from assets/tokens, not feature literals.
+- Reference asset catalog colors and images through the compiler-generated asset
+  symbols (`Color(.brandPurple)`, `Image(.logo)`), never the stringly-typed
+  initializers (`Color("BrandPurple")`, `Image("Logo")`). Keep the `Generate Swift
+  Asset Symbol Extensions` build setting enabled so a renamed or deleted asset fails
+  the build instead of falling back at runtime. String-based lookups are a
+  review-blocking violation.
 - Image assets export from design as SVG when the artwork is faithfully vector,
   otherwise as PNG at 3x; each image set is one universal Single Scale variant
   (no 1x/2x/3x triplets) and views size images explicitly.
