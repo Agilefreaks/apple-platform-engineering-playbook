@@ -57,6 +57,10 @@
 | Copy | | String Catalog key/context | | |
 | Asset | | Asset Catalog/remote resource | | |
 
+Asset export default: SVG when Figma exports the artwork faithfully as vector,
+otherwise PNG at 3x; the Asset Catalog image set uses one universal Single Scale
+variant, not 1x/2x/3x.
+
 ## Accepted deviations
 
 | ID | Design expectation | Implemented behavior | Reason | Approver | Evidence |

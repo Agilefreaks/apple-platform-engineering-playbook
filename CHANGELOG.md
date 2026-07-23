@@ -2,6 +2,16 @@
 
 All notable changes to the complete playbook package are recorded here.
 
+## Unreleased
+
+- Recorded the explicit Figma→Xcode asset export rule across the delivery and
+  architecture documents: export SVG whenever Figma renders the artwork faithfully
+  as vector, otherwise PNG at 3x only; every Asset Catalog image set holds one
+  universal Single Scale variant (no 1x/2x/3x triplets) and views size images
+  explicitly. Updated the Delivery Loop Standard/Handbook, Architecture
+  Standard/Handbook, the Figma Definition of Ready checklist, and the design-map
+  template.
+
 ## 0.2.2 — 2026-07-21
 
 - Added `templates/project/CLAUDE.template.md` and taught the bootstrap to install it

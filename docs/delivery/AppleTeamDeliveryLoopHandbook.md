@@ -235,6 +235,16 @@ The design handoff identifies:
 - the final copy and who approves changes to it;
 - interactions, navigation, and transitions that a static frame cannot show.
 
+For asset export we apply one default rule: export SVG whenever Figma reproduces
+the artwork faithfully as vector; when it cannot — photos, complex blends, raster
+effects — export PNG at 3x only. In both cases the Xcode image set holds a single
+universal variant (Single Scale), never 1x/2x/3x triplets. Vectors stay sharp at
+any size and benefit from Preserve Vector Data when they render at more than one
+size; a 3x raster downscales cleanly on 2x displays; a single variant keeps the
+catalog small and removes per-scale export churn. Because a single-scale asset
+carries no scale metadata, views size images explicitly and never rely on
+intrinsic size.
+
 ### Changes after READY
 
 A minor cosmetic change can be recorded without resetting the whole flow. A material

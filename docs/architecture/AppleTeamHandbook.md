@@ -902,6 +902,12 @@ The asset catalog/tokens hold:
 - custom images and symbols;
 - spacing/radius/elevation when the product standardizes them.
 
+Image assets follow one export rule from Figma: SVG whenever the artwork exports
+faithfully as vector, otherwise PNG at 3x only. Each image set keeps a single
+universal variant (Single Scale) in the catalog instead of 1x/2x/3x triplets, SVGs
+enable Preserve Vector Data when they render at more than one size, and views size
+images explicitly rather than relying on intrinsic size.
+
 DesignSystem holds the components with at least two real consumers, or those defined
 explicitly as product primitives.
 

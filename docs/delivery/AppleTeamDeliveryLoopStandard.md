@@ -104,6 +104,11 @@ Before READY, design input MUST include:
 - navigation/prototype behavior, ownership of design parity, and accepted deviations;
 - an explicit design-change policy after READY.
 
+Asset export rule: assets MUST export from Figma as SVG whenever Figma renders the
+artwork faithfully as vector; otherwise as PNG at 3x only. Each Asset Catalog image
+set MUST hold one universal Single Scale variant — never 1x/2x/3x triplets — and
+views size images explicitly instead of relying on intrinsic size.
+
 Node IDs and review timestamp prevent a silently changed Figma file from becoming an
 unreviewed requirement. A material design change after READY returns the item to an
 appropriate earlier gate.

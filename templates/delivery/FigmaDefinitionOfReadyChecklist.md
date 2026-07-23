@@ -104,7 +104,13 @@ if it has no separate frame.
 ## 8. Assets
 
 - [ ] Every asset has a source, an owner, and a license/usage right.
-- [ ] The export format is appropriate: vector/raster, scale, gamut, dark variant.
+- [ ] Export follows the default rule: SVG whenever Figma exports the artwork
+      faithfully as vector; otherwise PNG at 3x only.
+- [ ] Every image set is one universal Single Scale variant in the Asset Catalog —
+      no 1x/2x/3x triplets — and views size images explicitly.
+- [ ] SVG image sets enable Preserve Vector Data when the artwork renders at more
+      than one size (Dynamic Type, multiple placements).
+- [ ] Gamut and dark variants are declared where the design requires them.
 - [ ] Names and variants are mapped to the Asset Catalog.
 - [ ] Decorative versus informative images are identified for accessibility.
 - [ ] There are no secrets, real data, or PII in assets/mockups.

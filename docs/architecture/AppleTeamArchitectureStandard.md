@@ -368,6 +368,9 @@ Logging:
 ## Design system and accessibility [ARCH-014]
 
 - Colors, fonts, spacing tokens, and images come from assets/tokens, not feature literals.
+- Image assets export from design as SVG when the artwork is faithfully vector,
+  otherwise as PNG at 3x; each image set is one universal Single Scale variant
+  (no 1x/2x/3x triplets) and views size images explicitly.
 - Promote UI to DesignSystem after a second consumer or a product-wide token decision.
 - Support Dynamic Type without truncating critical content.
 - Provide VoiceOver labels, values, hints, and logical focus order.
