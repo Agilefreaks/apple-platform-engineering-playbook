@@ -49,6 +49,7 @@ then promote it to v1.0.
 | DLV-014 | Production verification | We verify the distributed build with fresh evidence; the absence of traffic does not prove health. |
 | DLV-015 | Delivered | The outcome is available to the declared audience, acceptance is verified, and no release blocker remains. |
 | DLV-016 | Feedback loop | Evidence, defects, design changes, and metrics create new inputs without rewriting history. |
+| DLV-017 | Parallel execution | When work fans out across concurrent workers, each owns a dedicated Simulator (unique UDID) and never runs destructive lifecycle actions on a device it does not own. |
 
 ---
 
@@ -538,6 +539,27 @@ suites and CI. A successful Tapia flow proves only the interaction observed on t
 declared build and Simulator; it does not grant approval and does not prove
 distribution or production. The operational guide lives in
 `docs/tooling/TapiaMCPGuide.md`.
+
+### Parallel execution and shared resources [DLV-017]
+
+Roles being logical capabilities does not mean concurrent workers are free of each
+other. A Simulator is a single-writer, stateful resource per UDID. When we do fan out —
+several agents, worktrees, or loop iterations running at once — they all default to the
+same booted Simulator, overwrite each other's state, and each triggers a boot or
+restart. That contention degrades into a restart thrash loop that slows down every
+worker in the fleet.
+
+The rule is isolation: each concurrent worker gets its own dedicated Simulator with a
+unique UDID, taken from a pool the orchestrator provisions up front (for example with
+`xcrun simctl clone`). Every operation — Tapia targeting, `xcrun simctl`, and the
+`xcodebuild -destination` — is pinned to that UDID rather than to "the booted
+Simulator", and a worker never restarts, shuts down, erases, or re-boots a device it
+does not own. Runtime evidence names the assigned UDID, and the orchestrator, not the
+worker, tears the pool down.
+
+When a per-worker pool is not available, do not share one device concurrently. Instead
+serialize Simulator access into a single Runtime-verifier lane while build, lint, and
+test continue to fan out. The precise mechanics live in `docs/tooling/TapiaMCPGuide.md`.
 
 ---
 

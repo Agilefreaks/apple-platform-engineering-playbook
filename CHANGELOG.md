@@ -4,6 +4,13 @@ All notable changes to the complete playbook package are recorded here.
 
 ## Unreleased
 
+- Added decision DLV-017 (Parallel execution and shared-resource isolation): when work
+  fans out across concurrent workers, each owns a dedicated Simulator with a unique UDID,
+  pins every operation to it, and never runs destructive lifecycle actions (restart,
+  shutdown, erase, re-boot) on a device it does not own — preventing the shared-Simulator
+  restart thrash loop. Documented the mechanics in the Tapia MCP Guide, mirrored the
+  guardrails in `tooling/tools.yml`, and updated the decision-ID validator. Updated the
+  Delivery Loop Standard (DLV-017) and Handbook together.
 - Required compiler-generated asset symbols for catalog colors and images
   (`Color(.brandPurple)`, `Image(.logo)`) and banned the stringly-typed
   initializers (`Color("BrandPurple")`, `Image("Logo")`) as a review-blocking

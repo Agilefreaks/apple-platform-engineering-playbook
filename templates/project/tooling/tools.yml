@@ -49,6 +49,8 @@ capabilities:
       - Prefer accessibilityIdentifier selectors over labels or coordinates.
       - Auto-accept is allowed only for a bounded simulator-only session.
       - Do not treat screenshots or flow success as PRODUCTION_VERIFIED or DELIVERED.
+      - In parallel runs each concurrent worker uses its own dedicated Simulator UDID and pins every operation to it.
+      - Never restart, shut down, erase, or re-boot a shared Simulator during a parallel session.
     fallbacks:
       - XCUITest for durable regression checks.
       - xcrun simctl and idb for diagnostics and recovery.

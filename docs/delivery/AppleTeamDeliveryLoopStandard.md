@@ -64,6 +64,7 @@ is not automatically a delivered outcome.
 | DLV-014 | Production verification | Verify the distributed build and critical path using fresh evidence; no traffic is not evidence of health. |
 | DLV-015 | Delivered | Delivered means available to the target audience, acceptance verified, telemetry exercised, and no unresolved release blocker. |
 | DLV-016 | Feedback loop | Production evidence, defects, design drift, and delivery metrics create new inputs; history is never silently rewritten. |
+| DLV-017 | Parallel execution | Each concurrent worker owns a dedicated Simulator (unique UDID) and pins every operation to it; no worker runs destructive lifecycle actions on a device it does not own. |
 
 ## 3. Required inputs [DLV-002] [DLV-003] [DLV-004]
 
@@ -338,6 +339,30 @@ the session isolated from production data, and capture build/configuration/desti
 with the result. Tapia does not replace XCUITest regression coverage, CI, real-device
 testing, release checks, or protected approvals. Use the manifest fallbacks and report
 the reduced evidence level when the capability is unavailable.
+
+### Parallel execution and shared-resource isolation [DLV-017]
+
+A Simulator is a single-writer, stateful resource per UDID. When work fans out across
+concurrent workers (agents, worktrees, loop iterations), they MUST NOT share one booted
+device: implicit "current Simulator" access makes workers overwrite each other and can
+trigger a boot/restart thrash loop that stalls the whole fleet.
+
+Rules for concurrent runs:
+
+- Each concurrent worker owns exactly one dedicated Simulator device with a unique UDID,
+  provisioned up front into a pool sized to the fan-out width (for example
+  `xcrun simctl clone` or `create` plus `boot`). The orchestrator owns pool lifecycle;
+  workers do not create or tear down shared devices.
+- Every Simulator operation is pinned to the owned UDID — Tapia target selection,
+  `xcrun simctl <op> <UDID>`, and `xcodebuild -destination 'id=<UDID>'`. A worker never
+  acts on the booted Simulator implicitly.
+- A worker MUST NOT run `restart`, `shutdown`, `erase`, or re-`boot` on a device it does
+  not own. Destructive lifecycle actions on a shared device are prohibited during a
+  parallel session.
+- Runtime evidence records the assigned UDID alongside the Simulator model, OS, and build.
+- Teardown is the orchestrator's responsibility at end of session, not the worker's.
+- Fallback when a per-worker device pool cannot be provisioned: serialize all Simulator
+  access into a single Runtime-verifier lane; build, lint, and test still fan out.
 
 ## 11. Approvals and separation of duties [DLV-012]
 

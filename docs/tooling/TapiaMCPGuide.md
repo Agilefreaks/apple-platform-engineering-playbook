@@ -106,6 +106,45 @@ verifies. Review flow changes like test changes.
 - Keep XCUITest for durable CI regression coverage.
 - Fall back to `xcrun simctl`, `idb`, or manual verification when Tapia is unhealthy.
 
+## Parallel execution and Simulator isolation
+
+A Simulator is a single-writer, stateful resource per UDID. When work fans out across
+concurrent workers — several agents, git worktrees, or loop iterations running at once —
+they all default to the same booted Simulator. They overwrite each other's state, and
+each worker boots or restarts the device, which degrades into a restart thrash loop that
+slows down the whole fleet. This is the normative rule `DLV-017` in the Delivery Loop
+Standard; the mechanics below implement it for Tapia and the Simulator toolchain.
+
+Isolate, do not share:
+
+- Provision a Simulator pool up front, sized to the fan-out width, and assign exactly
+  one device with a unique UDID to each worker. Clone or create the devices with
+  `xcrun simctl`, then boot them:
+
+~~~bash
+# One dedicated device per worker slot; repeat per slot with a distinct name.
+udid=$(xcrun simctl clone "<base-device>" "agent-slot-1")
+xcrun simctl boot "$udid"
+~~~
+
+- Pin every Simulator operation to the worker's own UDID; never rely on "the booted
+  Simulator":
+  - Tapia — select the worker's device as the target for the session rather than the
+    default booted device;
+  - `xcrun simctl <op> "$udid" …` for install, launch, screenshot, and diagnostics;
+  - `xcodebuild -destination 'id=<UDID>'` for build and test.
+- A worker MUST NOT `restart`, `shutdown`, `erase`, or re-`boot` a device it does not
+  own. Destructive lifecycle actions on a shared device are prohibited during a parallel
+  session — they are the direct cause of the thrash loop.
+- Record the assigned UDID in the run evidence, alongside the Simulator model, OS, and
+  build already required in "Agent operating rules".
+- The orchestrator owns the pool. It provisions the devices before fan-out and shuts
+  them down or deletes them after the session; workers do not tear down shared devices.
+
+Fallback when a per-worker pool cannot be provisioned: do not let multiple workers share
+one booted device. Serialize all Simulator access into a single Runtime-verifier lane —
+build, lint, and test still fan out, but only one worker touches the Simulator at a time.
+
 ## Evidence semantics
 
 A screenshot proves only the rendered state it shows. A successful Tapia flow proves
