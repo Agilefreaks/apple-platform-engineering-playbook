@@ -4,6 +4,8 @@ All notable changes to the complete playbook package are recorded here.
 
 ## Unreleased
 
+## 0.2.3 — 2026-07-27
+
 - Added decision DLV-018 (Design fidelity): a Figma frame states visual intent, not
   fixed geometry. `Pixel perfect` means the design's hierarchy, proportion, spacing
   rhythm, type ramp, and tokens reproduced with native SwiftUI layout so the screen
