@@ -18,7 +18,7 @@ PAIRS = (
         "DLV",
         ROOT / "docs/delivery/AppleTeamDeliveryLoopHandbook.md",
         ROOT / "docs/delivery/AppleTeamDeliveryLoopStandard.md",
-        {f"DLV-{number:03d}" for number in range(1, 18)},
+        {f"DLV-{number:03d}" for number in range(1, 19)},
     ),
 )
 

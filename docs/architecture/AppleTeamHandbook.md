@@ -67,7 +67,7 @@ screen.
 | ARCH-011 | Localization | String Catalogs, English literals in views, LocalizedStringResource outside them. |
 | ARCH-012 | Analytics and logging | Typed events, providers behind the facade, os.Logger for diagnostics. |
 | ARCH-013 | Testing and CI | Test pyramid, Swift Testing, XCTest UI, selective snapshots, deterministic commands. |
-| ARCH-014 | Design and accessibility | Tokens in assets, reusable DesignSystem, Dynamic Type, VoiceOver, and per-platform input. |
+| ARCH-014 | Design and accessibility | Tokens in assets, reusable DesignSystem, native adaptive layout over canvas-derived geometry, Dynamic Type, VoiceOver, and per-platform input. |
 | ARCH-015 | Agent tooling | Stable build/test/format/lint interface; no manual project.pbxproj edits. |
 | ARCH-016 | Third-party | Apple-native first; owner, license, security, version, and an ADR when it changes the architecture. |
 | ARCH-017 | Legacy | Migrate in vertical slices, in dependency order, with no speculative rewrites. |
@@ -950,6 +950,81 @@ Differences:
 1. one isolated API difference: local #if os(...);
 2. several differences in the same view: per-platform methods/extensions;
 3. a different interaction model: separate views over shared logic.
+
+#### Design fidelity without fixed geometry
+
+A Figma frame is drawn at one canvas size. It tells us the visual intent — hierarchy,
+proportion, spacing rhythm, type ramp, color — not the coordinates of the result.
+`Pixel perfect` means the screen looks the way the designer intended on every
+supported device, in light and dark, at every supported Dynamic Type size. It does
+not mean reproducing one frame pixel for pixel.
+
+Rebuilding a frame by measuring it is the failure mode:
+
+~~~swift
+// Not this. Drawn at a 390 pt canvas, so everything is scaled off that number.
+struct PromoCard: View {
+    private let scale = UIScreen.main.bounds.width / 390
+
+    var body: some View {
+        VStack(spacing: 12 * scale) {
+            Text(title)
+                .font(.system(size: 17 * scale))
+                .frame(width: 320 * scale, height: 22 * scale)
+            Image(.promo)
+                .resizable()
+                .frame(width: 358 * scale, height: 180 * scale)
+        }
+        .offset(y: 44 * scale)
+    }
+}
+~~~
+
+It matches the mockup on the reference device and fails everywhere else: text clips
+at larger Dynamic Type sizes, the card overflows on the smallest device, the offset
+fights the safe area, and iPad gets a stretched phone layout. The same intent
+expressed natively adapts on its own:
+
+~~~swift
+struct PromoCard: View {
+    var body: some View {
+        VStack(alignment: .leading, spacing: .spacingMedium) {   // DesignSystem token
+            Text(title)
+                .font(.headline)                                  // text style, not 17 pt
+                .lineLimit(2)
+
+            Image(.promo)
+                .resizable()
+                .aspectRatio(16 / 9, contentMode: .fit)           // proportion, not 358x180
+                .frame(maxWidth: .infinity)
+                .clipShape(.rect(cornerRadius: .radiusMedium))
+        }
+        .padding(.spacingMedium)
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+~~~
+
+The rules behind that:
+
+- Stacks, `Grid`, `Spacer`, padding, layout priority, and alignment express position;
+  offsets and manual `GeometryReader` math do not.
+- `ViewThatFits`, size classes, and `.containerRelativeFrame` handle the cases where
+  the design genuinely changes with available space.
+- Text uses text styles, wraps or truncates by a stated rule, and a designed height
+  becomes a minimum height (`frame(minHeight:)`), not a fixed one.
+- Fixed sizes are legitimate for icons, hairlines, minimum touch targets, and fixed
+  imagery. They come from tokens, not from literals copied out of the inspector.
+- System components — navigation, `List`, sheets and detents, swipe actions, focus,
+  keyboard avoidance — beat a redrawn look-alike. A custom control means we own its
+  states, accessibility, and every future OS change, so it needs an explicit design
+  decision.
+- Where the platform and the frame disagree (system control metrics, safe areas,
+  accessibility minimums), the platform wins and the difference is recorded as an
+  accepted deviation.
+
+Previews carry the proof: the smallest and largest supported device, light and dark,
+and the largest declared Dynamic Type size.
 
 ### 9.3 Accessibility baseline
 

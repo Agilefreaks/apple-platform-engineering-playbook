@@ -50,6 +50,7 @@ then promote it to v1.0.
 | DLV-015 | Delivered | The outcome is available to the declared audience, acceptance is verified, and no release blocker remains. |
 | DLV-016 | Feedback loop | Evidence, defects, design changes, and metrics create new inputs without rewriting history. |
 | DLV-017 | Parallel execution | When work fans out across concurrent workers, each owns a dedicated Simulator (unique UDID) and never runs destructive lifecycle actions on a device it does not own. |
+| DLV-018 | Design fidelity | A Figma frame shows intent, not fixed geometry; we rebuild it with native SwiftUI layout so it looks right on every device, appearance, and Dynamic Type size. |
 
 ---
 
@@ -246,6 +247,49 @@ catalog small and removes per-scale export churn. Because a single-scale asset
 carries no scale metadata, views size images explicitly and never rely on
 intrinsic size.
 
+### What `pixel perfect` means here [DLV-018]
+
+Designers hand us frames drawn at one canvas size. That frame is a sample of the
+layout, not its definition. When a team treats it as a specification of coordinates,
+it ends up scaling everything by `screenWidth / 390`, pinning labels into
+`.frame(width:height:)`, and hardcoding point sizes — and the result looks correct on
+exactly one device, breaks on the smallest one, breaks again on the largest, and
+collapses the moment someone raises their text size.
+
+So we define fidelity by intent, not by pixels. Pixel perfect means that on every
+supported device, in light and dark, at every supported Dynamic Type size, the app
+shows what the designer intended: the same hierarchy, the same proportions, the same
+spacing rhythm, the same type ramp, the same colors and states. It does not mean a
+frame-for-frame copy at one canvas width.
+
+Practically:
+
+- We rebuild the design with native SwiftUI layout — stacks, spacing tokens,
+  `Spacer`, layout priority, `Grid`, `ViewThatFits`, size classes, safe areas, text
+  styles, `List`/`Form`, and `.containerRelativeFrame` when a proportion really is
+  the rule.
+- We do not derive geometry from the canvas: no reference-width scale factors, no
+  fixed frames around text, no absolute offsets or manual `GeometryReader`
+  positioning where a stack says the same thing, no font point sizes instead of text
+  styles, no screen-bounds math.
+- Some things are genuinely fixed — icon sizes, hairlines, minimum touch targets,
+  fixed imagery. Those are fine, and they live in DesignSystem tokens rather than as
+  literals inside a feature.
+- A designed height is usually a minimum height. Text wraps or truncates by a stated
+  rule. Rows collapse from horizontal to vertical where the design says so.
+- Where the platform disagrees with the frame — system control metrics, safe areas,
+  accessibility minimums — the platform wins and we record an accepted deviation
+  instead of forcing geometry to match.
+- System components beat redrawn look-alikes. A custom control needs an explicit
+  design decision and an approver, because we then own its states, accessibility, and
+  every future OS change.
+
+This shifts what design review asks for. The question is not `does this screenshot
+overlay the frame`, it is `does this look right on the smallest device, the largest
+device, in dark mode, and at the largest declared text size`. Parity evidence covers
+those, not only the reference device, and the design map records which dimensions are
+fixed and which are fluid so nobody has to guess from the frame.
+
 ### Changes after READY
 
 A minor cosmetic change can be recorded without resetting the whole flow. A material
@@ -440,7 +484,8 @@ different question:
 
 - clean build and a supported toolchain;
 - behavior and failure modes;
-- design parity for the relevant states/devices;
+- design parity for the relevant states/devices, checked on the smallest and largest
+  supported device rather than only the reference frame [DLV-018];
 - Dynamic Type, VoiceOver, contrast, focus/input, and Reduce Motion;
 - localization, truncation, locale-sensitive values, and RTL when supported;
 - performance/energy/memory/network where the feature can affect them;

@@ -55,7 +55,7 @@ Platform baseline:
 | ARCH-011 | Localization | String Catalogs. English source literals in views; LocalizedStringResource outside views. Add translator context where ambiguous. |
 | ARCH-012 | Analytics and logging | Typed analytics behind a facade. os.Logger for operational logs. Networking never owns product analytics. |
 | ARCH-013 | Testing and CI | Test pyramid: unit, integration, critical UI. Swift Testing for code tests, XCTest for UI. Snapshots are selective. |
-| ARCH-014 | Design and accessibility | Asset-backed tokens, reusable DesignSystem, Dynamic Type, VoiceOver, contrast, focus, Reduce Motion, and platform input support. |
+| ARCH-014 | Design and accessibility | Asset-backed tokens, reusable DesignSystem, native adaptive layout instead of canvas-derived geometry, Dynamic Type, VoiceOver, contrast, focus, Reduce Motion, and platform input support. |
 | ARCH-015 | Agent tooling | Every repo exposes deterministic build/test/format/lint commands. Agents do not hand-edit project.pbxproj. |
 | ARCH-016 | Third-party dependencies | Apple-native first. New packages require an owner, license/security review, version policy, and ADR when architecture-affecting. |
 | ARCH-017 | Legacy | Migrate complete vertical slices in dependency order; never rewrite working legacy code without an approved outcome. |
@@ -378,6 +378,20 @@ Logging:
   otherwise as PNG at 3x; each image set is one universal Single Scale variant
   (no 1x/2x/3x triplets) and views size images explicitly.
 - Promote UI to DesignSystem after a second consumer or a product-wide token decision.
+- Reproduce a design with native SwiftUI layout — stacks, `Grid`, `ViewThatFits`,
+  `Spacer`, spacing tokens, layout priority, size classes, safe-area insets,
+  `List`/`Form`, text styles, and `.containerRelativeFrame` where a proportion is the
+  actual rule. A design frame states visual intent; it does not state geometry.
+- Do not derive layout from the design canvas: no scale factors computed from a
+  reference width or height, no `.frame(width:height:)` around text or containers to
+  match a mockup, no absolute offsets or manual `GeometryReader` positioning where a
+  stack expresses the same intent, no hardcoded font point sizes instead of text
+  styles, and no layout math on screen bounds.
+- Use fixed dimensions only where the size is genuinely context independent — icon
+  and glyph frames, hairlines, minimum touch targets, fixed imagery — and source them
+  from DesignSystem tokens rather than feature literals.
+- Treat a designed height as a minimum height, define wrapping/truncation explicitly,
+  and prefer system components over redrawn look-alikes.
 - Support Dynamic Type without truncating critical content.
 - Provide VoiceOver labels, values, hints, and logical focus order.
 - Respect contrast, Reduce Motion, Reduce Transparency, and platform input methods.

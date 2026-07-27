@@ -27,6 +27,21 @@
 | | error | | | light/dark | | Pending / N/A |
 | | offline | | | light/dark | | Pending / N/A |
 
+## Layout fidelity
+
+A frame states visual intent, not geometry. Record what the frame cannot show, so the
+implementation uses native SwiftUI layout instead of canvas-derived numbers.
+
+| Screen | Reference frame/canvas | Genuinely fixed (token) | Fluid/proportional | Wrap/reflow rule | Smallest device | Largest device |
+|---|---|---|---|---|---|---|
+| | | | | | | |
+
+| Check | Status | Note |
+|---|---|---|
+| No reference-width scale factors, fixed text frames, or screen-bounds math | Pending | |
+| Designed heights treated as minimum heights unless truly fixed | Pending | |
+| System components used unless a custom control is approved below | Pending | |
+
 ## Design system mapping
 
 | Figma component/variant | Apple component | Token set | Owning module | New/existing | Deviation |

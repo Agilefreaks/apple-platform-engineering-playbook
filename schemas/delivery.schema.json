@@ -210,6 +210,10 @@
           "type": "string",
           "minLength": 2
         },
+        "fidelity_policy": {
+          "type": "string",
+          "minLength": 2
+        },
         "change_policy": {
           "type": "string",
           "minLength": 2

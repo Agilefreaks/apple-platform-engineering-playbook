@@ -65,6 +65,7 @@ is not automatically a delivered outcome.
 | DLV-015 | Delivered | Delivered means available to the target audience, acceptance verified, telemetry exercised, and no unresolved release blocker. |
 | DLV-016 | Feedback loop | Production evidence, defects, design drift, and delivery metrics create new inputs; history is never silently rewritten. |
 | DLV-017 | Parallel execution | Each concurrent worker owns a dedicated Simulator (unique UDID) and pins every operation to it; no worker runs destructive lifecycle actions on a device it does not own. |
+| DLV-018 | Design fidelity | A Figma frame defines visual intent, not fixed geometry; parity means native SwiftUI layout that reproduces the design's hierarchy, proportion, and tokens on every supported device, appearance, and Dynamic Type size. |
 
 ## 3. Required inputs [DLV-002] [DLV-003] [DLV-004]
 
@@ -113,6 +114,54 @@ views size images explicitly instead of relying on intrinsic size.
 Node IDs and review timestamp prevent a silently changed Figma file from becoming an
 unreviewed requirement. A material design change after READY returns the item to an
 appropriate earlier gate.
+
+### 3.3 Design fidelity [DLV-018]
+
+A Figma frame is one sample of the layout drawn at one canvas size. The contract is
+the visual intent behind it — hierarchy, proportion, spacing rhythm, typography ramp,
+color, and state — not the pixel coordinates of that frame.
+
+`Pixel perfect` in this standard means: on every supported device, appearance, and
+Dynamic Type size, the running app is indistinguishable from what the designer
+intended. It does not mean a pixel-for-pixel reproduction of the reference frame on
+one device.
+
+Required:
+
+- Design handoff MUST state the layout rule wherever the frame alone is ambiguous:
+  what is fixed, what is fluid, what wraps, what reflows, and what the smallest and
+  largest supported device do.
+- Implementation MUST express layout with native SwiftUI containers, modifiers, and
+  system components — stacks, `Grid`, `ViewThatFits`, `Spacer`, padding and spacing
+  tokens, layout priority, size classes, safe-area insets, `List`/`Form`,
+  `ScrollView`, text styles, and `.containerRelativeFrame` where a proportion is
+  genuinely the rule.
+- Implementation MUST NOT reconstruct the design by measuring the canvas: no scale
+  factors derived from a reference width or height, no hardcoded
+  `.frame(width:height:)` on text or containers to match a mockup, no absolute
+  offsets or manual `GeometryReader` positioning where a stack and spacing express
+  the same intent, no hardcoded font point sizes in place of text styles, and no
+  per-device magic numbers derived from screen bounds.
+- Fixed dimensions are permitted only where the design is genuinely context
+  independent — icon and glyph frames, hairlines, minimum touch targets, fixed-size
+  imagery — and they come from DesignSystem tokens, not feature literals.
+- Any value that exists as a Figma variable MUST reach the code as a token, never as
+  a duplicated literal.
+- Type MUST scale with Dynamic Type and layout MUST reflow rather than clip: designed
+  fixed heights become minimum heights, single-line labels get explicit wrapping or
+  truncation rules, and horizontal groupings collapse as declared.
+- Native platform behavior — navigation, sheets and detents, swipe actions, focus,
+  keyboard avoidance, scroll and safe areas — takes precedence over a redrawn
+  look-alike unless the design explicitly requires a custom control and an approver
+  accepts the cost.
+- Differences forced by the platform (system control metrics, safe areas,
+  accessibility minimums) are recorded as accepted deviations, not corrected with
+  fixed geometry.
+
+Design parity evidence MUST therefore cover the reference device plus the smallest
+and largest supported devices, both appearances, and at least the largest declared
+Dynamic Type size. A screenshot that matches the reference frame on one device is not
+sufficient parity evidence.
 
 ## 4. Delivery Packet [DLV-005]
 
@@ -249,7 +298,8 @@ Required categories:
 
 - **Build:** clean checkout, supported toolchain, declared scheme/destination.
 - **Behavior:** unit/integration/UI tests plus runtime exercise of critical behavior.
-- **Design:** mapped states and devices, tokens, assets, copy, and approved deviations.
+- **Design:** mapped states and devices, tokens, assets, copy, approved deviations, and
+  adaptive fidelity — native SwiftUI layout, no canvas-derived geometry [DLV-018].
 - **Accessibility:** Dynamic Type, VoiceOver semantics/order, contrast, focus/input,
   Reduce Motion, and identifiers for stable critical UI tests.
 - **Localization:** String Catalog coverage, truncation/layout, locale-sensitive values,

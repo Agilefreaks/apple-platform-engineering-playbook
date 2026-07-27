@@ -4,6 +4,18 @@ All notable changes to the complete playbook package are recorded here.
 
 ## Unreleased
 
+- Added decision DLV-018 (Design fidelity): a Figma frame states visual intent, not
+  fixed geometry. `Pixel perfect` means the design's hierarchy, proportion, spacing
+  rhythm, type ramp, and tokens reproduced with native SwiftUI layout so the screen
+  looks right on every supported device, appearance, and Dynamic Type size — never a
+  pixel copy of one frame rebuilt from reference-width scale factors, fixed text
+  frames, hardcoded point sizes, or screen-bounds math. Stated normatively in the
+  Delivery Loop Standard (new section 3.3) and ARCH-014, explained with a
+  before/after SwiftUI example in both Handbooks, and made checkable in the Figma
+  Definition of Ready checklist, the design-map template (new Layout fidelity
+  section), and the test-plan parity matrix. Added an optional `design.fidelity_policy`
+  field to the delivery schema and template, extended the Definition of Ready and
+  Definition of Delivered design checks, and bumped the decision-ID validator range.
 - Added decision DLV-017 (Parallel execution and shared-resource isolation): when work
   fans out across concurrent workers, each owns a dedicated Simulator with a unique UDID,
   pins every operation to it, and never runs destructive lifecycle actions (restart,

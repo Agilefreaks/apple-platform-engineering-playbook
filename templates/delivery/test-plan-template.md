@@ -39,9 +39,15 @@
 
 ## UI and design verification
 
+Parity means the design's intent reproduced with native adaptive layout, not a pixel
+overlay of the reference frame. Cover the reference device plus the smallest and
+largest supported device, both appearances, and the largest declared Dynamic Type size.
+
 | Screen/state | Device/layout | Appearance | Dynamic Type | Figma node/version | Evidence/status |
 |---|---|---|---|---|---|
-| | | | | | |
+| | reference | light/dark | default | | |
+| | smallest supported | light/dark | largest declared | | |
+| | largest supported | light/dark | largest declared | | |
 
 ## Accessibility
 

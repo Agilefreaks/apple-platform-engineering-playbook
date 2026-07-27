@@ -102,6 +102,7 @@ design:
       node_id: "100:1"
       status: pending
   accessibility_intent: Dynamic Type, VoiceOver order, contrast, focus, and Reduce Motion are defined or explicitly not applicable.
+  fidelity_policy: Frames define visual intent, not geometry; native SwiftUI adaptive layout, no canvas-derived scale factors or fixed text frames; parity verified on the reference, smallest, and largest supported device.
   change_policy: Material changes after READY require impact review and a new packet revision.
   accepted_deviations: []
 

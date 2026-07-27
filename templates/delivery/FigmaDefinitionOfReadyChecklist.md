@@ -69,6 +69,19 @@ if it has no separate frame.
 - [ ] Light mode and dark mode are covered.
 - [ ] Dynamic/long content has wrapping, truncation, and expansion rules.
 - [ ] The adaptive layout is not inferred from a single screenshot.
+- [ ] The canvas/device each frame was drawn at is stated, and the frame is understood
+      as visual intent rather than fixed geometry.
+- [ ] For each screen it is explicit which dimensions are genuinely fixed (icons,
+      hairlines, touch targets, fixed imagery) and which are fluid, proportional, or
+      content-driven.
+- [ ] Behavior on the smallest and the largest supported device is defined: what
+      scales, what wraps, what reflows, what stays fixed.
+- [ ] Designed row/card heights are declared as minimum heights unless the design
+      genuinely requires a fixed one.
+- [ ] Custom controls that replace a system component are listed, justified, and
+      approved; otherwise native components and behaviors apply.
+- [ ] No acceptance criterion requires canvas-derived geometry (reference-width scale
+      factors, fixed text frames, hardcoded point sizes, screen-bounds math).
 
 ## 5. Design system and tokens
 
@@ -121,6 +134,11 @@ if it has no separate frame.
 - [ ] Every acceptance ID with UI is mapped to node/state IDs.
 - [ ] Every in-scope node/state is mapped to behavior or acceptance.
 - [ ] The screenshot/parity matrix includes the relevant device, appearance, and Dynamic Type.
+- [ ] Parity is defined as native adaptive fidelity — the design's hierarchy,
+      proportion, and tokens reproduced with SwiftUI layout — not a pixel overlay of
+      one frame.
+- [ ] The parity matrix covers the reference device plus the smallest and largest
+      supported device, both appearances, and the largest declared Dynamic Type size.
 - [ ] Accepted tolerances or deviations have a reason and an approver.
 - [ ] The verification method is established: screenshot, video, runtime, or design review.
 - [ ] Material changes after READY trigger a revision + impact review.

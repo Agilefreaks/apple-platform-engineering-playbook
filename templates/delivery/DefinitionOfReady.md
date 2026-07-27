@@ -41,6 +41,8 @@ visible.
 - [ ] If there is UI, the Figma Definition of Ready checklist is passed.
 - [ ] Node IDs and the reviewed version/timestamp are in the Delivery Packet.
 - [ ] States, interactions, copy, assets, and accessibility intent are sufficient.
+- [ ] Layout intent is stated beyond the reference frame: what is fixed, what is
+      fluid, and how the smallest and largest supported device behave.
 - [ ] If there is no UI, Product + Engineering have approved `not applicable`.
 - [ ] The design change policy after READY is known.
 

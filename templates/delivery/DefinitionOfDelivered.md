@@ -39,7 +39,8 @@ This checklist is completed after release and production verification. `MERGED`,
 - [ ] Build/CI.
 - [ ] Applicable unit/integration/UI tests.
 - [ ] Runtime behavior.
-- [ ] Design parity and approved deviations.
+- [ ] Design parity and approved deviations, verified on the reference, smallest, and
+      largest supported device in both appearances.
 - [ ] Accessibility.
 - [ ] Localization.
 - [ ] Performance/energy/memory/network, as applicable.
