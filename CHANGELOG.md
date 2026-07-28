@@ -4,6 +4,17 @@ All notable changes to the complete playbook package are recorded here.
 
 ## Unreleased
 
+## 0.2.4 — 2026-07-28
+
+- Stopped `templates/project/CLAUDE.template.md` inviting the duplication it forbids. It
+  told adopters to keep project facts in `AGENTS.md` and never restate them here, then
+  offered generated-project rules and the preferred verification simulator as examples of
+  what to put in `CLAUDE.md` — both project facts `AGENTS.md` already carries. The
+  template now states the test for which file a note belongs in (would it still be true
+  with a different agent, or for a human reading the repository?), gives genuinely
+  runtime-scoped examples, and lists what must not be restated. `AdoptionGuide` §3 says
+  the same. Found in a real adoption whose `CLAUDE.md` restated six `AGENTS.md` facts.
+
 ## 0.2.3 — 2026-07-27
 
 - Added decision DLV-018 (Design fidelity): a Figma frame states visual intent, not
