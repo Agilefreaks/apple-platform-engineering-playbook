@@ -339,6 +339,12 @@ Conditional compilation:
 xcconfig and Info.plist are visible in the application bundle. They may contain public
 configuration such as bundle identifiers and base URLs, never secrets.
 
+`Info.plist` and `*.entitlements` live in `Config/` beside the xcconfig files they draw
+their values from, not in the application source folder. They are configuration inputs,
+not source, and keeping them next to the xcconfig makes the substitution chain visible in
+one directory. When a generator produces `Info.plist` from a manifest, it writes it to
+`Config/` and the file is gitignored like any other generated output.
+
 ## Localization, analytics, and logging [ARCH-011] [ARCH-012]
 
 Localization:

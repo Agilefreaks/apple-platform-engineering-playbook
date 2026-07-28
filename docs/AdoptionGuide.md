@@ -70,7 +70,7 @@ Features/
 Core/
 DesignSystem/
 Resources/
-Config/
+Config/            # xcconfig, Info.plist, *.entitlements
 PreviewSupport/
 Tests/
 UITests/

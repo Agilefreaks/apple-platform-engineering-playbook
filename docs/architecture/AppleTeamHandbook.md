@@ -532,6 +532,11 @@ Config/
     └── ...
 ~~~
 
+`Info.plist` and `*.entitlements` belong in `Config/`, beside the xcconfig files whose
+values they substitute — not in `App/` or another source folder. They are configuration,
+not code. A project that generates `Info.plist` from a manifest points the generator at
+`Config/` and gitignores the result.
+
 Environments are configuration differences, not code differences:
 
 ~~~text
