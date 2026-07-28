@@ -57,7 +57,10 @@ docs/adr/0000-template.md
 
 `CLAUDE.md` exists because Claude Code loads only `CLAUDE.md` and ignores `AGENTS.md`;
 its first line, `@AGENTS.md`, imports the contract at session start so `AGENTS.md`
-stays the single source of truth. Keep only Claude-specific workflow notes in it.
+stays the single source of truth. Keep only Claude-runtime notes in it — agent behaviour
+that would not be true of a different agent or a human reader. Project facts, commands,
+paths, and owners stay in `AGENTS.md`; `CLAUDE.md` may name a section but must not
+restate it, because a fact held in two files goes stale in one of them.
 
 Then create the project structure required by ARCH v2.1:
 
