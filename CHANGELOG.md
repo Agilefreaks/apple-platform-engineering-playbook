@@ -4,6 +4,16 @@ All notable changes to the complete playbook package are recorded here.
 
 ## Unreleased
 
+## 0.2.5 — 2026-07-28
+
+- Stated that `Info.plist` and `*.entitlements` belong in `Config/`, beside the xcconfig
+  files whose values they substitute. The Handbook's section 5.4 tree already showed this,
+  but the agent-facing Standard never said it and the Adoption Guide listed a bare
+  `Config/`, so an adoption reasonably put `Info.plist` in `App/` following its
+  generator's default. Now normative in the Architecture Standard (ARCH-009 section) and
+  Handbook 5.4, and annotated in the Adoption Guide structure block, including the case
+  where a generator writes `Info.plist` and the file is gitignored.
+
 ## 0.2.4 — 2026-07-28
 
 - Stopped `templates/project/CLAUDE.template.md` inviting the duplication it forbids. It
