@@ -4,6 +4,40 @@ All notable changes to the complete playbook package are recorded here.
 
 ## Unreleased
 
+- Made the git and pull-request contract part of the starter kit instead of each
+  contributor's private setup. Agent git behaviour was left to whatever personal
+  configuration a machine happened to carry, so the same repository got PRs with an
+  untouched template body, no reviewers, and commits nobody asked for. Added
+  `templates/project/.claude/rules/git-workflow.md` — loaded automatically by Claude Code
+  from any checked-in `.claude/rules/*.md` file — stating that nothing is committed,
+  pushed, or opened as a PR unless a human asks, that `gh` availability and auth are
+  verified before any PR step, that the repository's PR template is filled in full, and
+  that reviewers are resolved from `CODEOWNERS`, then a documented maintainers list, then
+  recent history of the changed paths. The bootstrap helper installs it, and the Adoption
+  Guide (section 3) and starter-kit README explain why it is checked in rather than
+  local. It carries no placeholders: every repository-specific answer is read from
+  `CODEOWNERS`, the PR template, and history when the rule is used.
+- Made `apple/xcode-automation` usable in the headless, parallel agent workflow the
+  playbook promotes. The capability was `recommended` but named a single implementation —
+  the first-party Xcode MCP — whose own recorded limitation is that it needs the project
+  open in Xcode, so every agent run without an open Xcode silently degraded to the
+  `xcodebuild` fallback and adopters read the playbook as CLI-only. The tools schema now
+  accepts an optional `alternatives` list of evaluated-but-unselected implementations, plus
+  an optional `selected_when` per implementation; `templates/project/tooling/tools.yml`
+  carries XcodeBuildMCP as the headless alternative with pinning placeholders, sharper
+  limitations, and guardrails (pin an evaluated version, never a floating tag; reproduce
+  gate results through `make`; pin parallel builds to the worker's destination UDID). Added
+  `docs/tooling/XcodeAutomationGuide.md` with the selection table, install/pin rules,
+  parallel-execution rules, and evidence semantics, and referenced it from the Handbook
+  (14.4), the Architecture Standard (`ARCH-015`), the Adoption Guide (5.1), and the README
+  index.
+- Required readable build output as the baseline before any build server is added: `make
+  build`/`make test` filter through `xcbeautify` or an equivalent, keep the raw log, write
+  a result bundle, and set `pipefail` so filtering cannot mask a failure. The command
+  interface sections said nothing about log noise, which is the actual reason agents
+  misread `xcodebuild` failures — and the only fix that also works in CI. Stated in the
+  Architecture Standard command-interface section, Handbook 12.5, and Adoption Guide 5.1.
+
 ## 0.2.5 — 2026-07-28
 
 - Stated that `Info.plist` and `*.entitlements` belong in `Config/`, beside the xcconfig

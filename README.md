@@ -23,6 +23,7 @@ consume later.
 | Start a new project | [Adoption Guide](docs/AdoptionGuide.md) | [Project starter kit](templates/project/README.md) |
 | Run one delivery item | [Delivery templates](templates/delivery/) | [Delivery schema](schemas/delivery.schema.json) |
 | Configure Simulator automation | [Tapia MCP Guide](docs/tooling/TapiaMCPGuide.md) | [Tool capability manifest](templates/project/tooling/tools.yml) |
+| Configure build automation | [Xcode Automation Guide](docs/tooling/XcodeAutomationGuide.md) | [Tool capability manifest](templates/project/tooling/tools.yml) |
 
 Current document versions:
 

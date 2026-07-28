@@ -82,8 +82,12 @@ enable only capabilities whose adoption conditions apply:
 
 | Capability | Runtime implementation | Adoption | Health/setup command |
 |---|---|---|---|
-| `apple/xcode-automation` | `<XCODE_MCP_OR_SUPPORTED_INTERFACE>` | Recommended | `<COMMAND>` |
+| `apple/xcode-automation` | `<SELECTED_IMPLEMENTATION_AND_PINNED_VERSION>` | Recommended | `<COMMAND>` |
 | `apple/ios-simulator-automation` | Tapia MCP | Recommended/conditional | `<TAPIA_SOURCE_CLONE>/scripts/tapia-doctor` |
+
+Name the selected Xcode-automation implementation and its pinned version, not just
+"an MCP". The make targets stay authoritative: reproduce any gate result through them
+before reporting it, because no MCP implementation runs in CI.
 
 When Tapia is enabled, pin the reviewed revision, use stable
 `accessibilityIdentifier` values, isolate the Simulator from production accounts/data,

@@ -18,6 +18,7 @@ fi
 destinations=(
   "$target_dir/AGENTS.md"
   "$target_dir/CLAUDE.md"
+  "$target_dir/.claude/rules/git-workflow.md"
   "$target_dir/tooling/skills.yml"
   "$target_dir/tooling/tools.yml"
   "$target_dir/tooling/examples/tapia/mcp.example.json"
@@ -41,6 +42,7 @@ if [[ -d "$target_dir/delivery/templates" ]] &&
 fi
 
 mkdir -p \
+  "$target_dir/.claude/rules" \
   "$target_dir/tooling" \
   "$target_dir/tooling/examples/tapia" \
   "$target_dir/docs/adr" \
@@ -50,6 +52,8 @@ mkdir -p \
 
 cp "$root_dir/templates/project/AGENTS.template.md" "$target_dir/AGENTS.md"
 cp "$root_dir/templates/project/CLAUDE.template.md" "$target_dir/CLAUDE.md"
+cp "$root_dir/templates/project/.claude/rules/git-workflow.md" \
+  "$target_dir/.claude/rules/git-workflow.md"
 cp "$root_dir/templates/project/tooling/skills.yml" "$target_dir/tooling/skills.yml"
 cp "$root_dir/templates/project/tooling/tools.yml" "$target_dir/tooling/tools.yml"
 cp "$root_dir/templates/project/tools/tapia/mcp.example.json" \

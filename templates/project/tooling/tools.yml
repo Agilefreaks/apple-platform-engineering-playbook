@@ -10,19 +10,41 @@ capabilities:
       version: selected-Xcode
       revision: null
       command: xcrun mcpbridge
+      selected_when:
+        - The developer keeps the project open in Xcode and approves external-agent access.
+    alternatives:
+      - name: xcodebuildmcp
+        kind: mcp
+        source: https://github.com/getsentry/XcodeBuildMCP
+        version: "<EVALUATED_VERSION>"
+        revision: "<EVALUATED_REVISION_OR_NULL>"
+        command: npx -y xcodebuildmcp@<EVALUATED_VERSION>
+        selected_when:
+          - Agents build, test, or drive Simulators headless, without Xcode open.
+          - Parallel workers need scheme/destination discovery and parsed build diagnostics.
+          - Filtered xcodebuild output is already in place and is still not enough.
     scope:
       - local_development
       - simulator
       - real_device
     recommended_when:
       - External coding agents build, inspect, or modify the open Xcode project.
+      - Agents run build, test, or Simulator operations without a human at the keyboard.
     limitations:
-      - Requires the project to be open in Xcode and external-agent access enabled.
+      - xcrun mcpbridge requires the project open in Xcode with external-agent access enabled.
+      - xcodebuildmcp is a third-party Node package that runs with local developer privileges.
+      - No MCP implementation runs in CI; the make targets remain the gate-facing interface.
+      - An MCP tool call is not reproducible evidence a reviewer can rerun from the repository.
     guardrails:
       - Use the Xcode version and project declared in AGENTS.md.
       - Signing, entitlement, certificate, and release actions remain protected.
+      - Record the selected implementation and its pinned version in AGENTS.md.
+      - Pin a third-party server to an evaluated version; never resolve it from a floating tag.
+      - Reproduce every gate result through make targets before reporting it as evidence.
+      - In parallel runs pin each build and test to the worker's own destination UDID.
     fallbacks:
       - Repository Makefile commands and xcodebuild.
+      - Filtered xcodebuild output (xcbeautify or equivalent) plus xcresult inspection.
 
   apple/ios-simulator-automation:
     adoption: recommended_conditional

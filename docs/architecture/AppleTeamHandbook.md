@@ -1233,6 +1233,11 @@ make lint
 The implementation may call xcodebuild, Xcode MCP, or scripts, but the interface stays
 stable for humans and agents.
 
+`build` and `test` filter their output through `xcbeautify` or an equivalent, keep the raw
+log on disk, write a result bundle, and use `set -o pipefail` so filtering cannot hide a
+failure. Unfiltered `xcodebuild` output is where agents misread failures, and no
+automation server fixes it for CI.
+
 AGENTS.md documents:
 
 - schemes;
@@ -1438,6 +1443,16 @@ The repo declares its capabilities in `tooling/tools.yml`:
 |---|---|---|---|
 | `apple/xcode-automation` | Xcode MCP / the supported Xcode interface | Recommended | Build, tests, diagnostics, and runtime operations supported by Xcode |
 | `apple/ios-simulator-automation` | Tapia MCP | Recommended/conditional | Agents frequently exercise UI flows in the Simulator, inspect the accessibility tree, or capture repeatable local evidence |
+
+A capability names one selected implementation and, when the project evaluated others,
+keeps them in `alternatives`. The Xcode MCP is the default because it is first-party and
+versioned with the selected Xcode, but it requires the project open in Xcode — so
+headless and parallel agent work either selects a headless build server such as
+XcodeBuildMCP, pinned to an evaluated version, or runs the repository commands with
+filtered output. Either way the make targets stay authoritative: a build nobody can
+reproduce with `make` is a second build definition, and CI is the one that decides. The
+choice, the pinning rules, and the log-noise baseline live in
+`docs/tooling/XcodeAutomationGuide.md`.
 
 Tapia is conditional because it brings great value in an agent-heavy workflow but is
 not necessary in a project where XCUITest and manual verification cover the runtime

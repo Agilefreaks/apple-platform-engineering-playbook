@@ -49,6 +49,7 @@ manually. Replace all placeholders:
 ~~~text
 AGENTS.md
 CLAUDE.md
+.claude/rules/git-workflow.md
 tooling/skills.yml
 tooling/tools.yml
 tooling/examples/tapia/
@@ -61,6 +62,14 @@ stays the single source of truth. Keep only Claude-runtime notes in it — agent
 that would not be true of a different agent or a human reader. Project facts, commands,
 paths, and owners stay in `AGENTS.md`; `CLAUDE.md` may name a section but must not
 restate it, because a fact held in two files goes stale in one of them.
+
+`.claude/rules/git-workflow.md` is checked in because agent git behaviour is a project
+contract, not a personal preference: which reviewers a pull request needs, whether the
+PR template must be filled, and that nothing is committed or pushed unless a human asks.
+Claude Code loads every `.claude/rules/*.md` file automatically alongside `CLAUDE.md`, so
+the rule reaches any contributor's session without setup. Keep repository-specific
+routing — the reviewer source of truth, the ticket prefix — in `CODEOWNERS` and the PR
+template the rule already reads, not restated in the rule.
 
 Then create the project structure required by ARCH v2.1:
 
@@ -121,7 +130,14 @@ skills: it records executable interfaces, reviewed revisions, scope, guardrails,
 fallbacks.
 
 - Adopt Xcode automation as the recommended baseline where the selected Xcode/runtime
-  exposes it.
+  exposes it. Select one implementation and keep the evaluated alternatives in
+  `alternatives`: the first-party Xcode MCP needs the project open in Xcode, so headless
+  or parallel agent work selects a pinned headless build server such as XcodeBuildMCP, or
+  runs the repository commands with filtered output. See
+  `docs/tooling/XcodeAutomationGuide.md`.
+- Make `make build`/`make test` readable before adding any build server: filter through
+  `xcbeautify` or an equivalent, keep the raw log, write a result bundle, set `pipefail`.
+  This is the only option that also works in CI.
 - Adopt Tapia MCP conditionally for agent-heavy local Simulator flows, semantic UI
   interaction, accessibility inspection, and evidence capture.
 - Do not activate Tapia merely because its example is present. Review the pinned

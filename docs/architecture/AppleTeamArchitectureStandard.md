@@ -444,6 +444,9 @@ make format
 make lint
 ~~~
 
+`build` and `test` filter output through `xcbeautify` or an equivalent, keep the raw log,
+write a result bundle, and set `pipefail` so filtering cannot mask a failure.
+
 Required pull-request CI:
 
 - clean dependency resolution
@@ -548,6 +551,15 @@ Baseline adoption:
 |---|---|---|---|
 | `apple/xcode-automation` | Xcode MCP or the supported Xcode automation interface | Recommended | Build, tests, diagnostics, previews, Simulator/device operations supported by Xcode |
 | `apple/ios-simulator-automation` | Tapia MCP | Recommended/conditional | Agent-heavy semantic UI interaction, accessibility-tree inspection, screenshots, and repeatable local Simulator flows |
+
+Declare one selected implementation per capability and keep evaluated but unselected ones
+in `alternatives`. The Xcode MCP requires the project open in Xcode; headless or parallel
+agent work therefore selects a pinned headless build server, such as XcodeBuildMCP, or
+runs the repository commands with filtered output. Pin a third-party server to an
+evaluated version, never a floating tag, and record the selected implementation and its
+version in `AGENTS.md`. No MCP implementation runs in CI: `make` targets remain the
+gate-facing interface, and a gate result must be reproducible through them before it is
+reported as evidence. See `docs/tooling/XcodeAutomationGuide.md`.
 
 Adopt Tapia when agents must repeatedly exercise runtime flows or capture evidence in
 iOS Simulator. Pin the reviewed commit in `tooling/tools.yml`, run its health check,
