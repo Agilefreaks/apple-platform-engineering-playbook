@@ -18,7 +18,7 @@ capabilities:
         source: https://github.com/getsentry/XcodeBuildMCP
         version: "<EVALUATED_VERSION>"
         revision: "<EVALUATED_REVISION_OR_NULL>"
-        command: npx -y xcodebuildmcp@<EVALUATED_VERSION>
+        command: npx -y xcodebuildmcp@<EVALUATED_VERSION> mcp
         selected_when:
           - Agents build, test, or drive Simulators headless, without Xcode open.
           - Parallel workers need scheme/destination discovery and parsed build diagnostics.
@@ -35,6 +35,14 @@ capabilities:
       - xcodebuildmcp is a third-party Node package that runs with local developer privileges.
       - No MCP implementation runs in CI; the make targets remain the gate-facing interface.
       - An MCP tool call is not reproducible evidence a reviewer can rerun from the repository.
+      - xcodebuildmcp loads only its simulator workflows by default, and its enabled-workflow
+        variable replaces the defaults rather than extending them, so the list must name every
+        workflow in use — UI automation included.
+      - From xcodebuildmcp 2.x the package needs its `mcp` subcommand; without it the process
+        prints CLI help and exits, which presents as a server that never starts.
+      - xcodebuildmcp screenshot and UI-snapshot tools act on the session default device and
+        ignore an explicitly passed simulator id, so evidence can be attributed to the wrong
+        device without any error.
     guardrails:
       - Use the Xcode version and project declared in AGENTS.md.
       - Signing, entitlement, certificate, and release actions remain protected.
@@ -42,6 +50,13 @@ capabilities:
       - Pin a third-party server to an evaluated version; never resolve it from a floating tag.
       - Reproduce every gate result through make targets before reporting it as evidence.
       - In parallel runs pin each build and test to the worker's own destination UDID.
+      - Disable the server's own telemetry. xcodebuildmcp reports its internal runtime faults to
+        a third-party service unless XCODEBUILDMCP_SENTRY_DISABLED=true is set; a client project
+        should emit nothing outward it has not agreed to.
+      - Check the device id echoed back by any screenshot or snapshot call, or drive a second
+        device through xcrun simctl, before attaching the output as evidence.
+      - Commit the server configuration and the settings file that approves it, so the capability
+        is part of the repository rather than of one machine.
     fallbacks:
       - Repository Makefile commands and xcodebuild.
       - Filtered xcodebuild output (xcbeautify or equivalent) plus xcresult inspection.

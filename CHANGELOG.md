@@ -4,6 +4,41 @@ All notable changes to the complete playbook package are recorded here.
 
 ## Unreleased
 
+- Made a generated project's agent capability part of the repository instead of an assumption
+  about the machine it is checked out on. Three things were left to whoever happened to set a
+  project up, and all three failed the same way — silently, and differently per developer.
+  **The standard was unreadable.** `AGENTS.template.md` named the architecture standard as
+  authority via a `<PLAYBOOK_URL>/...` link, which resolves to a browser `blob/` URL. This
+  repository is private, so that URL returns 404 to anything without a session: an agent had the
+  project's own summary and nothing else, and diverged from a standard it correctly named as
+  authority. Added `templates/project/scripts/check_playbook_access.sh`, which verifies `gh` is
+  installed and authenticated and that the standard is readable at the pinned commit, and prints
+  the API command for reading any playbook document; the Authority section now carries that
+  command instead of an unfetchable link, and the command table gains a Playbook access row.
+  `bootstrap_project.sh` also records `playbook_commit` in `.apple-playbook-version`, because
+  reading a private document through the API needs a ref and "whatever the default branch says
+  today" is not a pinned adoption unit.
+  **The required skills resolved to nothing.** `tooling/skills.yml` declared three `required`
+  entries against `source: company://apple-skills`, a placeholder for a library that was never
+  published — so every project copied a file that read as satisfied and resolved to nothing. The
+  two that have good public equivalents now map to MIT-licensed skills (Swift concurrency, Swift
+  Testing, plus SwiftUI as a conditional), declared in a new checked-in
+  `templates/project/.claude/settings.json` so a clone installs them with no manual step and
+  without requiring any extra CLI. `apple/ios-runtime-debugging` stays explicitly unresolved and
+  named as a tooling gap rather than left blank.
+  **The MCP server was documented but never installed.** The starter kit shipped no active
+  `.mcp.json`, so each project reinvented it. Added one, pinned, for the headless Xcode-automation
+  implementation — with its `mcp` subcommand (absent, the process prints CLI help and exits), its
+  enabled-workflow list naming every workflow in use (the variable replaces the server's defaults
+  rather than extending them, so naming one silently removes the rest), and its telemetry disabled
+  (`XCODEBUILDMCP_SENTRY_DISABLED=true`), because a client project should emit nothing outward it
+  has not agreed to. `tooling/tools.yml` gains those as limitations and guardrails, including that
+  the server's screenshot and snapshot tools ignore an explicitly passed simulator id and act on
+  the session default — which attributes one device's evidence to another with no error.
+  `docs/tooling/XcodeAutomationGuide.md`, the Adoption Guide (section 3) and the starter-kit
+  README explain each, and the README no longer claims the bootstrap creates no active
+  `.mcp.json`.
+
 - Made the git and pull-request contract part of the starter kit instead of each
   contributor's private setup. Agent git behaviour was left to whatever personal
   configuration a machine happened to carry, so the same repository got PRs with an

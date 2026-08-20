@@ -1,0 +1,20 @@
+{
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": ["xcodebuildmcp"],
+  "extraKnownMarketplaces": {
+    "swift-concurrency-agent-skill": {
+      "source": { "source": "github", "repo": "twostraws/Swift-Concurrency-Agent-Skill" }
+    },
+    "swift-testing-agent-skill": {
+      "source": { "source": "github", "repo": "twostraws/Swift-Testing-Agent-Skill" }
+    },
+    "swiftui-agent-skill": {
+      "source": { "source": "github", "repo": "twostraws/SwiftUI-Agent-Skill" }
+    }
+  },
+  "enabledPlugins": {
+    "swift-concurrency-pro@swift-concurrency-agent-skill": true,
+    "swift-testing-pro@swift-testing-agent-skill": true,
+    "swiftui-pro@swiftui-agent-skill": true
+  }
+}
