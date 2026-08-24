@@ -11,15 +11,17 @@ belong here; durable rationale belongs in `docs/adr/`.
 4. Apple Platform Engineering Playbook `<TAG_OR_COMMIT>`.
 5. Nearby legacy conventions.
 
-The playbook repository is **private**, so a browser `blob/` URL is not a readable reference —
-it returns 404 to anything without a session, which leaves an agent with this file's summary and
-nothing else. Read a playbook document with the GitHub CLI, at the pinned commit in
-`.apple-playbook-version`:
+The playbook repository is public, but a browser `blob/` URL is still not a readable reference —
+it returns an HTML page rather than the document, which leaves an agent with this file's summary
+and nothing else. Read a playbook document at the pinned commit in `.apple-playbook-version`,
+with the GitHub CLI when one is installed and authenticated, and over plain HTTPS when it is not:
 
 ~~~bash
-scripts/check_playbook_access.sh   # verifies gh is installed, authenticated, and can read it
+scripts/check_playbook_access.sh   # confirms the standard is readable, and prints which command to use
 
 gh api 'repos/<PLAYBOOK_SLUG>/contents/<path>?ref=<PLAYBOOK_COMMIT>' --jq .content | base64 -d
+
+curl -fsSL 'https://raw.githubusercontent.com/<PLAYBOOK_SLUG>/<PLAYBOOK_COMMIT>/<path>'
 ~~~
 
 Architecture standard: `docs/architecture/AppleTeamArchitectureStandard.md`
@@ -58,7 +60,7 @@ Apple documentation. Do not proceed as though the standard had been read.
 | Critical UI tests | `<COMMAND>` | Declared critical flows pass |
 | Runtime launch | `<COMMAND>` | App launches on declared destination |
 | Delivery validation | `<COMMAND>` | Delivery Packet validates |
-| Playbook access | `scripts/check_playbook_access.sh` | `gh` present and authenticated, and the architecture standard is readable at the pinned commit |
+| Playbook access | `scripts/check_playbook_access.sh` | the architecture standard is readable at the pinned commit, through `gh` when it is installed and authenticated and over plain HTTPS otherwise |
 
 ## Architecture and folders
 

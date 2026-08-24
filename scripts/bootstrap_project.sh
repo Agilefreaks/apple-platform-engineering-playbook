@@ -75,8 +75,8 @@ cp "$root_dir/templates/project/tools/tapia/tapia.flows.example.yaml" \
 cp "$root_dir/templates/project/docs/adr/0000-template.md" "$target_dir/docs/adr/0000-template.md"
 cp "$root_dir/schemas/delivery.schema.json" "$target_dir/delivery/schema/delivery.schema.json"
 cp "$root_dir"/templates/delivery/* "$target_dir/delivery/templates/"
-# The commit is recorded as well as the package version: reading a private document through the
-# API needs a ref, and "whatever main says today" is not a pinned adoption unit.
+# The commit is recorded as well as the package version: a playbook document is read at a ref,
+# and "whatever main says today" is not a pinned adoption unit.
 playbook_commit="$(git -C "$root_dir" rev-parse HEAD 2>/dev/null || echo "")"
 {
   printf 'repository_package=0.3.0\n'

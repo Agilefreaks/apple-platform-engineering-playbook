@@ -85,17 +85,19 @@ Replace `<EVALUATED_VERSION>` in `.mcp.json` with the version actually evaluated
 and record the installed skill versions in `tooling/skills.yml` and the `AGENTS.md` Skills table.
 Never leave a floating tag.
 
-`scripts/check_playbook_access.sh` exists because **this repository is private**. A browser
-`blob/` URL is not a readable reference: it returns 404 to anything without a session, so an
-agent given only such a link has the project's own summary and nothing else — and then diverges
-from a standard it names as its authority. The script verifies that `gh` is installed and
-authenticated and that the architecture standard is readable at the pinned commit, and prints the
-command for reading any playbook document. Run it as the first step after bootstrap. If it fails,
-the correct response is to report the gap, not to proceed as though the standard had been read.
+`scripts/check_playbook_access.sh` exists because a browser `blob/` URL is not a readable
+reference even now that this repository is public: it returns an HTML page rather than the
+document, so an agent given only such a link has the project's own summary and nothing else — and
+then diverges from a standard it names as its authority. The script confirms the architecture
+standard is readable at the pinned commit — through the GitHub CLI when one is installed and
+authenticated, which is also the only route that works for a private fork of the playbook, and
+over plain HTTPS when it is not — and prints the matching command for reading any playbook
+document. Run it as the first step after bootstrap. If it fails, the correct response is to report
+the gap, not to proceed as though the standard had been read.
 
 The bootstrap also records `playbook_commit` in `.apple-playbook-version` alongside the package
-version, because reading a private document through the API needs a ref, and "whatever the default
-branch says today" is not a pinned adoption unit.
+version, because a document is read at a ref, and "whatever the default branch says today" is not
+a pinned adoption unit.
 
 Then create the project structure required by ARCH v2.1:
 

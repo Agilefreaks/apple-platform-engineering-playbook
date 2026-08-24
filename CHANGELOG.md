@@ -4,6 +4,23 @@ All notable changes to the complete playbook package are recorded here.
 
 ## Unreleased
 
+- Stopped requiring the GitHub CLI to read the playbook. The repository is now public, so
+  `templates/project/scripts/check_playbook_access.sh` no longer fails when `gh` is missing or
+  unauthenticated: it uses `gh` when one is installed and authenticated — still the only route
+  that works for a private fork of the playbook — and otherwise falls back to a plain HTTPS read
+  of `raw.githubusercontent.com` at the pinned commit, which needs no CLI and no account. It
+  fails only when neither route can reach the standard, and prints the reading command that
+  matches whichever route succeeded, so an agent is never handed a recipe it cannot run.
+  A browser `blob/` URL is still not a readable reference — public or not, it returns an HTML page
+  rather than the document — so the check and the pinned `playbook_commit` both stay: the reason
+  is now "a document is read at a ref", not "a private document needs a session".
+  `AGENTS.template.md`, the starter-kit README and the Adoption Guide state the new behaviour and
+  carry both commands; the `AGENTS.md` command table no longer promises `gh` is present.
+- Recorded the repository's licence and visibility in the README: MIT, public, with
+  client-specific facts and production identifiers explicitly out of scope for this repository.
+  It previously stated no licence was included and to treat the repository as internal, which
+  stopped being true when `LICENSE` was added.
+
 ## 0.3.0 — 2026-08-24
 
 - Made a generated project's agent capability part of the repository instead of an assumption
