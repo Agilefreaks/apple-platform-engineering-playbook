@@ -1,23 +1,49 @@
 schema: 1
-source: company://apple-skills
+
+# Canonical skill -> installed runtime.
+#
+# `company://apple-skills` is not a registry. It was a placeholder for a company skill library
+# that was never published, so every project copying it had three `required` entries that
+# resolved to nothing while reading as satisfied. The mappings below are public, MIT-licensed
+# skills, declared in `.claude/settings.json` so a fresh clone installs them with no manual step
+# and without requiring any extra CLI.
+#
+# Record the same mapping in the Skills table in AGENTS.md, and name anything still unresolved as
+# a tooling gap rather than leaving the row blank.
 
 required:
-  apple/swift-concurrency: "1.x"
-  apple/swift-testing: "1.x"
-  apple/ios-runtime-debugging: "1.x"
+  apple/swift-concurrency:
+    runtime: swift-concurrency-pro@swift-concurrency-agent-skill
+    source: https://github.com/twostraws/Swift-Concurrency-Agent-Skill
+    version: "<INSTALLED_VERSION>"
+  apple/swift-testing:
+    runtime: swift-testing-pro@swift-testing-agent-skill
+    source: https://github.com/twostraws/Swift-Testing-Agent-Skill
+    version: "<INSTALLED_VERSION>"
+  apple/ios-runtime-debugging:
+    runtime: null
+    notes: >
+      Unresolved. Partially covered by the Xcode-automation capability in tooling/tools.yml plus
+      the repository's own gate commands. Report it as a tooling gap in the handoff; do not
+      invent a local convention in its place.
 
 conditional:
-  apple/swiftui-patterns: "2.x"
-  apple/swiftui-refactoring: "1.x"
-  apple/swiftui-performance: "1.x"
-  apple/swiftdata: "1.x"
-  apple/apple-accessibility: "1.x"
-  apple/uikit-modernization: "1.x"
-  apple/tca: "1.x"
-  apple/app-intents: "1.x"
+  apple/swiftui-patterns:
+    runtime: swiftui-pro@swiftui-agent-skill
+    source: https://github.com/twostraws/SwiftUI-Agent-Skill
+    version: "<INSTALLED_VERSION>"
+  # Add a conditional mapping only when that work is in scope. A missing skill uses the standard
+  # and the relevant checklist as manual fallback, and is reported as a tooling gap.
+  apple/swiftui-refactoring: null
+  apple/swiftui-performance: null
+  apple/swiftdata: null
+  apple/apple-accessibility: null
+  apple/uikit-modernization: null
+  apple/tca: null
+  apple/app-intents: null
 
-# Proposed delivery capabilities are not resolvable requirements until they are
-# published and versioned in the company registry:
+# Proposed delivery capabilities are not resolvable requirements until they are published and
+# versioned somewhere a project can actually install from:
 # - delivery/requirements-normalization
 # - delivery/figma-handoff
 # - delivery/technical-planning

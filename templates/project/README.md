@@ -12,23 +12,39 @@ Preferred installation from the playbook root:
 
 The helper refuses to overwrite existing files. After installation:
 
-1. replace every `<PLACEHOLDER>`;
-2. define deterministic project commands in `AGENTS.md` and the project Makefile;
-3. keep the `@AGENTS.md` import as the first line of `CLAUDE.md` — Claude Code loads
+1. run `scripts/check_playbook_access.sh` — the playbook repository is private, so a browser
+   URL is not a readable reference; this confirms `gh` is installed and authenticated and that
+   the architecture standard is readable at the pinned commit, and prints the command for
+   reading any playbook document;
+2. replace every `<PLACEHOLDER>`, including `<EVALUATED_VERSION>` in `.mcp.json` and the
+   installed skill versions in `tooling/skills.yml`;
+3. define deterministic project commands in `AGENTS.md` and the project Makefile;
+4. keep the `@AGENTS.md` import as the first line of `CLAUDE.md` — Claude Code loads
    only `CLAUDE.md`, so this import is what puts the contract in its context; add only
    Claude-specific notes there;
-4. keep `.claude/rules/git-workflow.md` checked in — Claude Code loads every
+5. keep `.claude/rules/git-workflow.md` checked in — Claude Code loads every
    `.claude/rules/*.md` file automatically, which is how the git and pull-request
    contract reaches a contributor's session without local setup; it needs no
    placeholder replacement, because it resolves reviewers from `CODEOWNERS`, the PR
    template, and repository history at the time it is used;
-5. select and resolve skills in `tooling/skills.yml`;
-6. review capabilities in `tooling/tools.yml`; activate the Tapia example only when
+6. keep `.claude/settings.json` checked in for the same reason — it declares which skill
+   marketplaces the project expects, enables the plugins that resolve the canonical IDs in
+   `tooling/skills.yml`, and approves the MCP server; capability held only in a developer's
+   user settings is invisible to everyone else;
+7. confirm the resolved skills in `tooling/skills.yml` and mirror them in the `AGENTS.md`
+   Skills table; name anything unresolved as a tooling gap rather than leaving it blank;
+8. review capabilities in `tooling/tools.yml`; activate the Tapia example only when
    agent-heavy Simulator automation is in scope;
-7. create project ADRs instead of editing the company standard locally;
-8. commit `.apple-playbook-version` so upgrades are deliberate;
-9. create the first Delivery Packet only after project ownership and environments are
-   ready.
+9. create project ADRs instead of editing the company standard locally;
+10. commit `.apple-playbook-version` so upgrades are deliberate — it now records the playbook
+    commit as well as the package version, which is what lets a private document be read at a
+    pinned ref;
+11. create the first Delivery Packet only after project ownership and environments are ready.
 
-`tooling/examples/tapia/` is inactive reference configuration. The bootstrap does not
-create an active `.mcp.json`, install Tapia, or grant command approval.
+`.mcp.json` is installed active, configured for the headless Xcode-automation implementation
+with its telemetry disabled and its enabled workflows named explicitly. A project that keeps
+Xcode open and prefers the first-party bridge replaces the file's contents and records that
+choice in `AGENTS.md`.
+
+`tooling/examples/tapia/` remains inactive reference configuration. The bootstrap does not
+install Tapia or grant command approval.

@@ -50,6 +50,9 @@ manually. Replace all placeholders:
 AGENTS.md
 CLAUDE.md
 .claude/rules/git-workflow.md
+.claude/settings.json
+.mcp.json
+scripts/check_playbook_access.sh
 tooling/skills.yml
 tooling/tools.yml
 tooling/examples/tapia/
@@ -70,6 +73,29 @@ Claude Code loads every `.claude/rules/*.md` file automatically alongside `CLAUD
 the rule reaches any contributor's session without setup. Keep repository-specific
 routing — the reviewer source of truth, the ticket prefix — in `CODEOWNERS` and the PR
 template the rule already reads, not restated in the rule.
+
+`.claude/settings.json` and `.mcp.json` are checked in for the same reason as the git rule:
+agent capability is a project contract, not a personal setup. The settings file declares which
+skill marketplaces the project expects and enables the plugins that resolve the canonical skill
+IDs in `tooling/skills.yml`; it also approves the MCP server that `.mcp.json` configures. Without
+these, a project's capability is whatever each developer happened to install — which is
+indistinguishable from a project that works on one machine and nowhere else.
+
+Replace `<EVALUATED_VERSION>` in `.mcp.json` with the version actually evaluated on the project,
+and record the installed skill versions in `tooling/skills.yml` and the `AGENTS.md` Skills table.
+Never leave a floating tag.
+
+`scripts/check_playbook_access.sh` exists because **this repository is private**. A browser
+`blob/` URL is not a readable reference: it returns 404 to anything without a session, so an
+agent given only such a link has the project's own summary and nothing else — and then diverges
+from a standard it names as its authority. The script verifies that `gh` is installed and
+authenticated and that the architecture standard is readable at the pinned commit, and prints the
+command for reading any playbook document. Run it as the first step after bootstrap. If it fails,
+the correct response is to report the gap, not to proceed as though the standard had been read.
+
+The bootstrap also records `playbook_commit` in `.apple-playbook-version` alongside the package
+version, because reading a private document through the API needs a ref, and "whatever the default
+branch says today" is not a pinned adoption unit.
 
 Then create the project structure required by ARCH v2.1:
 

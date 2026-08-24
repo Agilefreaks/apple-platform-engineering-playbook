@@ -58,18 +58,44 @@ Before adoption:
   semantic UI interaction; if both are active, state in `AGENTS.md` which one drives the
   Simulator.
 
-Project configuration, merged into the existing `.mcp.json` rather than overwriting it:
+Project configuration. The starter kit installs this as `.mcp.json`; merge into an existing file
+rather than overwriting it:
 
 ~~~json
 {
   "mcpServers": {
     "xcodebuildmcp": {
       "command": "npx",
-      "args": ["-y", "xcodebuildmcp@<EVALUATED_VERSION>"]
+      "args": ["-y", "xcodebuildmcp@<EVALUATED_VERSION>", "mcp"],
+      "env": {
+        "XCODEBUILDMCP_ENABLED_WORKFLOWS": "project-discovery,session-management,simulator,simulator-management,ui-automation,coverage,doctor,utilities",
+        "XCODEBUILDMCP_SENTRY_DISABLED": "true"
+      }
     }
   }
 }
 ~~~
+
+Four details in that snippet each cost a debugging session when they are missing:
+
+- **The `mcp` subcommand.** From 2.x the package needs it. Without it the process prints CLI help
+  and exits, which looks like a server that never starts rather than a wrong argument.
+- **The enabled-workflow list replaces the server's defaults, it does not extend them.** Only the
+  simulator workflows load by default, so anything else — UI automation in particular — must be
+  named. Naming one workflow silently removes the rest.
+- **Telemetry off.** The server reports its own internal runtime faults to a third-party service by
+  default. It does not send source, build output, or tool inputs, but a client project should emit
+  nothing outward that the project has not agreed to. Set the opt-out explicitly rather than
+  relying on the default staying as it is.
+- **Commit both files.** `.mcp.json` plus the settings file that approves the server. A capability
+  configured only in one developer's local settings is invisible to everyone else, and the project
+  then behaves differently depending on who is running it.
+
+One more trap worth knowing before you trust a screenshot: the screenshot and UI-snapshot tools act
+on the session's default device and **ignore an explicitly passed simulator id**. Check the id
+echoed back in the result, or capture through `xcrun simctl io <udid> screenshot`, before attaching
+the output as evidence. Getting this wrong attributes one device's behaviour to another with no
+error anywhere.
 
 Signing, entitlement, certificate, distribution, and release actions stay protected. A
 build server never receives unattended approval for them, regardless of which tools it

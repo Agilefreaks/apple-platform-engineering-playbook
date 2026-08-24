@@ -11,9 +11,25 @@ belong here; durable rationale belongs in `docs/adr/`.
 4. Apple Platform Engineering Playbook `<TAG_OR_COMMIT>`.
 5. Nearby legacy conventions.
 
-Architecture standard: `<PLAYBOOK_URL>/docs/architecture/AppleTeamArchitectureStandard.md`
+The playbook repository is **private**, so a browser `blob/` URL is not a readable reference —
+it returns 404 to anything without a session, which leaves an agent with this file's summary and
+nothing else. Read a playbook document with the GitHub CLI, at the pinned commit in
+`.apple-playbook-version`:
 
-Delivery standard: `<PLAYBOOK_URL>/docs/delivery/AppleTeamDeliveryLoopStandard.md`
+~~~bash
+scripts/check_playbook_access.sh   # verifies gh is installed, authenticated, and can read it
+
+gh api 'repos/<PLAYBOOK_SLUG>/contents/<path>?ref=<PLAYBOOK_COMMIT>' --jq .content | base64 -d
+~~~
+
+Architecture standard: `docs/architecture/AppleTeamArchitectureStandard.md`
+
+Delivery standard: `docs/delivery/AppleTeamDeliveryLoopStandard.md`
+
+Handbook (rationale): `docs/architecture/AppleTeamHandbook.md`
+
+If the access check fails, say so in the handoff and fall back to this file plus current primary
+Apple documentation. Do not proceed as though the standard had been read.
 
 ## Project facts
 
@@ -42,6 +58,7 @@ Delivery standard: `<PLAYBOOK_URL>/docs/delivery/AppleTeamDeliveryLoopStandard.m
 | Critical UI tests | `<COMMAND>` | Declared critical flows pass |
 | Runtime launch | `<COMMAND>` | App launches on declared destination |
 | Delivery validation | `<COMMAND>` | Delivery Packet validates |
+| Playbook access | `scripts/check_playbook_access.sh` | `gh` present and authenticated, and the architecture standard is readable at the pinned commit |
 
 ## Architecture and folders
 
@@ -68,9 +85,15 @@ Canonical requirements are in `tooling/skills.yml`. Map them to the installed ru
 
 | Canonical skill | Runtime skill/tool | Version |
 |---|---|---|
-| `apple/swift-concurrency` | `<MAPPING>` | `<VERSION>` |
-| `apple/swift-testing` | `<MAPPING>` | `<VERSION>` |
-| `apple/ios-runtime-debugging` | `<MAPPING>` | `<VERSION>` |
+| `apple/swift-concurrency` | `swift-concurrency-pro@swift-concurrency-agent-skill` | `<VERSION>` |
+| `apple/swift-testing` | `swift-testing-pro@swift-testing-agent-skill` | `<VERSION>` |
+| `apple/ios-runtime-debugging` | none installed — tooling gap | — |
+| `apple/swiftui-patterns` (conditional) | `swiftui-pro@swiftui-agent-skill` | `<VERSION>` |
+
+`.claude/settings.json` declares the marketplaces and enables the plugins, so a fresh clone
+installs them with no manual step. That file is the repository's statement of which skills it
+expects; a skill that lives only in one developer's user settings is invisible to everyone else
+and to CI.
 
 Add conditional mappings only when that work is in scope. A missing skill uses the
 standard/checklist as manual fallback and is reported as a tooling gap.
@@ -88,6 +111,13 @@ enable only capabilities whose adoption conditions apply:
 Name the selected Xcode-automation implementation and its pinned version, not just
 "an MCP". The make targets stay authoritative: reproduce any gate result through them
 before reporting it, because no MCP implementation runs in CI.
+
+`.mcp.json` carries the server configuration and `.claude/settings.json` approves it, both
+committed. Replace `<EVALUATED_VERSION>` with the version actually evaluated on this project —
+never a floating tag. The shipped configuration disables the server's own telemetry and names
+every enabled workflow explicitly, because that variable replaces the server's defaults rather
+than extending them. A project that keeps Xcode open and prefers the first-party bridge should
+swap the file's contents and say so here.
 
 When Tapia is enabled, pin the reviewed revision, use stable
 `accessibilityIdentifier` values, isolate the Simulator from production accounts/data,

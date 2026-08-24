@@ -2,10 +2,19 @@ VENV ?= .venv
 PYTHON ?= $(VENV)/bin/python
 CHECK_JSONSCHEMA ?= $(VENV)/bin/check-jsonschema
 
+# The validators need Python 3.10+: check_local_markdown.py uses `str | None`, and the pinned
+# check-jsonschema does not install below it. macOS still ships 3.9 as `python3` and Apple is not
+# going to change that, so detect a suitable interpreter rather than assuming the default one is
+# suitable. Override with `make setup BOOTSTRAP_PYTHON=/path/to/python3`.
+BOOTSTRAP_PYTHON ?= $(shell 	for c in python3.14 python3.13 python3.12 python3.11 python3.10 python3; do 	  command -v $$c >/dev/null 2>&1 && 	  $$c -c 'import sys; sys.exit(0 if sys.version_info >= (3, 10) else 1)' 2>/dev/null && 	  { echo $$c; break; }; 	done)
+
 .PHONY: setup validate
 
 setup:
-	python3 -m venv $(VENV)
+	@test -n "$(BOOTSTRAP_PYTHON)" || { 	  echo "ERROR: need Python 3.10+ to run the validators; none found."; 	  echo "       Try 'brew install python@3.13', or"; 	  echo "       'make setup BOOTSTRAP_PYTHON=/path/to/python3'."; 	  exit 1; }
+	@echo "Using $(BOOTSTRAP_PYTHON) ($$($(BOOTSTRAP_PYTHON) --version 2>&1))"
+	$(BOOTSTRAP_PYTHON) -m venv $(VENV)
+	$(VENV)/bin/python -m pip install --quiet --upgrade pip
 	$(VENV)/bin/python -m pip install -r requirements-dev.txt
 
 validate:
