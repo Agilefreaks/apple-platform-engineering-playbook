@@ -12,10 +12,10 @@ Preferred installation from the playbook root:
 
 The helper refuses to overwrite existing files. After installation:
 
-1. run `scripts/check_playbook_access.sh` — the playbook repository is private, so a browser
-   URL is not a readable reference; this confirms `gh` is installed and authenticated and that
-   the architecture standard is readable at the pinned commit, and prints the command for
-   reading any playbook document;
+1. run `scripts/check_playbook_access.sh` — a browser URL is not a readable reference even for a
+   public repository; this confirms the architecture standard is readable at the pinned commit,
+   through the GitHub CLI when one is installed and authenticated and over plain HTTPS when it is
+   not, and prints the matching command for reading any playbook document;
 2. replace every `<PLACEHOLDER>`, including `<EVALUATED_VERSION>` in `.mcp.json` and the
    installed skill versions in `tooling/skills.yml`;
 3. define deterministic project commands in `AGENTS.md` and the project Makefile;
@@ -36,9 +36,8 @@ The helper refuses to overwrite existing files. After installation:
 8. review capabilities in `tooling/tools.yml`; activate the Tapia example only when
    agent-heavy Simulator automation is in scope;
 9. create project ADRs instead of editing the company standard locally;
-10. commit `.apple-playbook-version` so upgrades are deliberate — it now records the playbook
-    commit as well as the package version, which is what lets a private document be read at a
-    pinned ref;
+10. commit `.apple-playbook-version` so upgrades are deliberate — it records the playbook commit
+    as well as the package version, which is what pins the documents a project reads to one ref;
 11. create the first Delivery Packet only after project ownership and environments are ready.
 
 `.mcp.json` is installed active, configured for the headless Xcode-automation implementation

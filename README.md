@@ -29,7 +29,7 @@ Current document versions:
 
 - Architecture: `2.1`
 - Delivery Loop: `0.1 — proposed for pilot`
-- Repository package: `0.3.0`
+- Repository package: `0.4.0`
 
 ## Validate the playbook
 
@@ -63,5 +63,6 @@ recorded commit so projects can decide when to upgrade.
 See [CONTRIBUTING.md](CONTRIBUTING.md). Paired human/agent documents change together,
 decision IDs remain stable, and schema/template changes include migration impact.
 
-No open-source license is included. Treat this private repository according to Agile
-Freaks internal policy.
+This repository is public and released under the [MIT License](LICENSE). Client-specific
+facts, credentials, and production identifiers belong in the projects that adopt the playbook,
+never here.
