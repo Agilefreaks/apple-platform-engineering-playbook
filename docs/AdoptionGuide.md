@@ -75,15 +75,32 @@ routing — the reviewer source of truth, the ticket prefix — in `CODEOWNERS` 
 template the rule already reads, not restated in the rule.
 
 `.claude/settings.json` and `.mcp.json` are checked in for the same reason as the git rule:
-agent capability is a project contract, not a personal setup. The settings file declares which
-skill marketplaces the project expects and enables the plugins that resolve the canonical skill
-IDs in `tooling/skills.yml`; it also approves the MCP server that `.mcp.json` configures. Without
-these, a project's capability is whatever each developer happened to install — which is
-indistinguishable from a project that works on one machine and nowhere else.
+agent capability is a project contract, not a personal setup. The settings file approves the MCP
+server that `.mcp.json` configures, naming it rather than blanket-approving whatever the file
+happens to contain. Without these, a project's capability is whatever each developer happened to
+install — which is indistinguishable from a project that works on one machine and nowhere else.
 
-Replace `<EVALUATED_VERSION>` in `.mcp.json` with the version actually evaluated on the project,
-and record the installed skill versions in `tooling/skills.yml` and the `AGENTS.md` Skills table.
-Never leave a floating tag.
+The skills go further: they are **checked in, not installed**. `.agents/skills/<name>/` holds the
+files and `.claude/settings.json` declares no marketplace at all. The starter kit previously
+declared three plugin marketplaces there, which reads as provisioning but is really an instruction
+to install — it needs the network and a trust prompt on first open, resolves to whatever the
+upstream default branch says that day, and lands in per-machine state under the user's home
+directory. The consequence is a skill that is absent in a fresh clone until somebody accepts a
+prompt, absent in every headless and CI run, and a different version per developer: the same
+failure the `company://apple-skills` placeholder produced, one layer further along. Vendored
+skills are present on clone, identical everywhere, and change only in a reviewed commit.
+`.claude/skills/<name>` is a committed symlink into `.agents/skills/`, so Claude Code loads each as
+a project-scope skill while an agent reading `AGENTS.md` finds the same files — one payload, not a
+per-tool copy. Bump a pin with the playbook's `scripts/vendor_skills.sh`, never by editing the
+vendored files in place.
+
+`.mcp.json` ships with the server version pinned exactly — `xcodebuildmcp@2.7.0`, the version this
+package evaluated — rather than a placeholder for the adopter to fill in. A placeholder there is
+not a decision deferred, it is a broken file: `.claude/settings.json` approves the server, so a
+fresh clone starts a server whose `npx` specifier cannot resolve, and the failure surfaces as an
+absent tool rather than as an unreplaced placeholder. Bump the pin deliberately, in a commit that
+says what was re-evaluated; never replace it with `latest` or a range, which make the resolved
+version a property of the registry rather than of the project.
 
 `scripts/check_playbook_access.sh` exists because a browser `blob/` URL is not a readable
 reference even now that this repository is public: it returns an HTML page rather than the

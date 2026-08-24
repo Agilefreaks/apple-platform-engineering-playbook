@@ -66,7 +66,7 @@ rather than overwriting it:
   "mcpServers": {
     "xcodebuildmcp": {
       "command": "npx",
-      "args": ["-y", "xcodebuildmcp@<EVALUATED_VERSION>", "mcp"],
+      "args": ["-y", "xcodebuildmcp@2.7.0", "mcp"],
       "env": {
         "XCODEBUILDMCP_ENABLED_WORKFLOWS": "project-discovery,session-management,simulator,simulator-management,ui-automation,coverage,doctor,utilities",
         "XCODEBUILDMCP_SENTRY_DISABLED": "true"
@@ -76,8 +76,13 @@ rather than overwriting it:
 }
 ~~~
 
-Four details in that snippet each cost a debugging session when they are missing:
+Five details in that snippet each cost a debugging session when they are missing:
 
+- **An exact pinned version.** Not a placeholder, and not `latest` or a range. The settings file
+  approves this server, so an unresolvable specifier gives a fresh clone a server that fails to
+  start, reported as a missing tool rather than as an unfilled placeholder. A floating specifier is
+  worse than stale: the registry already carries a `26.0.0` outside the `latest` tag, so "the
+  highest version" and "the version this project evaluated" are not the same thing.
 - **The `mcp` subcommand.** From 2.x the package needs it. Without it the process prints CLI help
   and exits, which looks like a server that never starts rather than a wrong argument.
 - **The enabled-workflow list replaces the server's defaults, it does not extend them.** Only the
@@ -90,6 +95,14 @@ Four details in that snippet each cost a debugging session when they are missing
 - **Commit both files.** `.mcp.json` plus the settings file that approves the server. A capability
   configured only in one developer's local settings is invisible to everyone else, and the project
   then behaves differently depending on who is running it.
+
+One asymmetry to know about the workflow list: naming `doctor` does not give a session a health
+check. That workflow's tool is gated on the server's own debug flag, so it stays absent under the
+shipped configuration. The packaged CLI is the health check, and it needs no server and no session:
+
+~~~bash
+npx -y -p xcodebuildmcp@2.7.0 xcodebuildmcp-doctor
+~~~
 
 One more trap worth knowing before you trust a screenshot: the screenshot and UI-snapshot tools act
 on the session's default device and **ignore an explicitly passed simulator id**. Check the id

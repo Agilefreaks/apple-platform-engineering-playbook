@@ -2,24 +2,39 @@ schema: 1
 
 # Canonical skill -> installed runtime.
 #
-# `company://apple-skills` is not a registry. It was a placeholder for a company skill library
-# that was never published, so every project copying it had three `required` entries that
-# resolved to nothing while reading as satisfied. The mappings below are public, MIT-licensed
-# skills, declared in `.claude/settings.json` so a fresh clone installs them with no manual step
-# and without requiring any extra CLI.
+# The runtimes are checked into this repository under `.agents/skills/`, with
+# `.claude/skills/<name>` symlinked into that tree so Claude Code loads each one as a
+# project-scope skill. They are not plugin-marketplace declarations. A marketplace entry in
+# `.claude/settings.json` is an instruction to install: it needs the network and a trust prompt on
+# first open, resolves to whatever the upstream default branch says that day, and leaves the result
+# in per-machine state outside the project — so the skill is absent in a fresh clone, absent in a
+# headless run, and a different version per developer. A checked-in skill is present on clone and
+# changes only in a reviewed commit.
 #
-# Record the same mapping in the Skills table in AGENTS.md, and name anything still unresolved as
-# a tooling gap rather than leaving the row blank.
+# `company://apple-skills` used to appear here. It was a placeholder for a company skill library
+# that was never published, so every project copied three `required` entries that read as satisfied
+# and resolved to nothing.
+#
+# The commit is the pin. Bump it in the playbook (`scripts/vendor_skills.sh`), not by editing the
+# vendored files in place — a local edit is indistinguishable from upstream content and is lost on
+# the next re-vendor. `.agents/skills/VENDORED.md` carries the same table.
+#
+# Mirror this mapping in the Skills table in AGENTS.md, and name anything still unresolved as a
+# tooling gap rather than leaving the row blank.
 
 required:
   apple/swift-concurrency:
-    runtime: swift-concurrency-pro@swift-concurrency-agent-skill
+    runtime: .agents/skills/swift-concurrency-pro
     source: https://github.com/twostraws/Swift-Concurrency-Agent-Skill
-    version: "<INSTALLED_VERSION>"
+    commit: bee3f69ba17142da148d3c5406f148ed62592b69
+    version: "1.0"
+    license: MIT
   apple/swift-testing:
-    runtime: swift-testing-pro@swift-testing-agent-skill
+    runtime: .agents/skills/swift-testing-pro
     source: https://github.com/twostraws/Swift-Testing-Agent-Skill
-    version: "<INSTALLED_VERSION>"
+    commit: 2d6bba14a3c8bf3694f218b92fffe617c41ae43e
+    version: "1.0"
+    license: MIT
   apple/ios-runtime-debugging:
     runtime: null
     notes: >
@@ -29,9 +44,14 @@ required:
 
 conditional:
   apple/swiftui-patterns:
-    runtime: swiftui-pro@swiftui-agent-skill
+    runtime: .agents/skills/swiftui-pro
     source: https://github.com/twostraws/SwiftUI-Agent-Skill
-    version: "<INSTALLED_VERSION>"
+    commit: be297ff80dddec529af1f9b1f1f114aab6c9d11c
+    version: "1.1"
+    license: MIT
+    notes: >
+      Vendored and linked by default. A project with no SwiftUI in scope can drop the
+      .claude/skills/swiftui-pro symlink and say so here rather than leaving it half-active.
   # Add a conditional mapping only when that work is in scope. A missing skill uses the standard
   # and the relevant checklist as manual fallback, and is reported as a tooling gap.
   apple/swiftui-refactoring: null

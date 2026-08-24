@@ -16,9 +16,9 @@ capabilities:
       - name: xcodebuildmcp
         kind: mcp
         source: https://github.com/getsentry/XcodeBuildMCP
-        version: "<EVALUATED_VERSION>"
-        revision: "<EVALUATED_REVISION_OR_NULL>"
-        command: npx -y xcodebuildmcp@<EVALUATED_VERSION> mcp
+        version: "2.7.0"
+        revision: null
+        command: npx -y xcodebuildmcp@2.7.0 mcp
         selected_when:
           - Agents build, test, or drive Simulators headless, without Xcode open.
           - Parallel workers need scheme/destination discovery and parsed build diagnostics.
@@ -38,6 +38,9 @@ capabilities:
       - xcodebuildmcp loads only its simulator workflows by default, and its enabled-workflow
         variable replaces the defaults rather than extending them, so the list must name every
         workflow in use — UI automation included.
+      - The doctor workflow's tool is gated on the server's debug flag, so naming that workflow
+        does not by itself expose a health check inside a session. The packaged CLI is the health
+        check — npx -y -p xcodebuildmcp@2.7.0 xcodebuildmcp-doctor.
       - From xcodebuildmcp 2.x the package needs its `mcp` subcommand; without it the process
         prints CLI help and exits, which presents as a server that never starts.
       - xcodebuildmcp screenshot and UI-snapshot tools act on the session default device and

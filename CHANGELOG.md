@@ -4,6 +4,52 @@ All notable changes to the complete playbook package are recorded here.
 
 ## Unreleased
 
+## 0.5.0 — 2026-08-24
+
+- Pinned the Xcode-automation MCP server instead of shipping a placeholder where its version
+  belongs. `.mcp.json` carried `xcodebuildmcp@<EVALUATED_VERSION>` and `.claude/settings.json`
+  approved that server, so a freshly bootstrapped project started a server whose `npx` specifier
+  could not resolve. The failure surfaced as an absent tool, not as an unfilled placeholder, and
+  nothing in the repository failed if the value was never replaced — the bootstrap only mentioned it
+  in closing terminal output. The version is now `2.7.0`, evaluated against the package: the
+  configuration as checked out completes an MCP `initialize` and lists 44 tools, with every named
+  workflow present including UI automation. A floating specifier is not an acceptable substitute,
+  and not only because it drifts: the registry already carries a `26.0.0` outside the `latest` tag,
+  so "the highest version" and "the version this project evaluated" are different things.
+  `tooling/tools.yml`, the Adoption Guide, `AGENTS.template.md`, the starter-kit README and the
+  Xcode automation guide state the pin and why it is exact rather than a range.
+- Filled the two placeholders in the `apple/xcode-automation` capability row of
+  `AGENTS.template.md`, which are now answerable from the starter kit itself: the implementation is
+  `xcodebuildmcp@2.7.0`, and the health command is the packaged
+  `npx -y -p xcodebuildmcp@2.7.0 xcodebuildmcp-doctor`. Recorded, in `tooling/tools.yml` and the
+  automation guide, that naming the `doctor` workflow does not expose a health check inside a
+  session — that tool is gated on the server's debug flag — so the CLI is the health check.
+- Dropped `enableAllProjectMcpServers` from the project settings file. It blanket-approves whatever
+  `.mcp.json` happens to contain, which is a standing approval for a file that will be edited
+  later; the explicit `enabledMcpjsonServers` list names the one server the project agreed to and
+  is the only approval the starter kit now ships.
+- Checked the agent skills into the starter kit instead of declaring marketplaces that instruct
+  someone to install them. 0.3.0 replaced the unresolvable `company://apple-skills` placeholder
+  with three plugin marketplaces in `.claude/settings.json`, which reads as provisioning but is an
+  instruction to install: it needs the network and a trust prompt on first open, resolves to
+  whatever each upstream default branch says that day, and lands in per-machine state under the
+  user's home directory. So the skill was absent in a fresh clone until somebody accepted a prompt,
+  absent in every headless and CI run, and a different version per developer — the same class of
+  failure as the placeholder it replaced, one layer further along. The files now ship in
+  `templates/project/.agents/skills/`, and `bootstrap_project.sh` installs them along with
+  committed `.claude/skills/<name>` symlinks into that tree: Claude Code loads each as a
+  project-scope skill, while an agent reading `AGENTS.md` finds the same files at the same paths —
+  one payload rather than a copy per tool. `swift-concurrency-pro`, `swift-testing-pro` and
+  `swiftui-pro` are carried verbatim at pinned commits under their upstream MIT licence, with
+  `.agents/skills/VENDORED.md` recording repository, commit, version and licence for each.
+  `scripts/vendor_skills.sh` regenerates the tree from those pins — fetching each commit rather
+  than a branch, so the content does not depend on when the script ran — which makes a skill bump a
+  reviewable diff rather than a silent upstream change. `tooling/skills.yml` maps the canonical IDs
+  to the vendored paths and their commits, `AGENTS.template.md`'s Skills table carries real
+  versions instead of `<VERSION>`, and `apple/ios-runtime-debugging` stays explicitly unresolved.
+  `check_local_markdown.py` skips `.agents/` and `.venv/`: vendored prose is not ours to reformat,
+  and the review unit is the pin, not the file.
+
 ## 0.4.0 — 2026-08-24
 
 - Stopped requiring the GitHub CLI to read the playbook. The repository is now public, so

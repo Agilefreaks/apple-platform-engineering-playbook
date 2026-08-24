@@ -29,7 +29,7 @@ Current document versions:
 
 - Architecture: `2.1`
 - Delivery Loop: `0.1 — proposed for pilot`
-- Repository package: `0.4.0`
+- Repository package: `0.5.0`
 
 ## Validate the playbook
 
