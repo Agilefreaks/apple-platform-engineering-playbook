@@ -79,7 +79,7 @@ cp "$root_dir"/templates/delivery/* "$target_dir/delivery/templates/"
 # API needs a ref, and "whatever main says today" is not a pinned adoption unit.
 playbook_commit="$(git -C "$root_dir" rev-parse HEAD 2>/dev/null || echo "")"
 {
-  printf 'repository_package=0.2.5\n'
+  printf 'repository_package=0.3.0\n'
   printf 'source=Agilefreaks/apple-platform-engineering-playbook\n'
   if [[ -n "$playbook_commit" ]]; then
     printf 'playbook_commit=%s\n' "$playbook_commit"

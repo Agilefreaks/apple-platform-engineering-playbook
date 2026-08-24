@@ -4,6 +4,8 @@ All notable changes to the complete playbook package are recorded here.
 
 ## Unreleased
 
+## 0.3.0 — 2026-08-24
+
 - Made a generated project's agent capability part of the repository instead of an assumption
   about the machine it is checked out on. Three things were left to whoever happened to set a
   project up, and all three failed the same way — silently, and differently per developer.
