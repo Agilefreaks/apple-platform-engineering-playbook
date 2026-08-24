@@ -10,6 +10,9 @@ from urllib.parse import unquote
 ROOT = Path(__file__).resolve().parents[1]
 LINK_PATTERN = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
 REMOTE_PREFIXES = ("http://", "https://", "mailto:")
+# Vendored third-party skills are carried verbatim at a pinned commit. Their prose is not ours to
+# reformat, and a finding in one is not actionable here: the review unit is the pin, not the file.
+EXCLUDED_DIRECTORIES = (".venv", ".agents")
 
 
 def local_target(raw_target: str) -> str | None:
@@ -24,7 +27,11 @@ def local_target(raw_target: str) -> str | None:
 
 def main() -> int:
     failures: list[str] = []
-    markdown_files = sorted(ROOT.rglob("*.md"))
+    markdown_files = sorted(
+        path
+        for path in ROOT.rglob("*.md")
+        if not any(part in EXCLUDED_DIRECTORIES for part in path.relative_to(ROOT).parts)
+    )
 
     for path in markdown_files:
         text = path.read_text(encoding="utf-8")

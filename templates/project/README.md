@@ -16,8 +16,8 @@ The helper refuses to overwrite existing files. After installation:
    public repository; this confirms the architecture standard is readable at the pinned commit,
    through the GitHub CLI when one is installed and authenticated and over plain HTTPS when it is
    not, and prints the matching command for reading any playbook document;
-2. replace every `<PLACEHOLDER>`, including `<EVALUATED_VERSION>` in `.mcp.json` and the
-   installed skill versions in `tooling/skills.yml`;
+2. replace every `<PLACEHOLDER>` in `AGENTS.md` — the machine-read files (`.mcp.json`,
+   `.claude/settings.json`) ship with no placeholders and are runnable as checked out;
 3. define deterministic project commands in `AGENTS.md` and the project Makefile;
 4. keep the `@AGENTS.md` import as the first line of `CLAUDE.md` — Claude Code loads
    only `CLAUDE.md`, so this import is what puts the contract in its context; add only
@@ -27,12 +27,14 @@ The helper refuses to overwrite existing files. After installation:
    contract reaches a contributor's session without local setup; it needs no
    placeholder replacement, because it resolves reviewers from `CODEOWNERS`, the PR
    template, and repository history at the time it is used;
-6. keep `.claude/settings.json` checked in for the same reason — it declares which skill
-   marketplaces the project expects, enables the plugins that resolve the canonical IDs in
-   `tooling/skills.yml`, and approves the MCP server; capability held only in a developer's
-   user settings is invisible to everyone else;
-7. confirm the resolved skills in `tooling/skills.yml` and mirror them in the `AGENTS.md`
-   Skills table; name anything unresolved as a tooling gap rather than leaving it blank;
+6. keep `.claude/settings.json` checked in for the same reason — it approves the MCP server that
+   `.mcp.json` configures, by name; capability held only in a developer's user settings is
+   invisible to everyone else;
+7. commit `.agents/skills/` and the `.claude/skills/*` symlinks — the agent skills are checked in
+   rather than installed from a marketplace, so they are present on clone, in CI, and in headless
+   runs, with no trust prompt and no per-machine state; `.agents/skills/VENDORED.md` records each
+   upstream repository, pinned commit and licence, and `tooling/skills.yml` maps them to the
+   canonical skill IDs. Name anything unresolved as a tooling gap rather than leaving it blank;
 8. review capabilities in `tooling/tools.yml`; activate the Tapia example only when
    agent-heavy Simulator automation is in scope;
 9. create project ADRs instead of editing the company standard locally;

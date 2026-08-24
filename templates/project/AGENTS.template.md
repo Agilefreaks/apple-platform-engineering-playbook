@@ -87,15 +87,20 @@ Canonical requirements are in `tooling/skills.yml`. Map them to the installed ru
 
 | Canonical skill | Runtime skill/tool | Version |
 |---|---|---|
-| `apple/swift-concurrency` | `swift-concurrency-pro@swift-concurrency-agent-skill` | `<VERSION>` |
-| `apple/swift-testing` | `swift-testing-pro@swift-testing-agent-skill` | `<VERSION>` |
+| `apple/swift-concurrency` | `.agents/skills/swift-concurrency-pro` | `1.0` |
+| `apple/swift-testing` | `.agents/skills/swift-testing-pro` | `1.0` |
 | `apple/ios-runtime-debugging` | none installed — tooling gap | — |
-| `apple/swiftui-patterns` (conditional) | `swiftui-pro@swiftui-agent-skill` | `<VERSION>` |
+| `apple/swiftui-patterns` (conditional) | `.agents/skills/swiftui-pro` | `1.1` |
 
-`.claude/settings.json` declares the marketplaces and enables the plugins, so a fresh clone
-installs them with no manual step. That file is the repository's statement of which skills it
-expects; a skill that lives only in one developer's user settings is invisible to everyone else
-and to CI.
+Those runtimes are checked into this repository, not installed. The files live in
+`.agents/skills/<name>/`, and `.claude/skills/<name>` symlinks into that tree, which is what makes
+each one a project-scope skill in Claude Code; an agent that reads this file rather than
+`CLAUDE.md` finds the same content at the same paths. So the skills are present the moment the
+repository is cloned — no marketplace, no trust prompt, no network — and identical for every
+contributor and every headless run. `.agents/skills/VENDORED.md` records each upstream repository,
+its pinned commit and its licence. Do not edit the vendored files: a local edit is
+indistinguishable from upstream content and is lost on the next re-vendor, so project-specific
+rules belong in this file.
 
 Add conditional mappings only when that work is in scope. A missing skill uses the
 standard/checklist as manual fallback and is reported as a tooling gap.
@@ -107,16 +112,16 @@ enable only capabilities whose adoption conditions apply:
 
 | Capability | Runtime implementation | Adoption | Health/setup command |
 |---|---|---|---|
-| `apple/xcode-automation` | `<SELECTED_IMPLEMENTATION_AND_PINNED_VERSION>` | Recommended | `<COMMAND>` |
+| `apple/xcode-automation` | `xcodebuildmcp@2.7.0` (see `.mcp.json`) | Recommended | `npx -y -p xcodebuildmcp@2.7.0 xcodebuildmcp-doctor` |
 | `apple/ios-simulator-automation` | Tapia MCP | Recommended/conditional | `<TAPIA_SOURCE_CLONE>/scripts/tapia-doctor` |
 
 Name the selected Xcode-automation implementation and its pinned version, not just
-"an MCP". The make targets stay authoritative: reproduce any gate result through them
+"an MCP" — the shipped row does, and stays true only if it is updated with `.mcp.json`. The make targets stay authoritative: reproduce any gate result through them
 before reporting it, because no MCP implementation runs in CI.
 
 `.mcp.json` carries the server configuration and `.claude/settings.json` approves it, both
-committed. Replace `<EVALUATED_VERSION>` with the version actually evaluated on this project —
-never a floating tag. The shipped configuration disables the server's own telemetry and names
+committed. The server version is pinned exactly (`xcodebuildmcp@2.7.0`); bump it deliberately and
+never to `latest` or a range. The shipped configuration disables the server's own telemetry and names
 every enabled workflow explicitly, because that variable replaces the server's defaults rather
 than extending them. A project that keeps Xcode open and prefers the first-party bridge should
 swap the file's contents and say so here.
