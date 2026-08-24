@@ -4,6 +4,8 @@ All notable changes to the complete playbook package are recorded here.
 
 ## Unreleased
 
+## 0.5.0 — 2026-08-24
+
 - Pinned the Xcode-automation MCP server instead of shipping a placeholder where its version
   belongs. `.mcp.json` carried `xcodebuildmcp@<EVALUATED_VERSION>` and `.claude/settings.json`
   approved that server, so a freshly bootstrapped project started a server whose `npx` specifier
