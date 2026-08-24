@@ -4,6 +4,8 @@ All notable changes to the complete playbook package are recorded here.
 
 ## Unreleased
 
+## 0.4.0 — 2026-08-24
+
 - Stopped requiring the GitHub CLI to read the playbook. The repository is now public, so
   `templates/project/scripts/check_playbook_access.sh` no longer fails when `gh` is missing or
   unauthenticated: it uses `gh` when one is installed and authenticated — still the only route
