@@ -4,6 +4,12 @@ All notable changes to the complete playbook package are recorded here.
 
 ## Unreleased
 
+- Clarified DLV-011: agents continue requested implementation through authorized
+  validation and evidence capture, reuse existing authorization, and continue independent
+  work when one step is blocked. Updated the delivery standard, handbook, and AGENTS
+  template without expanding Git, release, scope, or approval authority. Existing projects
+  can adopt the matching AGENTS section when updating their playbook pin.
+
 ## 0.4.0 — 2026-08-24
 
 - Stopped requiring the GitHub CLI to read the playbook. The repository is now public, so

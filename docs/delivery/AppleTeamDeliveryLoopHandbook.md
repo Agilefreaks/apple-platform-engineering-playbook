@@ -527,6 +527,22 @@ Within the access granted to them in the repository:
 - update the Delivery Packet with observed facts;
 - propose the next status or report a blocker.
 
+Permission to execute also carries an expectation to finish the authorized work. When
+implementation is requested, agents carry it through relevant checks and evidence
+capture rather than returning only a plan or a list of checks for someone else to run.
+A review-only or proposal-only request remains limited to that outcome.
+
+An approval already given for the same action and scope does not need to be requested
+again. Agents use project evidence for routine, reversible implementation choices;
+they ask when missing information materially affects correctness, scope, or a protected
+action, or when an explicit approval is still required.
+
+For example, unavailable device access can block device verification while local checks
+and evidence preparation continue. The agent reports the missing device evidence and
+does not claim that gate passed. Completing the requested work is distinct from formal
+Product, Design, Engineering, QA, or Release approval. This expectation does not grant
+additional authority for Git actions, releases, scope expansion, or gate waivers.
+
 ### Where they stop
 
 Without explicit human authority, agents do not:
