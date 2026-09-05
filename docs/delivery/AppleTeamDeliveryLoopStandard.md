@@ -341,6 +341,21 @@ Agents MAY, within repository authorization:
 - run deterministic local checks and draft a pull request;
 - recommend a gate transition or identify a blocker.
 
+Within the user-authorized scope and applicable approval gates, agents MUST continue
+through implementation, relevant validation, and evidence capture when implementation
+is requested. They MUST NOT stop at a plan or merely suggest checks they can run
+within that authorization. Review-only and proposal-only requests retain their limits.
+
+Agents MUST reuse authorization already given for the same action and scope. Routine,
+reversible implementation choices SHOULD be resolved using project evidence. Ask only
+when missing information materially affects correctness, scope, or a protected action,
+or when an explicit approval requirement remains unmet.
+
+A blocked step MUST NOT stop independent authorized work. Report the blocked step
+precisely and distinguish completion of the requested work from formal Product,
+Design, Engineering, QA, or Release approval. These rules grant no additional authority
+to commit, push, create a pull request, merge, release, expand scope, or bypass a gate.
+
 Agents MUST NOT without explicit human authority:
 
 - approve scope, design, privacy/legal risk, a gate waiver, or their own required

@@ -127,6 +127,23 @@ and keep command approval narrow. A Tapia flow is local Simulator evidence only;
 does not replace XCUITest, CI, real-device/distributed-build checks, or human approval.
 If unavailable, use a declared fallback and report the reduced evidence level.
 
+## Continue within authorized scope
+
+When implementation is requested, continue through implementation, relevant validation,
+and evidence capture within the authorized scope and applicable approval gates. Do not
+stop at a plan or merely suggest checks you can run. Preserve review-only and
+proposal-only limits.
+
+Reuse authorization already given for the same action and scope. Resolve routine,
+reversible implementation choices using project evidence. Ask only when missing
+information materially affects correctness, scope, or a protected action, or when an
+explicit approval requirement remains unmet.
+
+If one step is blocked, continue independent authorized work and report the blocker
+precisely. Distinguish task completion from formal Product/Design/Engineering/QA/Release
+approval. This rule does not authorize additional Git actions, release, scope expansion,
+or bypassing any approval gate.
+
 ## Protected actions
 
 Agents require explicit human authority before:
