@@ -1,6 +1,6 @@
 {
   "enableAllProjectMcpServers": true,
-  "enabledMcpjsonServers": ["xcodebuildmcp"],
+  "enabledMcpjsonServers": ["mobilebuildmcp"],
   "extraKnownMarketplaces": {
     "swift-concurrency-agent-skill": {
       "source": { "source": "github", "repo": "twostraws/Swift-Concurrency-Agent-Skill" }

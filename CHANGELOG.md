@@ -4,6 +4,22 @@ All notable changes to the complete playbook package are recorded here.
 
 ## Unreleased
 
+- Refreshed the tooling baseline for Xcode 27 / Swift 6.4, Device Hub, separate
+  Command Line Tools updates, installed Simulator discovery, and opt-in native MCP
+  headless sessions. Updated ARCH-015's handbook and standard without changing
+  its approval or evidence boundaries.
+- Migrated the starter MCP configuration to MobileBuildMCP 2.7.1 (the renamed
+  XcodeBuildMCP), including environment variables, server approval, and the matching
+  capability manifest. Existing projects migrate explicitly; their build/test
+  acceptance remains project-specific.
+- Updated the Tapia MCP pin to `74ddfd95710801f7ff33a48e0a42bdfff5c15e02`
+  (2026-10-02; package version remains `0.2.0`). The guide and template cover matched
+  idb prerequisites, explicit Simulator selection, JSON target discovery, and the
+  upstream MCP `<2` dependency constraint. Updating a manifest does not install the
+  tool; upgrade the shared installation and restart its MCP connection.
+  Clarified source-checkout helper paths, both installed CLI entry points, the
+  upstream idb baseline versus the tested version, and project-pin precedence.
+
 ## 0.4.0 — 2026-08-24
 
 - Stopped requiring the GitHub CLI to read the playbook. The repository is now public, so
