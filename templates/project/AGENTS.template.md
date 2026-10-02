@@ -124,6 +124,14 @@ Record Xcode build, Swift compiler/language mode, CLT version, installed runtime
 and destination UDID; refresh them after toolchain changes. See the playbook's
 `docs/tooling/XcodeAutomationGuide.md` for the dated baseline and discovery commands.
 
+Record the evaluated Tapia pin in `tooling/tools.yml`; it supersedes older example
+revisions in the adopted playbook. From that pinned Tapia source checkout, run
+`./scripts/tapia-install`, restart the MCP connection, and run `./scripts/tapia-doctor`.
+These helpers belong to Tapia, not this application repository. The pipx install
+exposes both `tapia-mcp` and `tapia-sim`; keep its bin directory on `PATH`. Record the
+matched idb client/companion versions actually tested, separately from the upstream
+baseline; startup or accessibility reads alone do not validate input.
+
 When Tapia is enabled, pin the reviewed revision, use stable
 `accessibilityIdentifier` values, isolate the Simulator from production accounts/data,
 and keep command approval narrow. A Tapia flow is local Simulator evidence only; it

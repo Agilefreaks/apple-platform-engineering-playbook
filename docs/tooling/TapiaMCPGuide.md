@@ -52,7 +52,9 @@ from `simctl` instead of raw idb output.
 
 Follow the installer and doctor instructions in the Tapia repository. Until Tapia has
 a consumable release tag, record the evaluated commit in `tooling/tools.yml` and the
-resolved local revision in the project handoff.
+resolved local revision in the project handoff. The project's evaluated Tapia pin
+takes precedence over older example revisions in its adopted playbook. Use that
+project pin in the checkout command below when it differs from this guide's example.
 
 From a clean, dedicated source checkout, install the exact revision:
 
@@ -65,8 +67,14 @@ git rev-parse HEAD
 
 Installation requires full Xcode, Homebrew, and Python 3.10–3.13. The installer
 upgrades the Homebrew `facebook/fb/idb-cli` and `facebook/fb/idb-companion` together
-and reinstalls Tapia through pipx. Xcode 27 input requires their DTUHID transport
-(upstream's supported baseline is idb 1.6.3). An older pipx `fb-idb` can shadow the
+and reinstalls Tapia through pipx. That installation exposes both `tapia-mcp` and
+`tapia-sim` in pipx's bin directory (normally `~/.local/bin`); keep it on `PATH` and
+confirm both with `command -v tapia-mcp tapia-sim`. The `scripts/tapia-install` and
+`scripts/tapia-doctor` helpers belong to the Tapia source checkout, not the app repo.
+
+Xcode 27 input requires idb's DTUHID transport. Upstream documents a 1.6.3 baseline;
+the 2026-10-02 local toolchain smoke check passed with matched idb-cli and
+idb-companion 1.6.4. Version 1.6.3 was not exercised locally. An older pipx `fb-idb` can shadow the
 Homebrew client: verify `command -v idb` resolves to `$(brew --prefix)/bin/idb`.
 Resolve any installer or Apple Command Line Tools prerequisite failure before
 claiming input support; successful Tapia startup or accessibility reads alone do

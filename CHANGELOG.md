@@ -17,6 +17,8 @@ All notable changes to the complete playbook package are recorded here.
   idb prerequisites, explicit Simulator selection, JSON target discovery, and the
   upstream MCP `<2` dependency constraint. Updating a manifest does not install the
   tool; upgrade the shared installation and restart its MCP connection.
+  Clarified source-checkout helper paths, both installed CLI entry points, the
+  upstream idb baseline versus the tested version, and project-pin precedence.
 
 ## 0.4.0 — 2026-08-24
 

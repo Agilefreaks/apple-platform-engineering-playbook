@@ -80,10 +80,13 @@ capabilities:
       - System overlays may not appear in the application accessibility tree.
       - Recorded flows drift when screen anchors, identifiers, or behavior change.
       - The package version remains 0.2.0; identify this update by its full revision.
-      - Xcode 27 input requires matched Homebrew idb-cli and idb-companion (upstream baseline 1.6.3).
+      - Xcode 27 input requires matched Homebrew idb-cli and idb-companion.
+      - Upstream documents a 1.6.3 baseline; the 2026-10-02 local toolchain smoke check passed with both at 1.6.4. Version 1.6.3 was not exercised locally.
     guardrails:
-      - Install the pinned source with scripts/tapia-install and restart the MCP connection after upgrading.
-      - Run scripts/tapia-doctor from that checkout; verify Homebrew idb is first on PATH and exercise input separately.
+      - From the pinned Tapia source checkout, run ./scripts/tapia-install and restart the MCP connection after upgrading.
+      - The same pipx install exposes tapia-mcp and tapia-sim; keep its bin directory on PATH.
+      - The project manifest records the evaluated Tapia pin and supersedes older example revisions in the adopted playbook.
+      - From that Tapia source checkout, run ./scripts/tapia-doctor; verify Homebrew idb is first on PATH and exercise input separately.
       - Use only non-production environments, test accounts, and synthetic data.
       - Prefer accessibilityIdentifier selectors over labels or coordinates.
       - Auto-accept is allowed only for a bounded simulator-only session.
