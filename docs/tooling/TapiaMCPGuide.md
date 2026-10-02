@@ -42,18 +42,47 @@ The evaluated internal source is:
 
 - repository: `Agilefreaks/tapia-mcp`;
 - package version: `0.2.0`;
-- pinned revision: `e1defb92367a5f55ef28e3d8b414dc8b7b64b04f`.
+- pinned revision: `74ddfd95710801f7ff33a48e0a42bdfff5c15e02` (2026-10-02).
+
+The package still reports `0.2.0`; the commit identifies the evaluated update. This
+revision adds Xcode 27 / Device Hub support, `open_simulator`, the `tapia-sim` CLI,
+runtime-independent device discovery, and an MCP dependency constraint of
+`mcp[cli]>=1.2,<2` to preserve the FastMCP import. `list_targets` now returns JSON
+from `simctl` instead of raw idb output.
 
 Follow the installer and doctor instructions in the Tapia repository. Until Tapia has
 a consumable release tag, record the evaluated commit in `tooling/tools.yml` and the
 resolved local revision in the project handoff.
+
+From a clean, dedicated source checkout, install the exact revision:
+
+~~~bash
+git fetch origin
+git checkout --detach 74ddfd95710801f7ff33a48e0a42bdfff5c15e02
+./scripts/tapia-install
+git rev-parse HEAD
+~~~
+
+Installation requires full Xcode, Homebrew, and Python 3.10–3.13. The installer
+upgrades the Homebrew `facebook/fb/idb-cli` and `facebook/fb/idb-companion` together
+and reinstalls Tapia through pipx. Xcode 27 input requires their DTUHID transport
+(upstream's supported baseline is idb 1.6.3). An older pipx `fb-idb` can shadow the
+Homebrew client: verify `command -v idb` resolves to `$(brew --prefix)/bin/idb`.
+Resolve any installer or Apple Command Line Tools prerequisite failure before
+claiming input support; successful Tapia startup or accessibility reads alone do
+not verify taps, swipes, or typing. Restart the client's Tapia MCP connection after
+updating so it loads the installed code.
 
 Run the health check from the Tapia source checkout before an agent session (or use
 `tapia-doctor` when that helper has deliberately been exposed on `PATH`):
 
 ~~~bash
 ./scripts/tapia-doctor
+tapia-sim list
 ~~~
+
+Read the doctor output, including client/companion versions and paths. A connected
+companion alone is not proof that the Xcode 27 input transport is current.
 
 ## Project configuration
 
@@ -63,6 +92,14 @@ project configuration.
 
 Keep the server project-scoped so its working directory is the application root and it
 can discover `tapia.flows.yaml`.
+
+The `tapia-mcp` command resolves the shared pipx installation on `PATH`; the
+manifest's revision records the required pin but does not install or enforce it.
+Install the pinned checkout on each machine before starting the MCP client. Pass
+`DEVELOPER_DIR` to the MCP process when using a different Xcode installation, and
+`TAPIA_SIMULATOR=<UDID>` when a session needs a fixed default device. Explicit
+`udid` tool arguments take precedence. Multiple booted devices or duplicate names
+require explicit selection; use UDIDs for concurrent work.
 
 Copy `tapia.flows.example.yaml` to the application root, rename it to
 `tapia.flows.yaml`, replace the sample bundle identifier, and define only stable,
@@ -129,8 +166,9 @@ xcrun simctl boot "$udid"
 
 - Pin every Simulator operation to the worker's own UDID; never rely on "the booted
   Simulator":
-  - Tapia — select the worker's device as the target for the session rather than the
-    default booted device;
+  - Tapia — set `TAPIA_SIMULATOR` to the worker's UDID in the MCP environment or pass
+    `udid` on every call; `open_simulator(udid=...)` boots and displays that device
+    without changing the target of other explicitly addressed calls;
   - `xcrun simctl <op> "$udid" …` for install, launch, screenshot, and diagnostics;
   - `xcodebuild -destination 'id=<UDID>'` for build and test.
 - A worker MUST NOT `restart`, `shutdown`, `erase`, or re-`boot` a device it does not

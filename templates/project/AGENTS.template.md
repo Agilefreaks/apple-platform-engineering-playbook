@@ -115,11 +115,14 @@ Name the selected Xcode-automation implementation and its pinned version, not ju
 before reporting it, because no MCP implementation runs in CI.
 
 `.mcp.json` carries the server configuration and `.claude/settings.json` approves it, both
-committed. Replace `<EVALUATED_VERSION>` with the version actually evaluated on this project —
-never a floating tag. The shipped configuration disables the server's own telemetry and names
-every enabled workflow explicitly, because that variable replaces the server's defaults rather
-than extending them. A project that keeps Xcode open and prefers the first-party bridge should
-swap the file's contents and say so here.
+committed. The starter pins MobileBuildMCP `2.7.1`; validate the project build/test
+flows before adopting it and keep its manifest pin synchronized. Never use a floating
+tag. Telemetry is disabled and the enabled-workflow list replaces defaults. A project
+selecting the native bridge must have approved open-project or Xcode 27 headless
+access and update the runtime configuration, server approval, and manifest together.
+Record Xcode build, Swift compiler/language mode, CLT version, installed runtime/build,
+and destination UDID; refresh them after toolchain changes. See the playbook's
+`docs/tooling/XcodeAutomationGuide.md` for the dated baseline and discovery commands.
 
 When Tapia is enabled, pin the reviewed revision, use stable
 `accessibilityIdentifier` values, isolate the Simulator from production accounts/data,

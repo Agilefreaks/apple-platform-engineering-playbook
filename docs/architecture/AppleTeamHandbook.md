@@ -1446,10 +1446,12 @@ The repo declares its capabilities in `tooling/tools.yml`:
 
 A capability names one selected implementation and, when the project evaluated others,
 keeps them in `alternatives`. The Xcode MCP is the default because it is first-party and
-versioned with the selected Xcode, but it requires the project open in Xcode — so
-headless and parallel agent work either selects a headless build server such as
-XcodeBuildMCP, pinned to an evaluated version, or runs the repository commands with
-filtered output. Either way the make targets stay authoritative: a build nobody can
+versioned with the selected Xcode. It needs an approved open-project session, or
+Xcode 27 headless mode explicitly enabled with agent and project access. Headless
+and parallel work can also select MobileBuildMCP at an evaluated version, or use
+repository commands with filtered output. The starter selects MobileBuildMCP and
+records the native bridge as an alternative; choosing the bridge updates both the
+manifest and runtime configuration. Either way the make targets stay authoritative: a build nobody can
 reproduce with `make` is a second build definition, and CI is the one that decides. The
 choice, the pinning rules, and the log-noise baseline live in
 `docs/tooling/XcodeAutomationGuide.md`.
