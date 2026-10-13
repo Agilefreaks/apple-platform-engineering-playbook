@@ -4,25 +4,24 @@ capabilities:
   apple/xcode-automation:
     adoption: recommended
     implementation:
-      name: xcode-mcp
+      name: mobilebuildmcp
       kind: mcp
-      source: https://developer.apple.com/documentation/xcode/giving-external-agents-access-to-xcode
-      version: selected-Xcode
-      revision: null
-      command: xcrun mcpbridge
+      source: https://github.com/getsentry/MobileBuildMCP
+      version: "2.7.1"
+      revision: d13ff0c707b0681769cf31da0eb42c4f94ceafff
+      command: npx -y mobilebuildmcp@2.7.1 mcp
       selected_when:
-        - The developer keeps the project open in Xcode and approves external-agent access.
+        - The starter uses the pinned portable server; validate the project's build/test flows before adoption.
     alternatives:
-      - name: xcodebuildmcp
+      - name: xcode-mcp
         kind: mcp
-        source: https://github.com/getsentry/XcodeBuildMCP
-        version: "<EVALUATED_VERSION>"
-        revision: "<EVALUATED_REVISION_OR_NULL>"
-        command: npx -y xcodebuildmcp@<EVALUATED_VERSION> mcp
+        source: https://developer.apple.com/documentation/xcode/giving-external-agents-access-to-xcode
+        version: selected-Xcode
+        revision: null
+        command: xcrun mcpbridge
         selected_when:
-          - Agents build, test, or drive Simulators headless, without Xcode open.
-          - Parallel workers need scheme/destination discovery and parsed build diagnostics.
-          - Filtered xcodebuild output is already in place and is still not enough.
+          - The project is open in Xcode with approved external-agent access.
+          - Xcode 27 headless mode is explicitly enabled and the agent and project access are approved.
     scope:
       - local_development
       - simulator
@@ -31,18 +30,17 @@ capabilities:
       - External coding agents build, inspect, or modify the open Xcode project.
       - Agents run build, test, or Simulator operations without a human at the keyboard.
     limitations:
-      - xcrun mcpbridge requires the project open in Xcode with external-agent access enabled.
-      - xcodebuildmcp is a third-party Node package that runs with local developer privileges.
+      - xcrun mcpbridge requires an approved Xcode session or an explicitly enabled headless session with project access.
+      - mobilebuildmcp is a third-party Node package that runs with local developer privileges.
       - No MCP implementation runs in CI; the make targets remain the gate-facing interface.
       - An MCP tool call is not reproducible evidence a reviewer can rerun from the repository.
-      - xcodebuildmcp loads only its simulator workflows by default, and its enabled-workflow
+      - mobilebuildmcp loads only its simulator workflows by default, and its enabled-workflow
         variable replaces the defaults rather than extending them, so the list must name every
         workflow in use — UI automation included.
-      - From xcodebuildmcp 2.x the package needs its `mcp` subcommand; without it the process
+      - From mobilebuildmcp 2.x the package needs its `mcp` subcommand; without it the process
         prints CLI help and exits, which presents as a server that never starts.
-      - xcodebuildmcp screenshot and UI-snapshot tools act on the session default device and
-        ignore an explicitly passed simulator id, so evidence can be attributed to the wrong
-        device without any error.
+      - mobilebuildmcp screenshot and snapshot_ui use session defaults; their 2.7.1 schemas have no Simulator-ID argument.
+        Set simulatorId through session_set_defaults and check the returned device before attributing evidence.
     guardrails:
       - Use the Xcode version and project declared in AGENTS.md.
       - Signing, entitlement, certificate, and release actions remain protected.
@@ -50,8 +48,8 @@ capabilities:
       - Pin a third-party server to an evaluated version; never resolve it from a floating tag.
       - Reproduce every gate result through make targets before reporting it as evidence.
       - In parallel runs pin each build and test to the worker's own destination UDID.
-      - Disable the server's own telemetry. xcodebuildmcp reports its internal runtime faults to
-        a third-party service unless XCODEBUILDMCP_SENTRY_DISABLED=true is set; a client project
+      - Disable the server's own telemetry. mobilebuildmcp reports its internal runtime faults to
+        a third-party service unless MOBILEBUILDMCP_SENTRY_DISABLED=true is set; a client project
         should emit nothing outward it has not agreed to.
       - Check the device id echoed back by any screenshot or snapshot call, or drive a second
         device through xcrun simctl, before attaching the output as evidence.
@@ -68,7 +66,7 @@ capabilities:
       kind: mcp
       source: github://Agilefreaks/tapia-mcp
       version: "0.2.0"
-      revision: e1defb92367a5f55ef28e3d8b414dc8b7b64b04f
+      revision: 74ddfd95710801f7ff33a48e0a42bdfff5c15e02
       command: tapia-mcp
     scope:
       - local_development
@@ -81,7 +79,14 @@ capabilities:
       - Simulator evidence does not verify a real device or distributed build.
       - System overlays may not appear in the application accessibility tree.
       - Recorded flows drift when screen anchors, identifiers, or behavior change.
+      - The package version remains 0.2.0; identify this update by its full revision.
+      - Xcode 27 input requires matched Homebrew idb-cli and idb-companion.
+      - Upstream documents a 1.6.3 baseline; the 2026-10-02 local toolchain smoke check passed with both at 1.6.4. Version 1.6.3 was not exercised locally.
     guardrails:
+      - From the pinned Tapia source checkout, run ./scripts/tapia-install and restart the MCP connection after upgrading.
+      - The same pipx install exposes tapia-mcp and tapia-sim; keep its bin directory on PATH.
+      - The project manifest records the evaluated Tapia pin and supersedes older example revisions in the adopted playbook.
+      - From that Tapia source checkout, run ./scripts/tapia-doctor; verify Homebrew idb is first on PATH and exercise input separately.
       - Use only non-production environments, test accounts, and synthetic data.
       - Prefer accessibilityIdentifier selectors over labels or coordinates.
       - Auto-accept is allowed only for a bounded simulator-only session.

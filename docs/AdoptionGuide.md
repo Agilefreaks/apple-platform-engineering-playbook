@@ -81,9 +81,10 @@ IDs in `tooling/skills.yml`; it also approves the MCP server that `.mcp.json` co
 these, a project's capability is whatever each developer happened to install — which is
 indistinguishable from a project that works on one machine and nowhere else.
 
-Replace `<EVALUATED_VERSION>` in `.mcp.json` with the version actually evaluated on the project,
-and record the installed skill versions in `tooling/skills.yml` and the `AGENTS.md` Skills table.
-Never leave a floating tag.
+The starter pins MobileBuildMCP `2.7.1` in `.mcp.json` and `tooling/tools.yml`.
+Validate the project build/test flows before adopting that pin, and keep both files
+in sync when upgrading. Record installed skill versions in `tooling/skills.yml` and
+the `AGENTS.md` Skills table. Never use a floating tag.
 
 `scripts/check_playbook_access.sh` exists because a browser `blob/` URL is not a readable
 reference even now that this repository is public: it returns an HTML page rather than the
@@ -159,9 +160,9 @@ fallbacks.
 
 - Adopt Xcode automation as the recommended baseline where the selected Xcode/runtime
   exposes it. Select one implementation and keep the evaluated alternatives in
-  `alternatives`: the first-party Xcode MCP needs the project open in Xcode, so headless
-  or parallel agent work selects a pinned headless build server such as XcodeBuildMCP, or
-  runs the repository commands with filtered output. See
+  `alternatives`: the native bridge uses an approved open-project session or an
+  explicitly enabled Xcode 27 headless session with agent and project access. The
+  starter selects MobileBuildMCP; repository commands remain the fallback. See
   `docs/tooling/XcodeAutomationGuide.md`.
 - Make `make build`/`make test` readable before adding any build server: filter through
   `xcbeautify` or an equivalent, keep the raw log, write a result bundle, set `pipefail`.

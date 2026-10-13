@@ -8,6 +8,48 @@ This guide records the choice, the pinning rules, and the limits of the evidence
 implementation produces. It complements the Tapia MCP Guide, which covers semantic UI
 interaction rather than build automation.
 
+## Tooling baseline checked 2026-10-02
+
+This is a dated discovery and compatibility snapshot. Refresh it when adopting a
+toolchain update; project pins and runtime evidence remain the authority for a run.
+
+| Tool | Current upstream / local verification | Adoption guidance |
+|---|---|---|
+| Xcode / Swift | Apple lists Xcode 27 as the stable release and 27.2 beta 2 plus 27.1 beta as previews. Local verification used Xcode 27.0 build `27A266a`, Swift compiler 6.4. | Record the Xcode build and Swift language mode separately. A beta listing is not approval to upgrade a project's toolchain. |
+| Command Line Tools | Local package 27.0; the previously installed 26.6 package blocked Homebrew's idb upgrade despite full Xcode 27 being selected. | Check the standalone package with `pkgutil`; update it separately through Software Update when required. |
+| Simulator / Device Hub | Local available iOS runtimes: 27.0 (`24A434`), 26.5 (`23F77`), and 18.5 (`22F77`). Tapia input verified on iPhone 18 Pro / iOS 27.0. | Discover installed runtime/device pairs and pin the chosen UDID; do not assume a device name or downloaded runtime exists. |
+| Native Xcode MCP | Xcode 27 provides `mcpbridge` and `mcp-server`, including opt-in headless mode. Local command help/status verified; no project build through the native MCP is claimed. | Use approved agent/project access; check `xcrun mcp-server status`. |
+| MobileBuildMCP | Latest release `2.7.1`, commit `d13ff0c707b0681769cf31da0eb42c4f94ceafff`; startup, 44 exposed tools, and `list_sims` verified locally. | Starter configuration is pinned; each adopter still validates its own build/test flows. |
+| Tapia MCP / idb | Tapia `0.2.0` at `74ddfd95710801f7ff33a48e0a42bdfff5c15e02`; matched idb client/companion `1.6.4`. | Install the pinned Tapia checkout; Xcode 27 input needs current DTUHID-capable idb. See [TapiaMCPGuide.md](TapiaMCPGuide.md). |
+
+Sources: [Apple's Xcode compatibility table](https://developer.apple.com/xcode/system-requirements/),
+[Command Line Tools updates](https://developer.apple.com/documentation/xcode/installing-the-command-line-tools/),
+[MobileBuildMCP 2.7.1](https://github.com/getsentry/MobileBuildMCP/releases/tag/v2.7.1),
+[Tapia source](https://github.com/Agilefreaks/tapia-mcp/commit/74ddfd95710801f7ff33a48e0a42bdfff5c15e02),
+and local CLI/MCP checks. Beta SDKs and the other installed runtimes were inventoried,
+not runtime-tested as part of this tooling refresh.
+
+Before a session, capture the actual environment:
+
+~~~bash
+xcode-select -p
+xcodebuild -version
+xcrun swift --version
+pkgutil --pkg-info com.apple.pkg.CLTools_Executables
+xcrun simctl list runtimes --json
+xcrun simctl list devices available --json
+xcrun mcp-server status
+command -v idb
+brew list --versions facebook/fb/idb-cli facebook/fb/idb-companion
+~~~
+
+Use `DEVELOPER_DIR` per session when selecting another installed Xcode, and pass it
+to the MCP process as well. Resolve the project's newest-runtime and minimum-OS
+lanes against the inventory, preserving its declared support policy. A missing
+required runtime is a validation gap; another version is not an equivalent pass.
+New device models and runtimes should be discovered rather than added to an
+allowlist. Keep each worker's UDID explicit even when only one device is booted.
+
 ## The command interface stays the contract
 
 `make bootstrap | build | test | test-ui | format | lint` is the interface for humans,
@@ -23,27 +65,41 @@ invocation.
 
 | Implementation | Select when | Main limitation |
 |---|---|---|
-| Xcode MCP (`xcrun mcpbridge`) | The developer works with the project open in Xcode and approves external-agent access | Unusable headless: no open Xcode, no capability |
-| XcodeBuildMCP (`xcodebuildmcp`) | Agents build, test, or drive Simulators headless, or parallel workers need scheme/destination discovery and parsed diagnostics | Third-party Node package running with local developer privileges; absent in CI |
+| Xcode MCP (`xcrun mcpbridge`) | An approved open-project session, or an explicitly enabled Xcode 27 headless session with agent/project access | Requires a configured native session and project access; check the selected Xcode's command help |
+| MobileBuildMCP (`mobilebuildmcp`) | Agents build, test, or drive Simulators headless, or parallel workers need scheme/destination discovery and parsed diagnostics | Third-party Node package running with local developer privileges; absent in CI |
 | Repository commands only | No MCP is approved, dependency surface must stay minimal, or the run must match CI exactly | Raw `xcodebuild` output is long and easy for an agent to misread |
 
-The default is the Xcode MCP, because it is first-party and versioned with the selected
-Xcode. Its limitation is the reason the alternative exists: agent-heavy work in this
-playbook is frequently headless and parallel, so a project that fans out work across
-workers should expect to select XcodeBuildMCP or to run repository commands with filtered
-output.
+The native bridge is first-party and versioned with the selected Xcode. Xcode 27's
+`mcp-server` can manage approved headless sessions, so absence of the Xcode UI alone
+does not make it unavailable. Use `xcrun mcp-server --help` and `status` to inspect
+setup; `open <PROJECT_OR_WORKSPACE>` opens a project in that session. Headless
+enablement and permission changes require the operator's authority and are not
+automatic consequences of installing the playbook.
+
+The starter selects MobileBuildMCP and records the native bridge as an alternative.
+A project may choose either or repository commands with filtered output; keep its
+manifest, `.mcp.json`, and server approval settings consistent.
 
 Declare exactly one selected implementation in `implementation`. Keep the evaluated but
 unselected ones in `alternatives`, so the next reader sees the choice instead of guessing
 that no alternative existed. Record the selected implementation and its pinned version in
 `AGENTS.md` alongside schemes, destination, and Xcode version.
 
-## Install and pin XcodeBuildMCP
+## Install and pin MobileBuildMCP
 
-The upstream source is the npm package `xcodebuildmcp`, published from
-`https://github.com/getsentry/XcodeBuildMCP`. Ownership of that repository has already
+The upstream source is the npm package `mobilebuildmcp`, published from
+`https://github.com/getsentry/MobileBuildMCP`. Ownership of that repository has already
 moved once, so treat it as a reviewed third-party dependency rather than a stable
 first-party interface.
+
+Release 2.7.1 renamed XcodeBuildMCP to MobileBuildMCP. The old npm package remains
+at `2.7.0`; querying only that name misses the current release. Migrate the package
+and command to `mobilebuildmcp`, environment variables to `MOBILEBUILDMCP_*`, the
+project configuration directory to `.mobilebuildmcp/`, and resource URIs to
+`mobilebuildmcp://`. Update the MCP server approval name too. Inputs such as `env`
+and `testRunnerEnv` now use arrays of `{ "key": "...", "value": "..." }`, and
+`xcode_ide_call_tool.arguments` is a JSON object string. Inspect current tool schemas
+before carrying forward old client calls. Existing project pins migrate explicitly.
 
 Before adoption:
 
@@ -64,12 +120,12 @@ rather than overwriting it:
 ~~~json
 {
   "mcpServers": {
-    "xcodebuildmcp": {
+    "mobilebuildmcp": {
       "command": "npx",
-      "args": ["-y", "xcodebuildmcp@<EVALUATED_VERSION>", "mcp"],
+      "args": ["-y", "mobilebuildmcp@2.7.1", "mcp"],
       "env": {
-        "XCODEBUILDMCP_ENABLED_WORKFLOWS": "project-discovery,session-management,simulator,simulator-management,ui-automation,coverage,doctor,utilities",
-        "XCODEBUILDMCP_SENTRY_DISABLED": "true"
+        "MOBILEBUILDMCP_ENABLED_WORKFLOWS": "project-discovery,session-management,simulator,simulator-management,ui-automation,coverage,utilities",
+        "MOBILEBUILDMCP_SENTRY_DISABLED": "true"
       }
     }
   }
@@ -91,11 +147,11 @@ Four details in that snippet each cost a debugging session when they are missing
   configured only in one developer's local settings is invisible to everyone else, and the project
   then behaves differently depending on who is running it.
 
-One more trap worth knowing before you trust a screenshot: the screenshot and UI-snapshot tools act
-on the session's default device and **ignore an explicitly passed simulator id**. Check the id
-echoed back in the result, or capture through `xcrun simctl io <udid> screenshot`, before attaching
-the output as evidence. Getting this wrong attributes one device's behaviour to another with no
-error anywhere.
+The 2.7.1 `screenshot` and `snapshot_ui` schemas have no Simulator-ID argument;
+they use the session default. Set `simulatorId` through `session_set_defaults`,
+check the device in the returned evidence, or capture through
+`xcrun simctl io <udid> screenshot`. An extra ID passed to the screenshot call is
+not a targeting contract.
 
 Signing, entitlement, certificate, distribution, and release actions stay protected. A
 build server never receives unattended approval for them, regardless of which tools it

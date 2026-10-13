@@ -57,8 +57,11 @@ delivery item.
 
 | Item | Value |
 |---|---|
-| Xcode version | |
-| Swift version | |
+| Xcode version/build and selected developer directory | |
+| Swift compiler version and language mode | |
+| Command Line Tools version | |
+| Installed Simulator runtime versions/builds and selected UDID | |
+| Tooling baseline last verified date and upstream sources | |
 | Default scheme | |
 | Build configurations | |
 | Simulator/device destination (CI + local) | |

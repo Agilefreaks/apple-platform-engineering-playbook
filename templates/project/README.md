@@ -16,8 +16,8 @@ The helper refuses to overwrite existing files. After installation:
    public repository; this confirms the architecture standard is readable at the pinned commit,
    through the GitHub CLI when one is installed and authenticated and over plain HTTPS when it is
    not, and prints the matching command for reading any playbook document;
-2. replace every `<PLACEHOLDER>`, including `<EVALUATED_VERSION>` in `.mcp.json` and the
-   installed skill versions in `tooling/skills.yml`;
+2. replace every `<PLACEHOLDER>` and the installed skill versions in `tooling/skills.yml`;
+   validate the starter's MobileBuildMCP `2.7.1` pin against the project build/test flows;
 3. define deterministic project commands in `AGENTS.md` and the project Makefile;
 4. keep the `@AGENTS.md` import as the first line of `CLAUDE.md` — Claude Code loads
    only `CLAUDE.md`, so this import is what puts the contract in its context; add only
@@ -41,9 +41,10 @@ The helper refuses to overwrite existing files. After installation:
 11. create the first Delivery Packet only after project ownership and environments are ready.
 
 `.mcp.json` is installed active, configured for the headless Xcode-automation implementation
-with its telemetry disabled and its enabled workflows named explicitly. A project that keeps
-Xcode open and prefers the first-party bridge replaces the file's contents and records that
-choice in `AGENTS.md`.
+with MobileBuildMCP `2.7.1`, telemetry disabled, and workflows named explicitly.
+A project selecting the native bridge uses approved Xcode access (an open project or
+Xcode 27 headless mode), updates `.mcp.json`, `.claude/settings.json`, and
+`tooling/tools.yml` together, and records that choice in `AGENTS.md`.
 
 `tooling/examples/tapia/` remains inactive reference configuration. The bootstrap does not
 install Tapia or grant command approval.
